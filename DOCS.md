@@ -571,7 +571,7 @@ The system operates in a cyclical, iterative manner, driven by the MRM Orchestra
         *   **a. Intent Specification (IntentDefiner):**
             *   `IntentDefiner.define_intent_spec_via_llm()` is called.
             *   It gathers context (node metadata, application summaries, completed dependency outputs, relevant policy *summaries/tags* from `PolicyManager`'s initial lookup).
-            *   It prompts its Gemini Pro model to generate a detailed JSON *specification* for the `Intent` needed to process the current node (including `task_type`, `assessment_focus`, `retrieval_config` for *application documents*, `data_requirements_schema`, hints for `agent_policy_context_requirements` if an agent is involved, etc.).
+            *   It prompts its Gemini Pro model to generate a detailed JSON *specification* for the `Intent` needed to process the current node (including `task_type`, `assessment_focus`, `retrieval_config` for *application documents*, `data_requirements_schema`, `agent_to_invoke` (if any), and `agent_input_data_preparation_notes` which might include hints for `agent_policy_context_requirements`).
         *   **b. Intent Creation & Execution (NodeProcessor):**
             *   The orchestrator creates an `Intent` object from the LLM-generated spec.
             *   This `Intent` is passed to `NodeProcessor.process_intent()`.
@@ -579,7 +579,6 @@ The system operates in a cyclical, iterative manner, driven by the MRM Orchestra
                 1.  **Application Document Retrieval:** Calls `AgenticRetriever.retrieve_and_prepare_context(intent)` to get relevant *application document* chunks/full docs from the `Database` and populates the `intent`'s context fields.
                 2.  **Agent-Specific Policy Retrieval (NEW):** If the `intent` (from `IntentDefiner`'s spec) indicates an agent needs specific policy context (e.g., via `agent_policy_context_requirements` field in `agent_input_data`):
                     *   `NodeProcessor` calls `self.policy_manager.search_policies()` with these requirements.
-                    *   `PolicyManager` performs a hybrid search (SQL + `pgvector`) on policy documents/chunks *stored in the main database*.
                     *   The retrieved policy *clauses* are added to `intent.agent_input_data["retrieved_policy_clauses_for_agent"]`.
                 3.  **Subsidiary Agent Invocation (Optional):** If `intent.agent_to_invoke` is set, the agent's `process()` method is called. The `BaseSubsidiaryAgent._prepare_gemini_content()` now incorporates `intent.llm_policy_context_summary` (general policy context for the node) AND `intent.agent_input_data.get("retrieved_policy_clauses_for_agent")` (targeted policy clauses for the agent).
                 4.  **MRM Synthesis/Assessment:** `NodeProcessor` constructs a final prompt for its Gemini Pro model, including application doc context, prior step outputs, *general policy summaries for the node* (`intent.llm_policy_context_summary`), and any agent report.
@@ -597,64 +596,74 @@ The system operates in a cyclical, iterative manner, driven by the MRM Orchestra
 
 ---
 
-## UPDATED: ASCII Architecture Diagram
+## UPDATED: Architecture Diagram (Mermaid)
 
 The main change is that `PolicyManager` now interacts with the `PostgreSQL DB` for its searches.
 
 ```mermaid
 graph TD
-    A[main.py Client/User] ==> B(MRM Orchestrator);
-
+    subgraph User
+        A[main.py Client/User]
+    end
     subgraph KnowledgeBase_Configuration
-        C[ReportTemplateManager] --> B;
-        D[MCOntology] --> B;
-        E(PolicyManager) --> B; subgraph Policy_DB_Interaction
-            E -- Hybrid Search for Policies --> L((PostgreSQL DB));
-        end
+        C[ReportTemplateManager]
+        D[MCOntology]
+        E(PolicyManager)
     end
-
     subgraph MRM_Core
-        B ==> F(IntentDefiner);
-        F -- Gemini Pro Call (Define Intent Spec) --> G((Gemini API));
-        F ==> B; subgraph In_MRM_Orchestrator
-            direction LR
-            B ==> H{Reasoning Graph};
-            B ==> I(NodeProcessor);
-        end
-        I -- Uses --> J(AgenticRetriever);
-        I -- Uses --> E; # NodeProcessor uses PolicyManager for agent-specific policy context
-        I -- Invokes --> K[Subsidiary Agents];
-        K -- Gemini Flash Call --> G;
-        I -- Gemini Pro Call (Synthesize Node Output) --> G;
-        I ==> H;
+        B(MRM Orchestrator)
+        F(IntentDefiner)
+        H{Reasoning Graph}
+        I(NodeProcessor)
+        J(AgenticRetriever)
+        K[Subsidiary Agents]
     end
-
     subgraph DataAndStorage
-        J -- App Doc Retrieval --> L;
-        M[Source Docs (App & Policy)] --> N(Ingestion Pipeline);
-        N -- Chunks & Embeddings --> L;
-        L -- pgvector --> J; % For app docs
-        L -- pgvector --> E; % For policy docs
+        L[(PostgreSQL DB)]
+        M[Source Docs (App & Policy)]
+        N(Ingestion Pipeline)
+    end
+    subgraph LLMs
+        G((Gemini API))
     end
 
-    B ==> O[Final Report JSON];
-    B ==> P[Provenance Logs];
-
-    classDef kb fill:#e6ffe6,stroke:#333,stroke-width:2px;
-    classDef mrmcore fill:#ffe6e6,stroke:#333,stroke-width:2px;
-    classDef data fill:#e6f3ff,stroke:#333,stroke-width:2px;
-
-    class C,D,E kb;
-    class F,H,I,K mrmcore;
-    class L,M,N data;
-    class B,G,O,P default;
+    %% User flow
+    A --> B
+    %% Knowledge base to orchestrator
+    C --> B
+    D --> B
+    E --> B
+    %% PolicyManager DB interaction
+    E -- Hybrid Search for Policies --> L
+    %% Orchestrator to core
+    B --> F
+    F -- Gemini Pro Call (Define Intent Spec) --> G
+    F --> B
+    B --> H
+    B --> I
+    %% NodeProcessor uses
+    I --> J
+    I --> E
+    I --> K
+    K -- Gemini Flash Call --> G
+    I -- Gemini Pro Call (Synthesize Node Output) --> G
+    I --> H
+    %% Data and storage
+    J -- App Doc Retrieval --> L
+    M --> N
+    N --> L
+    L -- pgvector --> J
+    L -- pgvector --> E
+    %% Outputs
+    B --> O[Final Report JSON]
+    B --> P[Provenance Logs]
 ```
 
 **Diagram Change Explanation:**
 
-*   `PolicyManager` (E) now has an arrow pointing to `PostgreSQL DB` (L) indicating it performs its own hybrid searches for policy documents/clauses.
-*   `NodeProcessor` (I) now also has an arrow pointing to `PolicyManager` (E) to signify that it requests specific policy context from the `PolicyManager` for subsidiary agents.
-*   `Source Docs` (M) now explicitly includes "Policy" documents, which go through the same `Ingestion Pipeline` (N) into the database.
+*   `PolicyManager` now has a direct connection to the `PostgreSQL DB` for hybrid policy search.
+*   `NodeProcessor` requests policy context from `PolicyManager` for subsidiary agents.
+*   All source documents (application and policy) are ingested, chunked, embedded, and stored in the same database.
 
 ---
 
@@ -671,7 +680,7 @@ graph TD
 
 *   **`mrm/mrm_orchestrator.py` (MRMOrchestrator Class):**
     *   **Purpose:** Central controller. Initializes the reasoning graph from a `ReportTemplateManager` template, drives the `_run_initial_application_scan_intent` to identify application-specific material considerations, dynamically expands the reasoning graph using `MaterialConsiderationOntology` and the scan results, determines processing order, and iterates through nodes.
-    *   **Interaction with `IntentDefiner`:** For each node, it provides context (node metadata, application summaries, prior outputs, policy hints from `PolicyManager`) to `IntentDefiner` to get an LLM-generated `Intent` specification.
+    *   **Interaction with `IntentDefiner`:** For each node, it provides context (node metadata, application summaries, prior outputs, policy hints from `PolicyManager`'s initial lookup) to `IntentDefiner` to get an LLM-generated `Intent` specification.
     *   **Interaction with `NodeProcessor`:** Passes the fully constructed `Intent` object (from `IntentDefiner`'s spec) to `NodeProcessor` for execution. It stores the results from `NodeProcessor` in `self.completed_node_outputs`.
     *   **Clarification Loop Management (Conceptual):** Manages the iterative processing if a node requires clarification.
 
@@ -679,12 +688,12 @@ graph TD
     *   **Purpose:** Uses its own Gemini Pro instance to dynamically generate the detailed JSON *specification* for an `Intent` needed for a given `ReasoningNode`.
     *   **Key Functionality (`define_intent_spec_via_llm`, `define_clarification_intent_spec_via_llm`):**
         *   Constructs a rich meta-prompt for Gemini Pro, including current node details, application context, outputs of prerequisite nodes, and crucially, **relevant policy summaries/tags fetched via `PolicyManager`'s initial lookup**.
-        *   The prompt guides Gemini Pro to output a JSON object defining the `task_type`, `assessment_focus`, `retrieval_config` (for application documents), `data_requirements_schema`, `agent_to_invoke` (if any), and significantly, **`agent_input_data_preparation_notes` which might include hints for `agent_policy_context_requirements`**.
+        *   The prompt guides Gemini Pro to output a JSON object defining the `task_type`, `assessment_focus`, `retrieval_config` (for application documents), `data_requirements_schema`, `agent_to_invoke` (if any), and `agent_input_data_preparation_notes` which might include hints for `agent_policy_context_requirements`.
         *   Returns this JSON specification to the `MRMOrchestrator`.
 
 *   **`mrm/node_processor.py` (NodeProcessor Class):**
     *   **Purpose:** Executes a single, fully defined `Intent` object.
-    *   **Key Functionality (`process_intent`):**
+    *   **Key Functionality (`process_intent`):
         1.  **Application Document Retrieval:** Uses its `AgenticRetriever` instance to fetch context from *application documents* based on `intent.retrieval_config`.
         2.  **Agent-Specific Policy Retrieval (NEW & CRITICAL):** If the `intent.agent_to_invoke` is set and the `intent.agent_input_data` (from `IntentDefiner`'s spec) contains `agent_policy_context_requirements` (e.g., themes like "BiodiversityNetGain"):
             *   It calls `self.policy_manager.search_policies()` with these requirements.
