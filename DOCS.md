@@ -592,53 +592,54 @@ The system operates in a cyclical, iterative manner, driven by the MRM Orchestra
     *   The orchestrator continues until all nodes are processed or max iterations are hit.
     *   The final report is assembled from all `ReasoningNode` outputs.
 
-**Key Dataflow Change for Policy:** Policy documents are now treated like application documents – ingested, chunked, embedded, and stored in the main database. `PolicyManager` becomes a specialized query interface to this policy data within the database, performing its own hybrid searches. `NodeProcessor` explicitly retrieves targeted policy context for agents via `PolicyManager`.
+**Key Dataflow Change for Policy:** Policy documents are now treated like application documents – ingested, chunked, embedded, and stored in the same database. `PolicyManager` becomes a specialized query interface to this policy data within the database, performing its own hybrid searches. `NodeProcessor` explicitly retrieves targeted policy context for agents via `PolicyManager`.
 
 ---
 
-## UPDATED: Architecture Diagram (Mermaid)
+## UPDATED: Architecture Diagram (Plain ASCII)
 
 The main change is that `PolicyManager` now interacts with the `PostgreSQL DB` for its searches.
 
-```mermaid
-graph TD
-    A[main.py Client/User] --> B(MRM Orchestrator)
-    C[ReportTemplateManager] --> B
-    D[MCOntology] --> B
-    E(PolicyManager) --> B
-    E -- Hybrid Search for Policies --> L[(PostgreSQL DB)]
-    B --> F(IntentDefiner)
-    F -- Gemini Pro Call (Define Intent Spec) --> G((Gemini API))
-    F --> B
-    B --> H{Reasoning Graph}
-    B --> I(NodeProcessor)
-    I --> J(AgenticRetriever)
-    I --> E
-    I --> K[Subsidiary Agents]
-    K -- Gemini Flash Call --> G
-    I -- Gemini Pro Call (Synthesize Node Output) --> G
-    I --> H
-    J -- App Doc Retrieval --> L
-    M[Source Docs (App & Policy)] --> N(Ingestion Pipeline)
-    N --> L
-    L -- pgvector --> J
-    L -- pgvector --> E
-    B --> O[Final Report JSON]
-    B --> P[Provenance Logs]
-    classDef kb fill:#e6ffe6,stroke:#333,stroke-width:2px;
-    classDef mrmcore fill:#ffe6e6,stroke:#333,stroke-width:2px;
-    classDef data fill:#e6f3ff,stroke:#333,stroke-width:2px;
-    class C,D,E kb;
-    class F,H,I,K mrmcore;
-    class L,M,N data;
-    class B,G,O,P default;
-```
+    +-------------------+         +---------------------+
+    |   main.py        |         |  ReportTemplateMgr  |
+    +--------+---------+         +----------+----------+
+             |                              |
+             v                              v
+    +-------------------+         +---------------------+
+    |  MRM Orchestrator |<--------+  MCOntology         |
+    +--------+----------+         +---------------------+
+             |
+             v
+    +-------------------+
+    |  IntentDefiner    |
+    +--------+----------+
+             |
+             v
+    +-------------------+
+    |  NodeProcessor    |
+    +--------+----------+
+             |
+      +------+------+
+      |             |
+      v             v
++-------------+  +-------------------+
+|Agentic      |  | PolicyManager     |
+|Retriever    |  +--------+----------+
++------+------+           |
+       |                  v
+       |         +-------------------+
+       |         | PostgreSQL DB     |
+       |         +-------------------+
+       |
++-------------+
+|Source Docs  |
+|(App/Policy) |
++-------------+
 
-**Diagram Change Explanation:**
-
-*   `PolicyManager` now has a direct connection to the `PostgreSQL DB` for hybrid policy search.
-*   `NodeProcessor` requests policy context from `PolicyManager` for subsidiary agents.
-*   All source documents (application and policy) are ingested, chunked, embedded, and stored in the same database.
+Key:
+- All source documents (application and policy) are ingested, chunked, embedded, and stored in the same database.
+- PolicyManager performs hybrid search on policy docs in the DB.
+- NodeProcessor requests policy context from PolicyManager for subsidiary agents.
 
 ---
 
@@ -683,3 +684,21 @@ graph TD
     *   **`policy_kb/*.json` (e.g., `nppf_sample.json`):** These are now primarily *source files for an initial, one-time ingestion process* handled by `PolicyManager._ingest_sample_policies_from_json()`. Once ingested, the live policy data resides in the main PostgreSQL database and is queried via `PolicyManager.search_policies()`.
 
 This updated dataflow and architecture make the system more robust in handling policy context for all components, especially subsidiary agents, by treating policy documents as first-class citizens in the database, searchable via hybrid methods.
+
+---
+
+## Note on Dual Hybrid Search (Application & Policy Documents)
+
+This system features **two distinct hybrid search mechanisms**, both leveraging the same database and embedding infrastructure:
+
+1. **Application Document Hybrid Search**
+    - Performed by the `AgenticRetriever` class.
+    - Retrieves relevant chunks or full documents from *application documents* (e.g., planning statements, ES chapters) stored in the database.
+    - Combines structured SQL filters (by document type, tags, etc.) with semantic search using vector embeddings (`pgvector`).
+
+2. **Policy Document Hybrid Search**
+    - Performed by the `PolicyManager` class.
+    - Retrieves relevant policy clauses or full policy texts from *policy documents* (e.g., NPPF, Local Plan) stored in the same database.
+    - Also combines structured SQL filters (by policy type, source, tags, etc.) with semantic search using vector embeddings.
+
+**Both types of hybrid search operate over the same infrastructure but are specialized for their respective document types.** This dual capability enables the system to retrieve and reason over both application and policy context in a unified, modular way.

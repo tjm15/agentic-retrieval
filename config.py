@@ -20,8 +20,8 @@ DB_CONFIG = {
     "port": os.getenv("DB_PORT", "5432")
 }
 
-MRM_MODEL_NAME = "gemini-1.5-pro-latest"
-SUBSIDIARY_AGENT_MODEL_NAME = "gemini-1.5-flash-latest"
+MRM_MODEL_NAME = "gemini-2.5-pro-preview-05-06"
+SUBSIDIARY_AGENT_MODEL_NAME = "gemini-2.5-flash-preview-05-20"
 
 MAX_CONTEXT_DOCUMENTS_FOR_FULL_INJECTION = 2
 MAX_CHUNKS_FOR_CONTEXT = 25 # Reduced for potentially more focused context
