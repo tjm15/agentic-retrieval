@@ -1,0 +1,66 @@
+[
+  {
+    "id": "NPPF_Ch2_AchievingSustainableDevelopment",
+    "title": "NPPF Chapter 2: Achieving sustainable development",
+    "text_summary": "The Framework sets out three overarching objectives for the planning system to achieve sustainable development: an economic objective, a social objective, and an environmental objective. These objectives are interdependent and need to be pursued in mutually supportive ways. The presumption in favour of sustainable development (paragraph 11) is a golden thread running through both plan-making and decision-taking.",
+    "keywords": ["sustainable development", "presumption in favour", "economic objective", "social objective", "environmental objective", "NPPF_Para11"],
+    "source": "NPPF",
+    "version_date": "2023-12-20"
+  },
+  {
+    "id": "NPPF_Ch5_Housing",
+    "title": "NPPF Chapter 5: Delivering a sufficient supply of homes",
+    "text_summary": "To support the Government’s objective of significantly boosting the supply of homes, it is important that a sufficient amount and variety of land can come forward where it is needed, that the needs of groups with particular housing requirements are addressed and that land with permission is developed without unnecessary delay.",
+    "keywords": ["housing supply", "affordable housing", "housing need", "land availability", "5YHLS"],
+    "source": "NPPF",
+    "version_date": "2023-12-20"
+  },
+  {
+    "id": "NPPF_Ch9_Transport",
+    "title": "NPPF Chapter 9: Promoting sustainable transport",
+    "text_summary": "Transport issues should be considered from the earliest stages of plan-making and development proposals, so that opportunities to promote walking, cycling and public transport use are identified and pursued; the environmental impacts of traffic and transport infrastructure can be identified, assessed and taken into account; and patterns of movement, streets, parking and other transport considerations are integral to the design of schemes, and contribute to making high quality places.",
+    "keywords": ["sustainable transport", "active travel", "public transport", "traffic impact", "parking standards", "healthy streets"],
+    "source": "NPPF",
+    "version_date": "2023-12-20"
+  },
+  {
+    "id": "NPPF_Ch11_EffectiveUseOfLand",
+    "title": "NPPF Chapter 11: Making effective use of land",
+    "text_summary": "Planning policies and decisions should promote an effective use of land in meeting the need for homes and other uses, while safeguarding and improving the environment and ensuring safe and healthy living conditions. Strategic policies should set out a clear strategy for accommodating objectively assessed needs, in a way that makes as much use as possible of previously-developed or brownfield land.",
+    "keywords": ["brownfield land", "density optimisation", "land efficiency", "underused land", "PDL"],
+    "source": "NPPF",
+    "version_date": "2023-12-20"
+  },
+  {
+    "id": "NPPF_Ch12_Design",
+    "title": "NPPF Chapter 12: Achieving well-designed places",
+    "text_summary": "The creation of high quality, beautiful and sustainable buildings and places is fundamental to what the planning and development process should achieve. Good design is a key aspect of sustainable development, creates better places in which to live and work and helps make development acceptable to communities. The National Design Guide illustrates how well-designed places that are beautiful, healthy, greener, enduring and successful can be achieved in practice.",
+    "keywords": ["good design", "beautiful places", "design quality", "local character", "National Design Guide", "design codes"],
+    "source": "NPPF",
+    "version_date": "2023-12-20"
+  },
+  {
+    "id": "NPPF_Ch14_ClimateChange",
+    "title": "NPPF Chapter 14: Meeting the challenge of climate change, flooding and coastal change",
+    "text_summary": "The planning system should support the transition to a low carbon future in a changing climate, taking full account of flood risk and coastal change. It should help to: shape places in ways that contribute to radical reductions in greenhouse gas emissions, minimise vulnerability and improve resilience; encourage the reuse of existing resources, including the conversion of existing buildings; and support renewable and low carbon energy and associated infrastructure.",
+    "keywords": ["climate change mitigation", "climate change adaptation", "flood risk sequential test", "renewable energy", "SuDS", "low carbon"],
+    "source": "NPPF",
+    "version_date": "2023-12-20"
+  },
+  {
+    "id": "NPPF_Ch15_NaturalEnvironment",
+    "title": "NPPF Chapter 15: Conserving and enhancing the natural environment",
+    "text_summary": "Planning policies and decisions should contribute to and enhance the natural and local environment by: protecting and enhancing valued landscapes, sites of biodiversity or geological value and soils; recognising the intrinsic character and beauty of the countryside; minimising impacts on and providing net gains for biodiversity, including by establishing coherent ecological networks that are more resilient to current and future pressures.",
+    "keywords": ["biodiversity net gain", "BNG", "green infrastructure", "ecological networks", "protected species", "landscape character", "ancient woodland"],
+    "source": "NPPF",
+    "version_date": "2023-12-20"
+  },
+  {
+    "id": "NPPF_Ch16_Heritage",
+    "title": "NPPF Chapter 16: Conserving and enhancing the historic environment",
+    "text_summary": "Heritage assets are an irreplaceable resource, and should be conserved in a manner appropriate to their significance, so that they can be enjoyed for their contribution to the quality of life of existing and future generations. Plans should set out a positive strategy for the conservation and enjoyment of the historic environment. When considering the impact of a proposed development on the significance of a designated heritage asset, great weight should be given to the asset’s conservation.",
+    "keywords": ["heritage assets", "conservation areas", "listed buildings", "scheduled monuments", "archaeology", "setting of heritage assets", "significance", "substantial harm", "less than substantial harm"],
+    "source": "NPPF",
+    "version_date": "2023-12-20"
+  }
+]

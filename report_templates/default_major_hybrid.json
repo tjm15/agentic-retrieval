@@ -1,0 +1,97 @@
+{
+  "report_type_id": "Default_MajorHybrid",
+  "report_id_prefix": "MajorHybridApp",
+  "description": "Default Standard Report for Major Hybrid Planning Applications",
+  "sections": [
+    {
+      "node_id": "1.0_SiteAndApplication",
+      "description": "Site Description, Proposal Details & Planning History",
+      "node_type_tag": "IntroductionBlock",
+      "generic_material_considerations": ["site_context", "proposal_details", "planning_history"],
+      "specific_policy_focus_ids": ["LocalPlan_IntroductoryPolicy", "NPPF_Introduction"],
+      "depends_on_nodes": [],
+      "sub_sections": [
+        {
+          "node_id": "1.1_SiteLocationAndDescription",
+          "description": "Site Location, Existing Conditions, and Surrounding Area Character",
+          "node_type_tag": "SiteDescription",
+          "generic_material_considerations": ["site_identification", "existing_site_features", "area_character", "site_constraints_overview"],
+          "specific_policy_focus_ids": ["LocalPlan_SiteContextPolicy", "NPPF_ContextAnalysis"],
+          "key_evidence_document_types": ["ApplicationForm", "SiteLocationPlan", "DAS_ContextAnalysis", "UserGuide_SiteOverview", "AerialPhotography", "SitePhotos"]
+        },
+        {
+          "node_id": "1.2_ProposalInDetail",
+          "description": "The Proposed Development (Detailed & Outline Components, Quantum, Phasing)",
+          "node_type_tag": "ProposalSummary",
+          "generic_material_considerations": ["development_quantum", "land_use_mix", "phasing_strategy", "hybrid_application_nature", "detailed_component_assessment", "outline_component_framework"],
+          "specific_policy_focus_ids": ["LocalPlan_DevelopmentManagementPolicy", "NPPF_ProposalDescription"],
+          "key_evidence_document_types": ["DAS_ProposalDescription", "DevelopmentSpecification", "ParameterPlans", "UserGuide_ProposalDetails", "PhasingPlans", "PlanningStatement_ProposalSummary"]
+        },
+        {
+          "node_id": "1.3_RelevantPlanningHistory",
+          "description": "Relevant Planning History of the Site and Immediate Surroundings",
+          "node_type_tag": "PlanningHistory",
+          "generic_material_considerations": ["precedent_decisions", "extant_permissions_implications", "lapsed_permissions_relevance", "site_history_constraints"],
+          "specific_policy_focus_ids": ["LocalPlan_PlanningHistoryPolicyWeight", "NPPF_DecisionMaking"],
+          "key_evidence_document_types": ["PlanningStatement_HistorySection", "PreviousDecisionNotices", "HistoricalMaps", "LocalAuthorityPlanningRecords"]
+        }
+      ]
+    },
+    {
+      "node_id": "2.0_ConsultationResponses",
+      "description": "Summary and Analysis of Consultation Responses",
+      "node_type_tag": "ConsultationSummaryBlock",
+      "generic_material_considerations": ["public_opinion_summary", "statutory_consultee_advice", "internal_consultee_feedback", "applicant_response_to_consultation"],
+      "specific_policy_focus_ids": ["LocalPlan_ConsultationPolicy", "NPPF_CommunityEngagement", "StatementOfCommunityInvolvementRequirements"],
+      "depends_on_nodes": ["1.0_SiteAndApplication/1.2_ProposalInDetail"],
+      "sub_sections": [
+        {"node_id": "2.1_PublicRepresentations", "description": "Summary of Public Comments (Support, Objections, Neutral)", "node_type_tag": "PublicConsultation"},
+        {"node_id": "2.2_StatutoryConsultees", "description": "Feedback from Key Statutory Consultees (e.g., Historic England, Environment Agency, TfL/Highways)", "node_type_tag": "StatutoryConsultation"},
+        {"node_id": "2.3_OtherResponses", "description": "Feedback from Other Consultees (e.g., Local Amenity Societies, Ward Councillors, Internal Departments)", "node_type_tag": "OtherConsultation"}
+      ]
+    },
+    {
+      "node_id": "3.0_PlanningPolicyFramework",
+      "description": "Relevant Planning Policy Framework",
+      "node_type_tag": "PolicyFrameworkSummaryBlock",
+      "generic_material_considerations": ["policy_hierarchy_summary", "key_development_plan_policies", "material_non_dpd_guidance"],
+      "depends_on_nodes": [],
+      "sub_sections": [
+          {"node_id": "3.1_NationalPolicy", "description": "National Planning Policy Framework (NPPF) - Key Relevant Chapters/Paragraphs", "node_type_tag": "NationalPolicy"},
+          {"node_id": "3.2_RegionalPolicy", "description": "The London Plan - Key Relevant Policies", "node_type_tag": "RegionalPolicy"},
+          {"node_id": "3.3_LocalPlanRBKC", "description": "Royal Borough of Kensington and Chelsea Local Plan - Key Relevant Policies", "node_type_tag": "LocalPolicy_RBKC"},
+          {"node_id": "3.4_LocalPlanLBHF", "description": "London Borough of Hammersmith and Fulham Local Plan - Key Relevant Policies", "node_type_tag": "LocalPolicy_LBHF"},
+          {"node_id": "3.5_SPDsAndSPGs", "description": "Relevant Supplementary Planning Documents/Guidance (National, Regional, Local)", "node_type_tag": "SupplementaryGuidance"},
+          {"node_id": "3.6_EmergingPolicy", "description": "Status and Weight Attributable to Emerging Local Plan Policies or Neighbourhood Plans", "node_type_tag": "EmergingPolicy"}
+      ]
+    },
+    {
+      "node_id": "4.0_AssessmentOfMaterialConsiderations",
+      "description": "Officer's Assessment of Material Planning Considerations",
+      "node_type_tag": "MaterialConsiderationsBlock_Parent",
+      "is_dynamic_parent_node": true,
+      "depends_on_nodes": ["1.0_SiteAndApplication/1.2_ProposalInDetail", "2.0_ConsultationResponses", "3.0_PlanningPolicyFramework"]
+    },
+    {
+      "node_id": "5.0_OtherRelevantMatters",
+      "description": "Other Relevant Matters (e.g., CIL, Planning Obligations, Equalities, Human Rights)",
+      "node_type_tag": "OtherConsiderationsBlock",
+      "generic_material_considerations":["CIL_liability", "equalities_impact_assessment", "human_rights_implications", "planning_conditions_preliminary", "s106_heads_of_terms_preliminary"],
+      "depends_on_nodes": ["4.0_AssessmentOfMaterialConsiderations"]
+    },
+    {
+      "node_id": "6.0_PlanningBalanceAndConclusion",
+      "description": "Overall Planning Balance and Officer's Conclusion",
+      "node_type_tag": "PlanningBalanceAndConclusionBlock",
+      "generic_material_considerations":["planning_balance_exercise", "nppf_presumption_test", "overall_scheme_acceptability"],
+      "specific_policy_focus_ids": ["NPPF_Para11", "LocalPlan_OverallDecisionMakingPolicy"],
+      "depends_on_nodes": ["4.0_AssessmentOfMaterialConsiderations", "5.0_OtherRelevantMatters"]
+    },
+    {
+      "node_id": "7.0_Recommendation",
+      "description": "Officer's Recommendation",
+      "node_type_tag": "FinalRecommendationBlock",
+      "depends_on_nodes": ["6.0_PlanningBalanceAndConclusion"]
+    }
+  ]
+}
