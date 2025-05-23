@@ -1,51 +1,163 @@
 # mrm/node_processor.py
-# Conceptual implementation for NodeProcessor
-from core_types import ReasoningNode, Intent
-from retrieval.retriever import AgenticRetriever
-from agents.visual_heritage_agent import VisualHeritageAssessmentAgentGemini
+import json
+import time
+from typing import Dict, Optional, Any, List, Tuple 
+import google.generativeai as genai
+from google.generativeai.types import GenerationConfig
+from google.generativeai.generative_models import GenerativeModel # MODIFIED: Corrected import path
+
+from core_types import Intent, IntentStatus, RetrievedItem, RetrievalSourceType, ProvenanceLog
+from ..retrieval.retriever import AgenticRetriever 
+from ..agents.base_agent import BaseSubsidiaryAgent 
+from ..knowledge_base.policy_manager import PolicyManager 
+from ..config import MRM_CORE_GEN_CONFIG 
 
 class NodeProcessor:
-    def __init__(self, db_manager, policy_manager):
-        self.db_manager = db_manager
+    def __init__(self, mrm_model_instance: GenerativeModel, retriever: AgenticRetriever, # MODIFIED
+                 subsidiary_agents: Dict[str, BaseSubsidiaryAgent], policy_manager: PolicyManager):
+        self.mrm_model = mrm_model_instance
+        self.retriever = retriever
+        self.subsidiary_agents = subsidiary_agents
         self.policy_manager = policy_manager
-        self.retriever = AgenticRetriever(db_manager)
-        self.visual_heritage_agent = VisualHeritageAssessmentAgentGemini(model_name="gemini-1.5-flash-latest")
+        print(f"INFO: NodeProcessor initialized.")
 
-    def process_reasoning_tree(self, node: ReasoningNode):
-        # Recursively process subnodes first
-        for subnode in node.sub_nodes.values():
-            self.process_reasoning_tree(subnode)
-        # Issue intent for this node (conceptual)
-        intent = Intent(
-            parent_node_id=node.node_id,
-            task_type="ASSESS_SECTION",
-            application_refs=node.application_refs,
-            data_requirements={},
-            satisfaction_criteria=[],
-            retrieval_config={},
-            agent_to_invoke="VisualHeritageAssessmentAgentGemini",
-            agent_input_data={},
-            assessment_focus=node.description
+    def _prepare_mrm_synthesis_content(self, intent: Intent, mrm_task_prompt: str) -> List[Any]:
+        parts: List[Any] = [mrm_task_prompt]
+        if intent.context_data_from_prior_steps:
+            intent.provenance.add_action("NodeProcessor using context from prior steps.", {"keys": list(intent.context_data_from_prior_steps.keys())})
+            parts.append("\\\\n\\\\n--- Context from Previous Reasoning Steps Start ---\\\\n")
+            for k,v in intent.context_data_from_prior_steps.items():
+                parts.append(f"\\\\n-- Prior Step Output: {k} --\\\\n{json.dumps(v, indent=1, default=str)}\\\\n")
+            parts.append("\\\\n--- Context End ---\\\\n")
+        if intent.llm_policy_context_summary:
+            intent.provenance.add_action("NodeProcessor using policy summaries.", {"count": len(intent.llm_policy_context_summary)})
+            parts.append("\\\\n\\\\n---Key Policies Summary---\\\\n")
+            for p in intent.llm_policy_context_summary:
+                parts.append(f"ID:{p['id']} T:{p.get('title')}\\nS:{p['summary']}\\n")
+            parts.append("---End Policies---\\\\n")
+        if intent.full_documents_context:
+            intent.provenance.add_action("NodeProcessor using full docs.", {"docs": [d['doc_id'] for d in intent.full_documents_context]})
+            for d in intent.full_documents_context: 
+                parts.append(f"\\\\n---FullDoc ID:{d['doc_id']},T:{d.get('doc_title')}---\\\\n{d['full_text']}\\\\n---EndDoc---\\\\n")
+        elif intent.chunk_context:
+            intent.provenance.add_action("NodeProcessor using chunks.", {"cnt": len(intent.chunk_context)})
+            parts.append("\\\\n---Doc Chunks---\\\\n")
+            for c in intent.chunk_context:
+                parts.append(f"\\\\n--Chunk ID:{c['chunk_id']},Doc:{c['metadata'].get('doc_title')},Pg:{c['metadata'].get('page_number')}--\\\\n{c['chunk_text']}\\\\n")
+            parts.append("---End Chunks---\\\\n")
+        if not any([intent.full_documents_context, intent.chunk_context, intent.context_data_from_prior_steps, intent.llm_policy_context_summary]):
+            parts.append("\\\\n---No specific document, prior step, or policy context for synthesis.---\\\\n")
+        return parts
+
+    def _check_satisfaction(self, intent: Intent) -> Tuple[bool, Optional[str]]:
+        intent.provenance.add_action("Satisfaction check", {"criteria_len": len(intent.satisfaction_criteria)})
+        for criterion in intent.satisfaction_criteria:
+            crit_type = criterion.get("type","").upper()
+            if "EVIDENCED_ASSESSMENT" in crit_type or "LLM_DEFINED_INTENT_SATISFACTION" in crit_type or "GENERIC_COMPLETION" in crit_type:
+                if not intent.synthesized_text_output and not intent.structured_json_output: return False, "No output from LLM/Agent."
+            elif "SCHEMA_POPULATED" in crit_type and intent.data_requirements.get("schema"):
+                if not isinstance(intent.structured_json_output, dict): return False, "Expected JSON for schema check."
+                if intent.data_requirements["schema"] and not all(k in intent.structured_json_output for k in intent.data_requirements["schema"]):
+                    return False, f"JSON missing schema keys: {list(intent.data_requirements['schema'].keys())}"
+        intent.provenance.add_action("Satisfaction check passed (NodeProcessor)")
+        return True, None
+
+    def _estimate_confidence(self, intent: Intent) -> float:
+        score = 0.75
+        if intent.status == IntentStatus.FAILED: return 0.05
+        if intent.status == IntentStatus.COMPLETED_WITH_CLARIFICATION_NEEDED: score -= 0.35
+        has_ctx = intent.full_documents_context or intent.chunk_context or intent.context_data_from_prior_steps or intent.llm_policy_context_summary
+        if not has_ctx : score -= 0.25
+        elif len(intent.chunk_context or []) < 2 and not intent.full_documents_context and not intent.context_data_from_prior_steps : score -= 0.1
+        if not intent.synthesized_text_output and not intent.structured_json_output: return 0.05
+        elif len(intent.synthesized_text_output or "") < 30 : score -= 0.2
+        if intent.structured_json_output and intent.structured_json_output.get("error"): score -=0.3
+        return max(0.0, min(1.0, score))
+
+    def _should_attempt_auto_clarification(self, intent: Optional[Intent], reason: Optional[str]) -> bool: 
+        if not intent or not intent.error_message : return False 
+        if any(kw in intent.error_message.lower() for kw in ["not found", "ambiguous", "insufficient", "criteria not met", "unclear"]):
+            retry_count = getattr(intent, '_clarification_attempts', 0)
+            return retry_count < 1
+        return False
+
+    def process_intent(self, intent: Intent):
+        intent.status = IntentStatus.IN_PROGRESS
+        intent.provenance.add_action("Intent processing started by NodeProcessor V8+")
+        agent_report_content: Optional[Dict] = None
+
+        needs_app_doc_retrieval = ( # MODIFIED: Wrapped in parentheses for multi-line
+            "RETRIEVE" in intent.task_type or
+            (
+                ("ASSESS" in intent.task_type or "SYNTHESIZE" in intent.task_type) and
+                not intent.task_type == "SYNTHESIZE_SUMMARY_OF_SUB_NODES"
+            )
         )
-        # Policy context retrieval
-        if hasattr(node, 'specific_policy_focus_ids') and node.specific_policy_focus_ids:
-            policy_results = self.policy_manager.search_policies(policy_ids=node.specific_policy_focus_ids, limit=5)
-            intent.llm_policy_context_summary = [
-                {"id": p["policy_id_tag"], "title": p["policy_document_title"], "summary": p["text_snippet"]}
-                for p in policy_results
-            ]
-        # Retrieval step
-        self.retriever.retrieve_and_prepare_context(intent)
-        # Agent step
-        agent_result = self.visual_heritage_agent.process(
-            intent,
-            intent.agent_input_data,
-            agent_specific_prompt_prefix=node.description
-        )
-        intent.synthesized_text_output = agent_result["agent_output"]["generated_raw"]
-        intent.structured_json_output = agent_result["agent_output"].get("structured_summary")
-        node.intents_issued.append(intent)
-        node.final_structured_data = intent.structured_json_output
-        node.final_synthesized_text = intent.synthesized_text_output
-        node.status = intent.status
-        node.node_level_provenance = intent.provenance
+        if needs_app_doc_retrieval:
+            try: self.retriever.retrieve_and_prepare_context(intent)
+            except Exception as e: intent.status = IntentStatus.FAILED; intent.error_message = f"App Doc Retrieval failed: {e}"
+
+        if intent.status != IntentStatus.FAILED and intent.agent_to_invoke:
+            agent_policy_reqs = intent.agent_input_data.get("agent_policy_context_requirements") 
+            if isinstance(agent_policy_reqs, dict):
+                themes = agent_policy_reqs.get("themes", [])
+                keywords_or_ids = agent_policy_reqs.get("specific_policy_ids_or_keywords", [])
+                if themes or keywords_or_ids:
+                    intent.provenance.add_action(f"NodeProcessor retrieving policy context for agent \'{intent.agent_to_invoke}\'")
+                    retrieved_clauses = self.policy_manager.search_policies(
+                        themes=themes, keywords=keywords_or_ids, limit=3
+                    )
+                    if retrieved_clauses:
+                        intent.agent_input_data["retrieved_policy_clauses_for_agent"] = retrieved_clauses 
+                        intent.provenance.add_action(f"Retrieved {len(retrieved_clauses)} policy clauses for agent.", {"ids": [p.get('policy_id_tag', p.get('id')) for p in retrieved_clauses]})
+
+        if intent.status != IntentStatus.FAILED and intent.agent_to_invoke:
+            if intent.agent_to_invoke in self.subsidiary_agents:
+                agent = self.subsidiary_agents[intent.agent_to_invoke]
+                try:
+                    agent_prompt_prefix = intent.agent_input_data.get("agent_specific_prompt_prefix", f"Task for {agent.agent_name}: {intent.assessment_focus}")
+                    agent_report_content = agent.process(intent, intent.agent_input_data, agent_prompt_prefix)
+                    intent.provenance.add_action(f"Agent \'{intent.agent_to_invoke}\' successful")
+                except Exception as e: intent.status = IntentStatus.FAILED; intent.error_message = f"Agent {intent.agent_to_invoke} failed: {e}"
+            else: intent.status = IntentStatus.FAILED; intent.error_message = f"Agent \'{intent.agent_to_invoke}\' not found."
+
+        if intent.status != IntentStatus.FAILED and ("SYNTHESIZE" in intent.task_type or "ASSESS" in intent.task_type or "BALANCE" in intent.task_type):
+            mrm_synthesis_prompt = (f"Task: \'{intent.task_type}\'. Node: {intent.parent_node_id}. Focus: \'{intent.assessment_focus}\'. App Refs: {intent.application_refs}. Output: {intent.output_format_request}.")
+            if intent.data_requirements.get("schema"): mrm_synthesis_prompt += f" Expected JSON Schema: {json.dumps(intent.data_requirements['schema'], indent=1)}"
+            if agent_report_content: mrm_synthesis_prompt += f"\\n\\n---Agent Report ({intent.agent_to_invoke})---\\n{json.dumps(agent_report_content, indent=1, default=str)}\\n---End Report---"
+            gemini_mrm_content = self._prepare_mrm_synthesis_content(intent, mrm_synthesis_prompt)
+            try:
+                intent.provenance.add_action("MRM Synthesis (Gemini Pro) call", {"prompt_len": sum(len(str(p)) for p in gemini_mrm_content)})
+                gen_config_instance = GenerationConfig(**MRM_CORE_GEN_CONFIG) 
+                if "JSON" in intent.output_format_request.upper() or intent.data_requirements.get("schema"): gen_config_instance.response_mime_type = "application/json"
+                time.sleep(1.1); response = self.mrm_model.generate_content(gemini_mrm_content, generation_config=gen_config_instance)
+                if not response.candidates or not response.candidates[0].content.parts: raise Exception(f"MRM Synth blocked. Reason: {response.prompt_feedback.block_reason if response.prompt_feedback else 'Unknown'}.")
+                raw_text = "".join([p.text for p in response.candidates[0].content.parts if hasattr(p,'text')])
+                if gen_config_instance.response_mime_type == "application/json":
+                    try: 
+                        intent.structured_json_output = json.loads(raw_text)
+                        intent.synthesized_text_output = json.dumps(intent.structured_json_output, indent=2, default=str)
+                    except json.JSONDecodeError: 
+                        intent.provenance.add_action("MRM JSON parse fail")
+                        intent.synthesized_text_output=raw_text
+                        intent.structured_json_output={"err":"JSON fail","raw":raw_text}
+                else: 
+                    intent.synthesized_text_output = raw_text
+                    intent.structured_json_output = {"summary": raw_text[:500]+"..."}
+                intent.provenance.add_action("MRM Synthesis OK")
+            except Exception as e: 
+                intent.status = IntentStatus.FAILED
+                intent.error_message = f"MRM Synth fail: {e}"
+        
+        elif intent.status != IntentStatus.FAILED: 
+            if agent_report_content: intent.structured_json_output = agent_report_content; intent.synthesized_text_output = json.dumps(agent_report_content, indent=2, default=str)
+            elif needs_app_doc_retrieval: intent.structured_json_output = {"retrieved_summary": {"chunks": len(intent.chunk_context or []), "docs": len(intent.full_documents_context or [])}}; intent.synthesized_text_output = f"Retrieved {len(intent.chunk_context or [])} chunks / {len(intent.full_documents_context or [])} docs."
+            else: intent.provenance.add_action("WARN: Intent no primary action.")
+
+        if intent.status != IntentStatus.FAILED:
+            satisfied, reason = self._check_satisfaction(intent)
+            if not satisfied: intent.status = IntentStatus.COMPLETED_WITH_CLARIFICATION_NEEDED; intent.error_message = intent.error_message or reason or "NodeProc: Satisfaction criteria fail."
+            else: intent.status = IntentStatus.COMPLETED_SUCCESS
+        
+        intent.confidence_score = self._estimate_confidence(intent)
+        intent.provenance.complete(intent.status.value, {"conf": intent.confidence_score, "out_prev": str(intent.structured_json_output)[:100]})

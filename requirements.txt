@@ -2,4 +2,5 @@ google-generativeai
 psycopg2-binary
 python-dotenv
 pgvector 
+Pillow
 # Add other specific libraries if used, e.g., sentence-transformers if not using dummy embeddings
