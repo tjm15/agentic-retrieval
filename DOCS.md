@@ -125,9 +125,10 @@
     *   `PolicyManager(class)`:
         *   Constructor: Loads policy data from `.json` files in `POLICY_KB_DIR`. Creates a default sample policy file if needed.
         *   `policies_kb` (dict): Stores loaded policies, keyed by policy `id`. Each entry contains `id`, `title`, `text_summary`, `keywords`, `source`.
-        *   `get_policies_by_tags_and_keywords()`: Retrieves a list of policy data dictionaries that match any of the provided tags (against policy IDs) or keywords (against policy title, keywords, summary).
+        *   `search_policies()`: **Crucially, this now performs a hybrid search (structured filters on `document_type` like "PolicyDocument_NPPF", `source`, policy ID tags in `document_chunks.tags` or `document_chunks.section`, combined with semantic search via `pgvector` on `chunk_embeddings`) directly against the database via `db_manager`.** It returns a list of relevant policy clauses/chunks.
         *   `get_policy_details()`: Returns the full data for a specific policy `id`.
         *   `get_policy_full_text()`: (Currently returns `text_summary`) Would ideally return the complete policy text.
+        *   `_ingest_sample_policies_from_json()`: (Primarily for setup/demo) Reads policy definitions from JSON files in `POLICY_KB_DIR`, and for each policy, uses `db_manager.add_document()` to create a "policy document" record and `db_manager.add_document_chunk()` to store its text as chunks (which are then embedded). This means policy text is treated like application document text for storage and embedding.
 
 ---
 
@@ -540,112 +541,100 @@ These JSON schemas provide the necessary structure for the knowledge bases. Popu
 
 ---
 
-**High-Level Dataflow Explanation:**
+## UPDATED: High-Level Dataflow Explanation
 
-The system operates in a cyclical, iterative manner, driven by the MRM Orchestrator to construct a planning assessment report.
+The system operates in a cyclical, iterative manner, driven by the MRM Orchestrator to construct a planning assessment report. Policy documents are now treated similarly to application documents, being ingested, chunked, and embedded in the main database.
 
 1.  **Initialization & Application Input:**
-    *   The process starts when `main.py` is run with specific `application_refs` and a `report_type` (e.g., "Default\_MajorHybrid").
-    *   Core managers are initialized: `DatabaseManager`, `ReportTemplateManager`, `MaterialConsiderationOntology`, `PolicyManager`.
-    *   The `MRMOrchestrator` is initialized with these managers and the `report_type`.
+    *   `main.py` starts with `application_refs` and a `report_type`.
+    *   Core managers are initialized: `DatabaseManager`, `ReportTemplateManager`, `MaterialConsiderationOntology`, and `PolicyManager` (which now takes `DatabaseManager` as a dependency).
+    *   The `MRMOrchestrator` is initialized, creating instances of `IntentDefiner` and `NodeProcessor`.
 
 2.  **Reasoning Graph Construction (MRM Orchestrator):**
-    *   The `MRMOrchestrator` uses `ReportTemplateManager` to load the base hierarchical structure for the specified `report_type`. This forms the initial `ReasoningNode` tree (`self.reasoning_graph_root`).
-    *   Each `ReasoningNode` in this tree is populated with metadata from the template (description, tags, policy hints, dependencies, etc.).
+    *   The `MRMOrchestrator` loads the base hierarchical report structure for the `report_type` using `ReportTemplateManager`, forming the initial `ReasoningNode` tree. Nodes are populated with metadata.
 
 3.  **Initial Application Scan (MRM Orchestrator & NodeProcessor):**
-    *   The orchestrator triggers a special, predefined `Intent` with `task_type="SCAN_APPLICATION_FOR_KEY_THEMES_AND_MATERIAL_CONSIDERATIONS"`.
-    *   `NodeProcessor` executes this:
-        *   `AgenticRetriever` fetches a small, representative set of chunks from key initial application documents (DAS intro, ES NTS, Planning Statement summary) from the `Database` (via `DatabaseManager`).
-        *   These chunks are passed as context to the MRM's core LLM (Gemini Pro via `self.mrm_model` in `NodeProcessor`).
-        *   Gemini Pro analyzes this context and returns a list of identified material consideration themes relevant to *this specific application*.
+    *   A special `Intent` (task type: `SCAN_APPLICATION_FOR_KEY_THEMES_AND_MATERIAL_CONSIDERATIONS`) is processed by `NodeProcessor`.
+    *   `AgenticRetriever` fetches key initial application document chunks from the `Database`.
+    *   `NodeProcessor`'s main LLM (Gemini Pro) analyzes this context to identify relevant material consideration themes for the *specific application*.
 
 4.  **Dynamic Node Expansion (MRM Orchestrator):**
-    *   The `MRMOrchestrator` takes the LLM-identified themes from the scan.
-    *   It iterates through these themes and, for each theme, consults the `MaterialConsiderationOntology`.
-    *   If a theme matches an entry in the ontology, a new `ReasoningNode` (e.g., "4.0\_AssessmentOfMaterialConsiderations/HousingDelivery") is dynamically created as a child of the relevant parent node (e.g., "4.0\_AssessmentOfMaterialConsiderations").
-    *   This new dynamic node is populated with detailed metadata from the matched ontology entry (specific policy tags, evidence keywords, agent hints, data schema hints).
+    *   The `MRMOrchestrator` uses the LLM-identified themes from the scan.
+    *   For each theme, it consults `MaterialConsiderationOntology` to map it to a canonical MC entry.
+    *   New `ReasoningNode`s for these application-specific MCs are dynamically added to the reasoning graph, populated with metadata from the ontology.
 
 5.  **Processing Order Determination (MRM Orchestrator):**
-    *   Once the reasoning graph is fully expanded (template nodes + dynamically added MC nodes), `MRMOrchestrator._get_processing_order()` performs a topological sort based on the `depends_on_nodes` metadata of all `ReasoningNode`s. This creates an ordered list of nodes to process.
+    *   A topological sort (`_get_processing_order()`) on the fully expanded reasoning graph determines the processing sequence based on `depends_on_nodes`.
 
 6.  **Iterative Node Processing Loop (MRM Orchestrator, IntentDefiner, NodeProcessor):**
-    *   The orchestrator iterates through the `processing_order`. For each `ReasoningNode` that is `PENDING` or `COMPLETED_WITH_CLARIFICATION_NEEDED` (and eligible for auto-clarification):
+    *   For each `ReasoningNode` in order:
         *   **a. Intent Specification (IntentDefiner):**
-            *   The orchestrator calls `IntentDefiner.define_intent_spec_via_llm()`.
-            *   `IntentDefiner` gathers context: current node's metadata, application summaries (from outputs of nodes like "1.1..." and "1.2..."), outputs from already completed direct dependency nodes (from `MRMOrchestrator.completed_node_outputs`), and relevant policy summaries (from `PolicyManager`).
-            *   It crafts a detailed meta-prompt and calls its Gemini Pro model.
-            *   Gemini Pro returns a JSON specification for the `Intent` needed to process the current node (task type, assessment focus, retrieval config, data schema, agent details).
-            *   If the node needs clarification, `IntentDefiner.define_clarification_intent_spec_via_llm()` is called instead, generating a more focused intent spec.
+            *   `IntentDefiner.define_intent_spec_via_llm()` is called.
+            *   It gathers context (node metadata, application summaries, completed dependency outputs, relevant policy *summaries/tags* from `PolicyManager`'s initial lookup).
+            *   It prompts its Gemini Pro model to generate a detailed JSON *specification* for the `Intent` needed to process the current node (including `task_type`, `assessment_focus`, `retrieval_config` for *application documents*, `data_requirements_schema`, hints for `agent_policy_context_requirements` if an agent is involved, etc.).
         *   **b. Intent Creation & Execution (NodeProcessor):**
-            *   The orchestrator uses the returned spec to create an `Intent` object.
+            *   The orchestrator creates an `Intent` object from the LLM-generated spec.
             *   This `Intent` is passed to `NodeProcessor.process_intent()`.
             *   `NodeProcessor`:
-                1.  **Retrieval:** Calls `AgenticRetriever.retrieve_and_prepare_context(intent)`. The retriever queries the `Database` (SQL for metadata, `pgvector` for semantic search) for relevant document chunks and/or full documents, preparing them for the LLM context window (stored on the `intent` object).
-                2.  **Agent Invocation (Optional):** If `intent.agent_to_invoke` is set, `NodeProcessor` gets the specified `SubsidiaryAgent` instance. The agent's `process()` method is called, passing the `intent` (for context access) and `intent.agent_input_data`. The agent uses its own Gemini Flash model with the provided context to perform its specialized analysis and returns a structured report (dictionary).
-                3.  **MRM Synthesis/Assessment:** `NodeProcessor` constructs a final prompt for its main Gemini Pro model. This prompt includes: the `intent.assessment_focus`, context from prior steps (`intent.context_data_from_prior_steps`), policy summaries (`intent.llm_policy_context_summary`), the retrieved document context (`intent.full_documents_context` or `intent.chunk_context`), and any report from a subsidiary agent.
-                4.  Gemini Pro processes this full context and generates the synthesized text and/or structured JSON output for the `Intent`, aiming to fulfill `intent.data_requirements.schema`.
-                5.  **Satisfaction & Confidence:** `NodeProcessor` checks if the output meets `intent.satisfaction_criteria` and estimates a `confidence_score`.
-                6.  The `intent` object is updated with results, status, confidence, and provenance.
-        *   **c. Node Update (MRM Orchestrator):**
-            *   The orchestrator updates the `ReasoningNode`'s status, `final_synthesized_text`, `final_structured_data`, and `confidence_score` based on the completed `Intent`.
-            *   The `node.final_structured_data` is stored in `MRMOrchestrator.completed_node_outputs` to be available for subsequent dependent nodes.
-        *   **d. Clarification Check:** If the node is `COMPLETED_WITH_CLARIFICATION_NEEDED`, the orchestrator checks `_should_attempt_auto_clarification`. If true, the node might be re-queued for processing in a subsequent iteration with a new clarification intent (this re-queuing part is still conceptual in the current code, but the intent definition part is there).
+                1.  **Application Document Retrieval:** Calls `AgenticRetriever.retrieve_and_prepare_context(intent)` to get relevant *application document* chunks/full docs from the `Database` and populates the `intent`'s context fields.
+                2.  **Agent-Specific Policy Retrieval (NEW):** If the `intent` (from `IntentDefiner`'s spec) indicates an agent needs specific policy context (e.g., via `agent_policy_context_requirements` field in `agent_input_data`):
+                    *   `NodeProcessor` calls `self.policy_manager.search_policies()` with these requirements.
+                    *   `PolicyManager` performs a hybrid search (SQL + `pgvector`) on policy documents/chunks *stored in the main database*.
+                    *   The retrieved policy *clauses* are added to `intent.agent_input_data["retrieved_policy_clauses_for_agent"]`.
+                3.  **Subsidiary Agent Invocation (Optional):** If `intent.agent_to_invoke` is set, the agent's `process()` method is called. The `BaseSubsidiaryAgent._prepare_gemini_content()` now incorporates `intent.llm_policy_context_summary` (general policy context for the node) AND `intent.agent_input_data.get("retrieved_policy_clauses_for_agent")` (targeted policy clauses for the agent).
+                4.  **MRM Synthesis/Assessment:** `NodeProcessor` constructs a final prompt for its Gemini Pro model, including application doc context, prior step outputs, *general policy summaries for the node* (`intent.llm_policy_context_summary`), and any agent report.
+                5.  Gemini Pro generates the output for the `Intent`.
+                6.  Satisfaction, confidence, and provenance are updated.
+        *   **c. Node Update & Clarification Check (MRM Orchestrator):**
+            *   The `ReasoningNode` is updated. Outputs are stored in `completed_node_outputs`.
+            *   If clarification is needed and viable, `IntentDefiner.define_clarification_intent_spec_via_llm()` is called, and the node might be re-queued by the orchestrator's main loop.
 
-7.  **Loop Continuation & Completion:**
-    *   The orchestrator continues this loop until all nodes in the `processing_order` are `COMPLETED_SUCCESS` or `FAILED`, or a maximum iteration count is reached (to prevent infinite clarification loops).
-    *   The `ReasoningNode.update_status_based_on_children_and_intents()` method ensures parent node statuses reflect their children's completion.
+7.  **Loop Continuation & Final Report:**
+    *   The orchestrator continues until all nodes are processed or max iterations are hit.
+    *   The final report is assembled from all `ReasoningNode` outputs.
 
-8.  **Final Report Generation (MRM Orchestrator):**
-    *   Once the loop finishes, `MRMOrchestrator.get_final_report()` recursively traverses the entire `reasoning_graph_root` and assembles all the `final_synthesized_text` and `final_structured_data` from each node into a single hierarchical JSON object representing the draft report.
-
-9.  **Provenance Output (MRM Orchestrator):**
-    *   `MRMOrchestrator.print_provenance_summary()` outputs the collected `ProvenanceLog` entries, providing an audit trail of the entire process.
-
-**Data Flows Primarily Through:**
-
-*   **Database:** Source of documents, chunks, embeddings. Target for logs.
-*   **Knowledge Base Managers (`ReportTemplateManager`, `MCOntology`, `PolicyManager`):** Provide structural and domain knowledge to the MRM.
-*   **`Intent` Objects:** Carry task specifications, context, and results between MRM components.
-*   **`ReasoningNode` Objects:** Store the state and final outputs for each part of the report.
-*   **Gemini API:** Used by `IntentDefiner`, `NodeProcessor` (for MRM synthesis), and `SubsidiaryAgent`s for their core generative tasks.
+**Key Dataflow Change for Policy:** Policy documents are now treated like application documents – ingested, chunked, embedded, and stored in the main database. `PolicyManager` becomes a specialized query interface to this policy data within the database, performing its own hybrid searches. `NodeProcessor` explicitly retrieves targeted policy context for agents via `PolicyManager`.
 
 ---
 
-**ASCII Architecture Diagram:**
+## UPDATED: ASCII Architecture Diagram
 
-This diagram shows the main components and their interactions. `==>` indicates primary data/control flow, `-->` indicates data lookup/provision.
+The main change is that `PolicyManager` now interacts with the `PostgreSQL DB` for its searches.
 
 ```mermaid
 graph TD
     A[main.py Client/User] ==> B(MRM Orchestrator);
 
-    subgraph KnowledgeBase
+    subgraph KnowledgeBase_Configuration
         C[ReportTemplateManager] --> B;
         D[MCOntology] --> B;
-        E[PolicyManager] --> B;
+        E(PolicyManager) --> B; subgraph Policy_DB_Interaction
+            E -- Hybrid Search for Policies --> L((PostgreSQL DB));
+        end
     end
 
     subgraph MRM_Core
         B ==> F(IntentDefiner);
-        F -- Gemini Pro Call --> G((Gemini API));
+        F -- Gemini Pro Call (Define Intent Spec) --> G((Gemini API));
         F ==> B; subgraph In_MRM_Orchestrator
             direction LR
             B ==> H{Reasoning Graph};
             B ==> I(NodeProcessor);
         end
-        I ==> J(AgenticRetriever);
-        I ==> K[Subsidiary Agents];
+        I -- Uses --> J(AgenticRetriever);
+        I -- Uses --> E; # NodeProcessor uses PolicyManager for agent-specific policy context
+        I -- Invokes --> K[Subsidiary Agents];
         K -- Gemini Flash Call --> G;
-        I -- Gemini Pro Call --> G;
+        I -- Gemini Pro Call (Synthesize Node Output) --> G;
         I ==> H;
     end
 
     subgraph DataAndStorage
-        J --> L((PostgreSQL DB));
-        L -- pgvector --> J;
-        M[Source Documents] --> N(Ingestion Pipeline);
-        N --> L;
+        J -- App Doc Retrieval --> L;
+        M[Source Docs (App & Policy)] --> N(Ingestion Pipeline);
+        N -- Chunks & Embeddings --> L;
+        L -- pgvector --> J; % For app docs
+        L -- pgvector --> E; % For policy docs
     end
 
     B ==> O[Final Report JSON];
@@ -659,37 +648,54 @@ graph TD
     class F,H,I,K mrmcore;
     class L,M,N data;
     class B,G,O,P default;
-
-    %% Detailed Flows (Conceptual)
-    %% B -- initializes --> H (using C)
-    %% B -- triggers initial scan --> I (which uses J then G)
-    %% B -- uses scan output + D --> H (dynamic node expansion)
-    %% B -- gets processing order from --> H
-    %% B -- iterates nodes, for each node --> F (to define Intent spec)
-    %% F -- uses B's context + E + D + node_meta + G --> Intent Spec
-    %% B -- creates Intent from spec, passes to --> I
-    %% I -- uses J --> L (for retrieval)
-    %% I -- uses K --> G (if agent needed)
-    %% I -- uses G (for synthesis)
-    %% I -- updates Intent results --> B (which updates H)
-    %% B -- continues loop or generates O, P --> A
 ```
 
-**Explanation of Diagram Sections:**
+**Diagram Change Explanation:**
 
-*   **`main.py Client/User` (A):** Initiates the process.
-*   **`KnowledgeBase` (C, D, E):** Provides structured, configurable knowledge (report structures, material consideration details, policies) to the MRM.
-*   **`MRM_Core`:**
-    *   **`MRM Orchestrator` (B):** The central brain. Manages the overall workflow, initializes and traverses the `Reasoning Graph` (H).
-    *   **`IntentDefiner` (F):** Uses Gemini Pro (G) to dynamically generate the specifications for what needs to be done for each `ReasoningNode`.
-    *   **`Reasoning Graph` (H):** The internal state representation of the report being built, a tree of `ReasoningNode` objects.
-    *   **`NodeProcessor` (I):** Executes a single, fully defined `Intent`. It uses the `AgenticRetriever` (J) for data, `Subsidiary Agents` (K) for specialized tasks, and its own Gemini Pro model instance (G) for synthesis.
-*   **`Subsidiary Agents` (K):** Perform focused analyses using Gemini Flash (G).
-*   **`Gemini API` (G):** The external LLM service used for all generative tasks.
-*   **`AgenticRetriever` (J):** Fetches relevant context from the `PostgreSQL DB` (L).
-*   **`DataAndStorage`:**
-    *   **`PostgreSQL DB` (L):** Stores documents, chunks, embeddings (using `pgvector`), and logs.
-    *   **`Source Documents` (M) & `Ingestion Pipeline` (N):** Represents how documents get into the database (chunked, embedded).
-*   **`Final Report JSON` (O) & `Provenance Logs` (P):** The primary outputs of the system.
+*   `PolicyManager` (E) now has an arrow pointing to `PostgreSQL DB` (L) indicating it performs its own hybrid searches for policy documents/clauses.
+*   `NodeProcessor` (I) now also has an arrow pointing to `PolicyManager` (E) to signify that it requests specific policy context from the `PolicyManager` for subsidiary agents.
+*   `Source Docs` (M) now explicitly includes "Policy" documents, which go through the same `Ingestion Pipeline` (N) into the database.
 
-This dataflow is designed to be modular and iterative. The MRM uses its knowledge bases and LLM capabilities to plan (define intents) and then execute those plans (process intents), adapting as it goes based on the information gathered and the requirements of the specific planning application.
+---
+
+## UPDATED: Key File Descriptions (Changes Highlighted)
+
+*   **`knowledge_base/policy_manager.py` (Major Update):**
+    *   **Purpose:** Manages access to and retrieval of planning policy information, which is now assumed to be stored and embedded within the main `PostgreSQL DB`.
+    *   **Key Functionality:**
+        *   Constructor: Takes a `DatabaseManager` instance. Conceptually includes `_ensure_default_policies_ingested_if_needed` which calls `_ingest_sample_policies_from_json` to populate the DB with sample policies if they aren't found (in a real system, ingestion is a separate, robust process).
+        *   `_ingest_sample_policies_from_json()`: (Primarily for setup/demo) Reads policy definitions from JSON files in `POLICY_KB_DIR`, and for each policy, uses `db_manager.add_document()` to create a "policy document" record and `db_manager.add_document_chunk()` to store its text as chunks (which are then embedded). This means policy text is treated like application document text for storage and embedding.
+        *   `search_policies()`: **Crucially, this now performs a hybrid search (structured filters on `document_type` like "PolicyDocument_NPPF", `source`, policy ID tags in `document_chunks.tags` or `document_chunks.section`, combined with semantic search via `pgvector` on `chunk_embeddings`) directly against the database via `db_manager`.** It returns a list of relevant policy clauses/chunks.
+        *   `get_policy_details()`: Returns the full data for a specific policy `id`.
+        *   `get_policy_full_text()`: (Currently returns `text_summary`) Would ideally return the complete policy text.
+
+*   **`mrm/mrm_orchestrator.py` (MRMOrchestrator Class):**
+    *   **Purpose:** Central controller. Initializes the reasoning graph from a `ReportTemplateManager` template, drives the `_run_initial_application_scan_intent` to identify application-specific material considerations, dynamically expands the reasoning graph using `MaterialConsiderationOntology` and the scan results, determines processing order, and iterates through nodes.
+    *   **Interaction with `IntentDefiner`:** For each node, it provides context (node metadata, application summaries, prior outputs, policy hints from `PolicyManager`) to `IntentDefiner` to get an LLM-generated `Intent` specification.
+    *   **Interaction with `NodeProcessor`:** Passes the fully constructed `Intent` object (from `IntentDefiner`'s spec) to `NodeProcessor` for execution. It stores the results from `NodeProcessor` in `self.completed_node_outputs`.
+    *   **Clarification Loop Management (Conceptual):** Manages the iterative processing if a node requires clarification.
+
+*   **`mrm/intent_definer.py` (IntentDefiner Class):**
+    *   **Purpose:** Uses its own Gemini Pro instance to dynamically generate the detailed JSON *specification* for an `Intent` needed for a given `ReasoningNode`.
+    *   **Key Functionality (`define_intent_spec_via_llm`, `define_clarification_intent_spec_via_llm`):**
+        *   Constructs a rich meta-prompt for Gemini Pro, including current node details, application context, outputs of prerequisite nodes, and crucially, **relevant policy summaries/tags fetched via `PolicyManager`'s initial lookup**.
+        *   The prompt guides Gemini Pro to output a JSON object defining the `task_type`, `assessment_focus`, `retrieval_config` (for application documents), `data_requirements_schema`, `agent_to_invoke` (if any), and significantly, **`agent_input_data_preparation_notes` which might include hints for `agent_policy_context_requirements`**.
+        *   Returns this JSON specification to the `MRMOrchestrator`.
+
+*   **`mrm/node_processor.py` (NodeProcessor Class):**
+    *   **Purpose:** Executes a single, fully defined `Intent` object.
+    *   **Key Functionality (`process_intent`):**
+        1.  **Application Document Retrieval:** Uses its `AgenticRetriever` instance to fetch context from *application documents* based on `intent.retrieval_config`.
+        2.  **Agent-Specific Policy Retrieval (NEW & CRITICAL):** If the `intent.agent_to_invoke` is set and the `intent.agent_input_data` (from `IntentDefiner`'s spec) contains `agent_policy_context_requirements` (e.g., themes like "BiodiversityNetGain"):
+            *   It calls `self.policy_manager.search_policies()` with these requirements.
+            *   The retrieved policy *clauses* are added to the `agent_input_data` that will be passed to the specific agent.
+        3.  **Subsidiary Agent Invocation:** Calls the specified agent, passing the `intent` (which has general context) and the enriched `agent_input_data` (which now includes specifically retrieved policy clauses for the agent).
+        4.  **MRM Synthesis:** Uses its Gemini Pro instance to synthesize the final output for the `Intent`, using all available context: application document context, prior step outputs, general policy summaries for the node (`intent.llm_policy_context_summary`), and the agent's report.
+        5.  Updates the `Intent` with results, status, confidence.
+
+*   **`knowledge_base/*.json` files:**
+    *   **`report_templates/default_major_hybrid.json`:** Provides the *generic structural backbone* of a report for major hybrid applications. Its nodes contain tags and hints that `IntentDefiner` uses to generate specific questions.
+    *   **`mc_ontology_data/main_material_considerations.json`:** A structured dictionary of canonical planning issues. `MRMOrchestrator` uses this to flesh out dynamically added nodes (e.g., under "4.0_AssessmentOfMaterialConsiderations") with appropriate tags, policy hints, evidence keywords, and agent suggestions, which then feed into `IntentDefiner`.
+    *   **`policy_kb/*.json` (e.g., `nppf_sample.json`):** These are now primarily *source files for an initial, one-time ingestion process* handled by `PolicyManager._ingest_sample_policies_from_json()`. Once ingested, the live policy data resides in the main PostgreSQL database and is queried via `PolicyManager.search_policies()`.
+
+This updated dataflow and architecture make the system more robust in handling policy context for all components, especially subsidiary agents, by treating policy documents as first-class citizens in the database, searchable via hybrid methods.

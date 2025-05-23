@@ -13,10 +13,9 @@ class BaseSubsidiaryAgent:
         print(f"INFO: Initialized BaseSubsidiaryAgent: {self.agent_name} with model {self.model_name}.")
 
     def _prepare_gemini_content(self, intent: Intent, agent_specific_prompt_prefix: str) -> list:
-        # (Same logic as in the previous agents.py _prepare_gemini_content)
         parts: List[Any] = [agent_specific_prompt_prefix]
         # Add policy summaries if present on the intent
-        if intent.llm_policy_context_summary:
+        if getattr(intent, 'llm_policy_context_summary', None):
             intent.provenance.add_action(f"Agent {self.agent_name} using policy summaries.", {"count": len(intent.llm_policy_context_summary)})
             parts.append("\n\n--- Key Relevant Policies Summary Start ---\n")
             for policy_info in intent.llm_policy_context_summary:

@@ -18,26 +18,24 @@ from config import GEMINI_API_KEY, REPORT_TEMPLATE_DIR, POLICY_KB_DIR, MC_ONTOLO
 if __name__ == "__main__":
     start_time = time.time()
     load_dotenv()
-    if not GEMINI_API_KEY:
-        print("CRITICAL: GEMINI_API_KEY is not set. Exiting.")
-        exit(1)
+    if not GEMINI_API_KEY: print("CRITICAL: GEMINI_API_KEY is not set. Exiting."); exit(1)
 
-    # Ensure knowledge base directories exist
+    # Use correct config variable names for KB dirs
     for kb_dir_path in [REPORT_TEMPLATE_DIR, POLICY_KB_DIR, MC_ONTOLOGY_DIR]:
         if not os.path.exists(kb_dir_path): os.makedirs(kb_dir_path); print(f"Created KB directory: {kb_dir_path}")
     
     # Initialize managers - they will create default files if needed
     print("--- Initializing Knowledge Base Managers ---")
-    report_template_man = ReportTemplateManager()
-    mc_ontology_man = MaterialConsiderationOntology()
-    policy_man = PolicyManager()
-
     db_man = None
     try:
         print("\n--- Initializing Database Manager ---")
         db_man = DatabaseManager()
+        report_template_man = ReportTemplateManager()
+        mc_ontology_man = MaterialConsiderationOntology()
+        # Pass db_man to PolicyManager (now DB-centric)
+        policy_man = PolicyManager(db_man)
 
-        print("\n--- Ensuring Schema and Ingesting Minimal Sample Data ---")
+        print("\n--- Ensuring Schema and Ingesting Minimal Sample Data (if first run) ---")
         schema_file_path = "./schema.sql";
         try:
             with open(schema_file_path, "r") as f_schema:
@@ -59,22 +57,21 @@ if __name__ == "__main__":
         except FileNotFoundError: print(f"ERROR: schema.sql not found at {schema_file_path}."); exit(1)
         except Exception as schema_e: print(f"ERROR during schema/data setup: {schema_e}")
 
-
         print("\n--- Initializing MRM Orchestrator ---")
-        report_type_key_to_use = "Default_MajorHybrid" # This must match a "report_type_id" in a template JSON
-        application_references_to_use = ["ECDC_EarlsCourt_App"] # Example
+        report_type_key_to_use = "Default_MajorHybrid"
+        application_references_to_use = ["ECDC_EarlsCourt_App"]
 
-        mrm_instance = MRM(db_man, report_template_man, mc_ontology_man, policy_man) # Pass all managers
+        mrm_instance = MRM(db_man, report_template_man, mc_ontology_man, policy_man)
 
         print(f"\n--- Starting Generalized Report Orchestration for type: {report_type_key_to_use} ---")
         final_report = mrm_instance.orchestrate_full_report_generation(report_type_key_to_use, application_references_to_use)
 
-        print("\n\n--- FINAL DRAFT REPORT (GEMINI - GENERALIZED ENGINE V7) ---")
+        print("\n\n--- FINAL DRAFT REPORT (GEMINI - GENERALIZED ENGINE V7 - Policy DB) ---")
         print(json.dumps(final_report, indent=2, default=str))
         mrm_instance.print_provenance_summary()
 
     except psycopg2.Error as db_conn_err: print(f"CRITICAL DB ERROR: {db_conn_err}")
-    except ValueError as val_err: print(f"CONFIG/VALUE ERROR: {val_err}") # Catches template/API key issues
+    except ValueError as val_err: print(f"CONFIG/VALUE ERROR: {val_err}")
     except Exception as e: print(f"UNEXPECTED ERROR IN MAIN: {e}"); import traceback; traceback.print_exc()
     finally:
         if db_man: print("\n--- Closing Database Connection ---"); db_man.close()

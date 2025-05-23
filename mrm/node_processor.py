@@ -27,6 +27,13 @@ class NodeProcessor:
             agent_input_data={},
             assessment_focus=node.description
         )
+        # Policy context retrieval
+        if hasattr(node, 'specific_policy_focus_ids') and node.specific_policy_focus_ids:
+            policy_results = self.policy_manager.search_policies(policy_ids=node.specific_policy_focus_ids, limit=5)
+            intent.llm_policy_context_summary = [
+                {"id": p["policy_id_tag"], "title": p["policy_document_title"], "summary": p["text_snippet"]}
+                for p in policy_results
+            ]
         # Retrieval step
         self.retriever.retrieve_and_prepare_context(intent)
         # Agent step
