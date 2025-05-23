@@ -248,3 +248,292 @@
     *   Calls `mrm_instance.orchestrate_full_report_generation()`.
     *   Prints the final JSON report and the provenance summary.
     *   Includes basic error handling and total execution time.
+
+    Okay, here's the documentation explaining the `schema.sql` file required for the PostgreSQL database backend of this generalized planning AI system.
+
+---
+
+## Database Schema Documentation (`schema.sql`)
+
+**Purpose:** This document outlines the SQL schema required to store and manage planning application documents, their textual content, semantic embeddings, and retrieval logs for the Generalized Planning AI system. The schema is designed for PostgreSQL and leverages the `pgvector` extension for efficient similarity searches on embeddings.
+
+**Overall Design Principles:**
+
+*   **Normalization:** Data is organized into related tables to reduce redundancy and improve data integrity.
+*   **UUIDs for Primary Keys:** Universally Unique Identifiers (`UUID`) are used for primary keys to facilitate distributed data management and prevent collisions if data from multiple sources is merged. The `uuid-ossp` PostgreSQL extension is recommended for generating these.
+*   **CASCADE Deletes:** Foreign key relationships are set up with `ON DELETE CASCADE` where appropriate, meaning that if a parent record (e.g., a document) is deleted, all its associated child records (e.g., its chunks and embeddings) are also automatically deleted.
+*   **Timestamping:** `created_at` timestamps are included to track when records were added. Using `timezone('utc', now())` ensures timestamps are stored in UTC for consistency.
+*   **Extensibility:** Fields like `tags` (TEXT[]) and `filters` (JSONB) allow for flexible addition of metadata without schema changes.
+*   **Vector Storage:** The `pgvector` extension's `vector` data type is used for storing embeddings, enabling powerful similarity search capabilities directly within the database.
+
+---
+
+### Table Definitions:
+
+**1. `documents` Table**
+
+*   **Purpose:** Stores metadata about each individual source document (typically a PDF file) that is part of a planning application or relevant policy document.
+*   **SQL Definition:**
+    ```sql
+    CREATE TABLE IF NOT EXISTS documents (
+      doc_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(), -- Unique identifier for the document
+      filename TEXT NOT NULL,                             -- Original filename of the document
+      title TEXT,                                         -- Official or descriptive title of the document
+      document_type TEXT,                                 -- Categorization (e.g., DAS, ES_Chapter, PlanningStatement, PolicyDocument, UserGuide)
+      source TEXT,                                        -- Origin or reference (e.g., PlanningApplicationNumber, LPA_PolicySet_Version)
+      page_count INTEGER,                                 -- Total number of pages in the document
+      upload_date DATE,                                   -- Date the document was ingested into the system
+      tags TEXT[]                                         -- Optional array of free-text tags for further categorization or searching (e.g., ["Phase1", "Residential", "Sustainability"])
+    );
+    ```
+*   **Column Descriptions:**
+    *   `doc_id`: Primary Key. A unique UUID automatically generated for each document.
+    *   `filename`: The original name of the uploaded file (e.g., `Design_and_Access_Statement_Vol1.pdf`). Not necessarily unique. `NOT NULL`.
+    *   `title`: A human-readable title for the document. Can be extracted from the document or manually entered. `NULLABLE`.
+    *   `document_type`: A controlled vocabulary or free-text string indicating the type of document. Essential for filtering (e.g., `UserGuide`, `DevelopmentSpecification`, `ES_Chapter_Noise`). `NULLABLE`.
+    *   `source`: Indicates the origin of the document, often the planning application reference it belongs to, or the policy set it's part of. `NULLABLE`.
+    *   `page_count`: The total number of pages in the PDF document. `NULLABLE`.
+    *   `upload_date`: The date when this document record was created/ingested. `NULLABLE`.
+    *   `tags`: An array of text strings for flexible tagging. `NULLABLE`.
+
+**2. `document_chunks` Table**
+
+*   **Purpose:** Stores segments of extracted text from the documents. Documents are broken down ("chunked") into smaller, manageable pieces for processing and semantic embedding.
+*   **SQL Definition:**
+    ```sql
+    CREATE TABLE IF NOT EXISTS document_chunks (
+      chunk_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),          -- Unique identifier for the text chunk
+      doc_id UUID REFERENCES documents(doc_id) ON DELETE CASCADE,    -- Foreign key linking to the parent document
+      page_number INTEGER,                                          -- Page number in the original document where this chunk starts
+      section TEXT,                                                 -- Optional: Logical section/heading this chunk belongs to (e.g., "3.1 Housing Mix")
+      chunk_text TEXT NOT NULL,                                     -- The actual extracted text content of the chunk
+      tags TEXT[],                                                  -- Optional array of tags specific to this chunk
+      created_at TIMESTAMP DEFAULT timezone('utc', now())           -- Timestamp of when the chunk was created
+    );
+
+    -- Optional: Index for faster lookup by doc_id and page_number
+    CREATE INDEX IF NOT EXISTS idx_document_chunks_doc_id_page ON document_chunks (doc_id, page_number);
+    ```
+*   **Column Descriptions:**
+    *   `chunk_id`: Primary Key. A unique UUID automatically generated for each text chunk.
+    *   `doc_id`: Foreign Key referencing `documents.doc_id`. Links the chunk back to its source document. `ON DELETE CASCADE` ensures chunks are deleted if the parent document is deleted. `NULLABLE` (though practically should always be linked).
+    *   `page_number`: The page number in the original document from which this chunk was extracted. `NULLABLE`.
+    *   `section`: An optional textual description of the logical section or heading the chunk falls under (e.g., "4.2 Affordable Housing Provision"). Useful for contextual understanding. `NULLABLE`.
+    *   `chunk_text`: The actual text content of this segment. `NOT NULL`.
+    *   `tags`: An array of text strings for tagging specific aspects of this chunk (e.g., ["policy_quote", "metric_value", "objection_point"]). `NULLABLE`.
+    *   `created_at`: Timestamp indicating when this chunk record was created. Defaults to the current UTC time.
+
+**3. `chunk_embeddings` Table**
+
+*   **Purpose:** Stores the pre-computed vector embeddings for each text chunk. These embeddings represent the semantic meaning of the chunk text and are used for similarity searches.
+*   **SQL Definition:**
+    ```sql
+    CREATE TABLE IF NOT EXISTS chunk_embeddings (
+      chunk_id UUID PRIMARY KEY REFERENCES document_chunks(chunk_id) ON DELETE CASCADE, -- Foreign key linking to the text chunk
+      embedding vector(768)                                                            -- The vector embedding. Dimension (e.g., 768) must match the embedding model used (see config.EMBEDDING_DIMENSION)
+    );
+
+    -- Crucial: Index for efficient similarity search using pgvector
+    -- The type of index (e.g., HNSW, IVFFlat) and its parameters depend on dataset size and performance requirements.
+    -- HNSW is generally good for recall and speed.
+    CREATE INDEX IF NOT EXISTS idx_chunk_embeddings_embedding ON chunk_embeddings USING hnsw (embedding vector_l2_ops);
+    -- Or for cosine similarity if embeddings are normalized:
+    -- CREATE INDEX IF NOT EXISTS idx_chunk_embeddings_embedding ON chunk_embeddings USING hnsw (embedding vector_cosine_ops);
+    -- Or for inner product:
+    -- CREATE INDEX IF NOT EXISTS idx_chunk_embeddings_embedding ON chunk_embeddings USING hnsw (embedding vector_ip_ops);
+    ```
+*   **Column Descriptions:**
+    *   `chunk_id`: Primary Key and Foreign Key referencing `document_chunks.chunk_id`. Establishes a one-to-one relationship between a chunk and its embedding. `ON DELETE CASCADE` ensures embeddings are deleted if the parent chunk is deleted.
+    *   `embedding`: The vector data type from the `pgvector` extension. The dimension (e.g., `vector(768)`) must match the output dimension of the sentence embedding model used (specified in `config.EMBEDDING_DIMENSION`).
+*   **Indexing Note:** The `CREATE INDEX ... USING hnsw ...` statement is crucial for performing fast approximate nearest neighbor searches, which are the core of semantic similarity queries. The `vector_l2_ops`, `vector_cosine_ops`, or `vector_ip_ops` depends on the distance metric appropriate for your embeddings (L2 for Euclidean, cosine for cosine similarity, inner product for dot product). Ensure your embeddings are normalized if using `vector_cosine_ops`.
+
+**4. `retrieval_logs` Table**
+
+*   **Purpose:** Stores a log of retrieval operations performed by the system. This is valuable for debugging, performance analysis, understanding query patterns, and potentially for fine-tuning retrieval strategies.
+*   **SQL Definition:**
+    ```sql
+    CREATE TABLE IF NOT EXISTS retrieval_logs (
+      log_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),          -- Unique identifier for the log entry
+      timestamp TIMESTAMP DEFAULT timezone('utc', now()),           -- Timestamp of when the retrieval occurred
+      query TEXT,                                                 -- The original query (could be natural language or structured terms as JSON string)
+      filters JSONB,                                              -- JSONB object storing any structured filters applied (e.g., document_type, tags)
+      matched_chunk_ids UUID[],                                   -- Array of chunk_ids that were returned by this retrieval operation
+      agent_context TEXT                                          -- Optional: Context about the agent or process that initiated the retrieval (e.g., "IntentID_XYZ for Node_ABC")
+    );
+    ```
+*   **Column Descriptions:**
+    *   `log_id`: Primary Key. A unique UUID for each log entry.
+    *   `timestamp`: Timestamp of the retrieval event.
+    *   `query`: The raw query string or a JSON representation of the query parameters used for the retrieval. `NULLABLE`.
+    *   `filters`: A JSONB field to store any structured filters applied during the retrieval (e.g., `{"document_type": ["DAS"], "tags": ["sustainability"]}`). `NULLABLE`.
+    *   `matched_chunk_ids`: An array of UUIDs, storing the `chunk_id`s of all chunks returned by this retrieval. `NULLABLE`.
+    *   `agent_context`: A textual description providing context about what part of the AI system triggered this retrieval (e.g., which Intent or ReasoningNode). `NULLABLE`.
+
+---
+
+**Required PostgreSQL Extensions:**
+
+1.  **`uuid-ossp`**: Used for generating UUIDs via `uuid_generate_v4()`.
+    *   Installation (if not already available): `CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`
+2.  **`vector` (`pgvector`)**: Used for storing vector embeddings and performing similarity searches.
+    *   Installation (if not already available): `CREATE EXTENSION IF NOT EXISTS vector;`
+
+These `CREATE EXTENSION` commands should typically be run once by a database superuser before creating the tables. The `IF NOT EXISTS` clause makes them safe to include in the `schema.sql` script for idempotency.
+
+---
+
+**1. Report Template JSON Schema (`report_templates/*.json`)**
+
+*   **Purpose:** Defines the hierarchical structure and metadata for a specific type of planning officer's report. The `ReportTemplateManager` loads these files.
+*   **File Naming Convention:** `<report_type_id_lowercase_underscored>.json` (e.g., `default_major_hybrid.json`).
+*   **Root Object:** A single JSON object.
+*   **Key Fields:**
+    *   `report_type_id` (String, **Required**): A unique identifier for this report type (e.g., "Default\_MajorHybrid", "HouseholderExtension"). This is used by the MRM to select the correct template.
+    *   `report_id_prefix` (String, Optional): A prefix to be used when generating unique IDs for instances of reports created from this template (e.g., "MajorHybridApp").
+    *   `description` (String, **Required**): A human-readable description of what this report template is for.
+    *   `sections` (Array of Objects, **Required**): An array defining the top-level sections of the report. Each object in this array represents a `ReasoningNode` and has the following structure:
+        *   `node_id` (String, **Required**): A unique identifier for this section within its parent (e.g., "1.0\_SiteAndApplication", "1.1\_SiteLocationAndDescription"). For nested sections, the MRM will construct full paths like "1.0\_SiteAndApplication/1.1\_SiteLocationAndDescription".
+        *   `description` (String, **Required**): A human-readable description of this section/node. This is used as the default `assessment_focus` for the `Intent` generated for this node.
+        *   `node_type_tag` (String, Optional): A tag indicating the generic *type* or purpose of this node (e.g., "SiteDescription", "PolicyAssessment", "MaterialConsideration\_Housing"). This helps the `IntentDefiner` select appropriate logic or prompts.
+        *   `generic_material_considerations` (Array of Strings, Optional): A list of broad material consideration themes relevant to this node (e.g., `["site_context", "amenity_impact"]`). Used by `IntentDefiner`.
+        *   `specific_policy_focus_ids` (Array of Strings, Optional): A list of specific policy IDs or policy theme keywords (e.g., `["NPPF_Ch12", "LocalPlan_DesignPolicy_DC01"]`) that are particularly relevant to this node. Used by `IntentDefiner` and `PolicyManager`.
+        *   `key_evidence_document_types` (Array of Strings, Optional): Hints for the `IntentDefiner` about typical document types that contain evidence for this node (e.g., `["DAS_Visuals", "ES_TransportChapter"]`).
+        *   `is_dynamic_parent_node` (Boolean, Optional, Default: `false`): If `true`, indicates that this node (e.g., "4.0\_AssessmentOfMaterialConsiderations") will have its sub-nodes dynamically generated by the MRM based on an application scan and ontology mapping, rather than being explicitly defined in `sub_sections`.
+        *   `agent_to_invoke_hint` (String, Optional): The name/ID of a `SubsidiaryAgent` that might be useful for processing this node (e.g., "VisualHeritageAssessmentAgent\_GeminiFlash\_V1").
+        *   `depends_on_nodes` (Array of Strings, Optional): A list of `node_id` paths (relative to the template root, or fully qualified) that must be processed before this node can be processed. The MRM's orchestrator uses this for topological sorting.
+        *   `sub_sections` (Array of Objects, Optional): If this section has predefined sub-sections, this array contains objects with the same structure as a top-level section object, defining the nested hierarchy.
+
+*   **Example Snippet (`report_templates/default_major_hybrid.json`):**
+    ```json
+    {
+      "report_type_id": "Default_MajorHybrid",
+      "report_id_prefix": "MajorHybridApp",
+      "description": "Default Standard Report for Major Hybrid Planning Applications",
+      "sections": [
+        {
+          "node_id": "1.0_SiteAndApplication",
+          "description": "Site Description, Proposal Details & Planning History",
+          "node_type_tag": "IntroductionBlock",
+          // ... other metadata ...
+          "depends_on_nodes": [],
+          "sub_sections": [
+            {
+              "node_id": "1.1_SiteLocationAndDescription",
+              "description": "Site Location, Existing Conditions, and Surrounding Area Character",
+              "node_type_tag": "SiteDescription",
+              // ... other metadata ...
+            }
+            // ... more sub-sections ...
+          ]
+        },
+        {
+          "node_id": "4.0_AssessmentOfMaterialConsiderations",
+          "description": "Officer's Assessment of Material Planning Considerations",
+          "node_type_tag": "MaterialConsiderationsBlock_Parent",
+          "is_dynamic_parent_node": true,
+          "depends_on_nodes": ["1.0_SiteAndApplication", "2.0_ConsultationResponses", "3.0_PlanningPolicyFramework"]
+        }
+        // ... other top-level sections ...
+      ]
+    }
+    ```
+
+---
+
+**2. Material Consideration Ontology JSON Schema (`mc_ontology_data/*.json`)**
+
+*   **Purpose:** Stores structured, canonical knowledge about various material planning considerations. This is used by the MRM to dynamically generate assessment nodes and define highly relevant intents for them.
+*   **File Naming Convention:** Can be one large file (e.g., `main_material_considerations.json`) or multiple thematic files.
+*   **Root Object:** A JSON array, where each element is an object representing a single material consideration.
+*   **Key Fields for each Material Consideration Object:**
+    *   `id` (String, **Required**): A unique canonical identifier for this material consideration (e.g., "HousingDelivery", "HeritageImpact", "FloodRiskAndDrainage"). This is used for linking and lookup.
+    *   `display_name_template` (String, **Required**): A template string for generating a human-readable description of the assessment node for this MC, often including a placeholder for the application name (e.g., "Housing Delivery (Quantum, Mix, Affordability, Density, Standards) for {app_name}").
+    *   `description_long` (String, Optional): A more detailed explanation of what this material consideration typically covers.
+    *   `primary_tags` (Array of Strings, **Required**): Core keywords and tags associated with this MC (e.g., `["housing_impact", "residential_development", "NPPF_Ch5"]`). Used for matching themes from application scans and for retrieval.
+    *   `relevant_policy_themes` (Array of Strings, Optional): A list of policy theme keywords or specific policy ID prefixes that are usually relevant to this MC (e.g., `["LondonPlan_H_Series", "LocalPlan_AffordableHousing"]`).
+    *   `key_evidence_docs` (Array of Strings, Optional): A list of typical document types where evidence for assessing this MC is usually found (e.g., `["HousingStatement", "ViabilityAssessment"]`).
+    *   `data_schema_hint` (Object, Optional): A JSON schema-like dictionary hinting at the structured data points that an `Intent` assessing this MC should aim to extract or synthesize (e.g., `{"total_homes_net": "int", "affordable_percentage": "float"}`). This guides the `IntentDefiner`'s LLM prompt.
+    *   `potential_agent_hint` (String, Optional): The name/ID of a `SubsidiaryAgent` that might be particularly useful for analyzing this MC (e.g., "HousingMetricsAgent", "FloodRiskModellingAgent").
+    *   `sub_considerations` (Array of Strings, Optional): If this MC has common sub-topics, they can be listed here (e.g., for "Sustainability", sub-considerations might be "Energy", "BNG", "Waste"). This can guide further dynamic node expansion.
+    *   `typical_questions_to_address` (Array of Strings, Optional): A list of standard questions an officer would ask when assessing this MC. Useful for crafting the `assessment_focus` of an `Intent`.
+
+*   **Example Snippet (`mc_ontology_data/main_material_considerations.json`):**
+    ```json
+    [
+      {
+        "id": "HeritageImpact",
+        "display_name_template": "Impact on Heritage Assets (Designated and Non-Designated, including Archaeology and Setting) for {app_name}",
+        "description_long": "Assessment of potential direct/indirect impacts on heritage assets (listed buildings, conservation areas, scheduled monuments, etc.), their significance, and setting, including archaeological implications.",
+        "primary_tags": ["heritage_conservation", "archaeology", "setting_of_heritage_assets", "NPPF_Ch16", "historic_environment"],
+        "relevant_policy_themes": ["LondonPlan_HC_Series", "LocalPlan_HeritagePolicies", "LocalPlan_ArchaeologyPolicy", "ConservationAreaAppraisalsAndManagementPlans"],
+        "key_evidence_docs": ["HeritageImpactAssessment", "ArchaeologicalDBA_Or_Evaluation", "ES_BuiltHeritageChapter", "ES_ArchaeologyChapter", "DAS_HeritageResponse", "HistoricEnvironmentRecordData"],
+        "data_schema_hint": {
+            "identified_heritage_assets_list": [{"asset_name": "string", "designation_grade": "string", "proximity_to_site_m": "integer"}],
+            "impact_on_significance_summary": "text_block",
+            "archaeology_potential_and_impact": "text_block",
+            "mitigation_measures_proposed": "list_of_strings",
+            "nppf_harm_test_analysis": "text_block_evaluating_substantial_vs_less_than_substantial_harm_and_public_benefits"
+        },
+        "potential_agent_hint": "VisualHeritageAssessment_GeminiFlash_V1",
+        "typical_questions_to_address": [
+            "What designated heritage assets are affected by the proposal or its setting?",
+            "What is the significance of these assets?",
+            "What is the level of harm (substantial, less than substantial, no harm) to their significance?",
+            "Are there any public benefits that outweigh identified harm, as per NPPF tests?",
+            "What is the archaeological potential of the site and how is it addressed?"
+        ]
+      }
+      // ... other material consideration entries ...
+    ]
+    ```
+
+---
+
+**3. Policy Knowledge Base JSON Schema (`policy_kb/*.json`)**
+
+*   **Purpose:** Stores structured information about individual planning policies from various documents (NPPF, London Plan, Local Plans).
+*   **File Naming Convention:** Can be organized by policy document (e.g., `nppf_2023.json`, `london_plan_2021.json`, `rbkc_local_plan_core_strategy.json`).
+*   **Root Object:** A JSON array, where each element is an object representing a single policy or a significant paragraph within a policy.
+*   **Key Fields for each Policy Object:**
+    *   `id` (String, **Required**): A unique identifier for the policy (e.g., "NPPF_Ch12_Para130", "LondonPlan_Policy_D3", "RBKC_LP_Policy_CL5"). This should be stable and referenceable.
+    *   `title` (String, Optional): The official title or heading of the policy/paragraph.
+    *   `text_summary` (String, **Required**): A concise summary of the policy's main thrust or requirements. This is what might be fed into LLM prompts as initial context.
+    *   `full_text` (String, Optional but Highly Recommended): The complete verbatim text of the policy. This is crucial for detailed assessment.
+    *   `keywords` (Array of Strings, Optional): Keywords and themes associated with this policy, aiding in retrieval (e.g., `["design quality", "local distinctiveness", "streetscape"]`).
+    *   `source_document` (String, **Required**): The name of the parent policy document (e.g., "NPPF 2023", "London Plan 2021", "RBKC Core Strategy 2015").
+    *   `version_date` (String, Optional, Format: "YYYY-MM-DD"): The adoption or publication date of this version of the policy.
+    *   `chapter_or_section_ref` (String, Optional): Reference to the chapter or section within the source document (e.g., "Chapter 12", "Section 3.A").
+    *   `related_policy_ids` (Array of Strings, Optional): A list of IDs of other policies that are closely related (e.g., higher-tier policies it implements, or detailed policies that expand on it).
+    *   `policy_type` (String, Optional): E.g., "Strategic", "Development Management", "Guidance".
+    *   `tests_or_requirements` (Array of Strings, Optional): If the policy contains specific tests or explicit requirements, these can be listed for easier checking (e.g., "Must demonstrate X% affordable housing", "Sequential test for retail required").
+
+*   **Example Snippet (`policy_kb/nppf_sample.json`):**
+    ```json
+    [
+      {
+        "id": "NPPF_Para11c_PresumptionTest",
+        "title": "NPPF Paragraph 11c - Presumption in Favour (Decision Taking)",
+        "text_summary": "For decision-taking, this means approving development proposals that accord with an up-to-date development plan without delay; or where there are no relevant development plan policies, or the policies which are most important for determining the application are out-of-date, granting permission unless: i. the application of policies in this Framework that protect areas or assets of particular importance provides a clear reason for refusing the development proposed; or ii. any adverse impacts of doing so would significantly and demonstrably outweigh the benefits, when assessed against the policies in this Framework taken as a whole.",
+        "full_text": "(Full text of NPPF paragraph 11c and d)...",
+        "keywords": ["presumption in favour", "sustainable development", "decision making", "NPPF test", "planning balance"],
+        "source_document": "NPPF 2023",
+        "version_date": "2023-12-20",
+        "chapter_or_section_ref": "Chapter 2, Paragraph 11"
+      },
+      {
+        "id": "NPPF_Para134_DesignQuality",
+        "title": "NPPF Paragraph 134 - High Quality Design",
+        "text_summary": "Development that is not well designed should be refused, especially where it fails to reflect local design policies and government guidance on design, taking into account any local design guidance and supplementary planning documents which use visual tools such as design codes.",
+        "full_text": "(Full text of NPPF paragraph 134)...",
+        "keywords": ["design quality", "refusal grounds", "local design policies", "design codes", "National Design Guide"],
+        "source_document": "NPPF 2023",
+        "version_date": "2023-12-20",
+        "chapter_or_section_ref": "Chapter 12, Paragraph 134"
+      }
+      // ... other policy entries ...
+    ]
+    ```
+
+---
+
+These JSON schemas provide the necessary structure for the knowledge bases. Populating them with comprehensive, accurate, and well-curated data is a substantial but essential task for the AI's effectiveness and ability to generalize. The Python managers (`ReportTemplateManager`, `MaterialConsiderationOntology`, `PolicyManager`) will be responsible for loading and providing access to this data.
