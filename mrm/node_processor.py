@@ -2,20 +2,21 @@
 import json
 import time
 from typing import Dict, Optional, Any, List, Tuple 
-import google.generativeai as genai
-from google.generativeai.types import GenerationConfig
-from google.generativeai.generative_models import GenerativeModel # MODIFIED: Corrected import path
+from google import genai
+from config import MRM_CORE_GEN_CONFIG, MRM_MODEL_NAME
 
-from core_types import Intent, IntentStatus, RetrievedItem, RetrievalSourceType, ProvenanceLog
-from ..retrieval.retriever import AgenticRetriever 
-from ..agents.base_agent import BaseSubsidiaryAgent 
-from ..knowledge_base.policy_manager import PolicyManager 
-from ..config import MRM_CORE_GEN_CONFIG 
+from core_types import ReasoningNode, Intent, IntentStatus, ProvenanceLog
+from retrieval.retriever import AgenticRetriever
+from agents.base_agent import BaseSubsidiaryAgent
+from knowledge_base.policy_manager import PolicyManager
+from knowledge_base.report_template_manager import ReportTemplateManager
+from knowledge_base.material_consideration_ontology import MaterialConsiderationOntology
 
 class NodeProcessor:
-    def __init__(self, mrm_model_instance: GenerativeModel, retriever: AgenticRetriever, # MODIFIED
-                 subsidiary_agents: Dict[str, BaseSubsidiaryAgent], policy_manager: PolicyManager):
-        self.mrm_model = mrm_model_instance
+    def __init__(self, api_key: str, retriever: AgenticRetriever, subsidiary_agents: Dict[str, BaseSubsidiaryAgent], policy_manager: PolicyManager):
+        self.client = genai.Client(api_key=api_key)
+        self.model_name = MRM_MODEL_NAME
+        self.generation_config = MRM_CORE_GEN_CONFIG
         self.retriever = retriever
         self.subsidiary_agents = subsidiary_agents
         self.policy_manager = policy_manager
@@ -122,30 +123,43 @@ class NodeProcessor:
             else: intent.status = IntentStatus.FAILED; intent.error_message = f"Agent \'{intent.agent_to_invoke}\' not found."
 
         if intent.status != IntentStatus.FAILED and ("SYNTHESIZE" in intent.task_type or "ASSESS" in intent.task_type or "BALANCE" in intent.task_type):
-            mrm_synthesis_prompt = (f"Task: \'{intent.task_type}\'. Node: {intent.parent_node_id}. Focus: \'{intent.assessment_focus}\'. App Refs: {intent.application_refs}. Output: {intent.output_format_request}.")
+            mrm_synthesis_prompt = (f"Task: '{intent.task_type}'. Node: {intent.parent_node_id}. Focus: '{intent.assessment_focus}'. App Refs: {intent.application_refs}. Output: {intent.output_format_request}.")
             if intent.data_requirements.get("schema"): mrm_synthesis_prompt += f" Expected JSON Schema: {json.dumps(intent.data_requirements['schema'], indent=1)}"
-            if agent_report_content: mrm_synthesis_prompt += f"\\n\\n---Agent Report ({intent.agent_to_invoke})---\\n{json.dumps(agent_report_content, indent=1, default=str)}\\n---End Report---"
+            if agent_report_content: mrm_synthesis_prompt += f"\n\n---Agent Report ({intent.agent_to_invoke})---\n{json.dumps(agent_report_content, indent=1, default=str)}\n---End Report---"
             gemini_mrm_content = self._prepare_mrm_synthesis_content(intent, mrm_synthesis_prompt)
             try:
                 intent.provenance.add_action("MRM Synthesis (Gemini Pro) call", {"prompt_len": sum(len(str(p)) for p in gemini_mrm_content)})
-                gen_config_instance = GenerationConfig(**MRM_CORE_GEN_CONFIG) 
-                if "JSON" in intent.output_format_request.upper() or intent.data_requirements.get("schema"): gen_config_instance.response_mime_type = "application/json"
-                time.sleep(1.1); response = self.mrm_model.generate_content(gemini_mrm_content, generation_config=gen_config_instance)
-                if not response.candidates or not response.candidates[0].content.parts: raise Exception(f"MRM Synth blocked. Reason: {response.prompt_feedback.block_reason if response.prompt_feedback else 'Unknown'}.")
-                raw_text = "".join([p.text for p in response.candidates[0].content.parts if hasattr(p,'text')])
-                if gen_config_instance.response_mime_type == "application/json":
-                    try: 
-                        intent.structured_json_output = json.loads(raw_text)
+                config = MRM_CORE_GEN_CONFIG.copy()  # Use centralized config
+                if "JSON" in intent.output_format_request.upper() or intent.data_requirements.get("schema"):
+                    config["response_mime_type"] = "application/json"
+                response = self.client.models.generate_content(
+                    model=self.model_name,
+                    contents=gemini_mrm_content,
+                    config=config  # type: ignore
+                )
+                text = getattr(response, "text", None)
+                if not text and hasattr(response, "candidates") and response.candidates:
+                    first_candidate = response.candidates[0]
+                    content = getattr(first_candidate, "content", None)
+                    parts = getattr(content, "parts", None) if content else None
+                    if parts:
+                        text = "".join([getattr(p, 'text', '') for p in parts if getattr(p, 'text', None)])
+                if not text or not isinstance(text, str):
+                    raise ValueError("No valid text response from Gemini API.")
+                # Handle JSON response
+                if config.get("response_mime_type") == "application/json" and isinstance(text, str):
+                    try:
+                        intent.structured_json_output = json.loads(text)
                         intent.synthesized_text_output = json.dumps(intent.structured_json_output, indent=2, default=str)
-                    except json.JSONDecodeError: 
+                    except json.JSONDecodeError:
                         intent.provenance.add_action("MRM JSON parse fail")
-                        intent.synthesized_text_output=raw_text
-                        intent.structured_json_output={"err":"JSON fail","raw":raw_text}
-                else: 
-                    intent.synthesized_text_output = raw_text
-                    intent.structured_json_output = {"summary": raw_text[:500]+"..."}
+                        intent.synthesized_text_output=text
+                        intent.structured_json_output={"err":"JSON fail","raw":text}
+                else:
+                    intent.synthesized_text_output = text
+                    intent.structured_json_output = {"summary": (text or "")[:500]+"..."}
                 intent.provenance.add_action("MRM Synthesis OK")
-            except Exception as e: 
+            except Exception as e:
                 intent.status = IntentStatus.FAILED
                 intent.error_message = f"MRM Synth fail: {e}"
         

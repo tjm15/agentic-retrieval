@@ -56,7 +56,8 @@ class DatabaseManager:
         INSERT INTO documents (doc_id, filename, title, document_type, source, page_count, upload_date, tags)
         VALUES (%s, %s, %s, %s, %s, %s, NOW(), %s) RETURNING doc_id;
         """
-        result = self.execute_query(query, (doc_id_val, filename, title, document_type, source, page_count, tags or []), fetch_one=True)
+        # FIX: Cast doc_id_val to str for psycopg2 compatibility
+        result = self.execute_query(query, (str(doc_id_val), filename, title, document_type, source, page_count, tags or []), fetch_one=True)
         return result['doc_id'] if result else doc_id_val # Fallback if RETURNING not supported/fails
 
     def add_document_chunk(self, doc_id: uuid.UUID, page_number: Optional[int], chunk_text: str, section: Optional[str] = None, tags: Optional[List[str]] = None) -> uuid.UUID:

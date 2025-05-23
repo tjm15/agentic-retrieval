@@ -1,17 +1,17 @@
 # agents/base_agent.py
 from typing import Dict, Any, Optional, List
-from google.generativeai.generative_models import GenerativeModel # MODIFIED: Corrected import path
-from google.generativeai.types import GenerationConfig
+from google import genai
+from config import SUBSIDIARY_AGENT_GEN_CONFIG, VISUAL_HERITAGE_AGENT_GEN_CONFIG, SUBSIDIARY_AGENT_MODEL_NAME, GEMINI_API_KEY
 import time
 import json
 from core_types import Intent
-from config import SUBSIDIARY_AGENT_GEN_CONFIG
 
 class BaseSubsidiaryAgent:
-    def __init__(self, agent_name: str, model_instance: GenerativeModel): # MODIFIED: Use direct import
+    def __init__(self, agent_name: str): 
         self.agent_name = agent_name
-        self.model = model_instance
-        print(f"INFO: Init BaseSubsidiaryAgent: {self.agent_name} with model {self.model.model_name}")
+        self.model_name = SUBSIDIARY_AGENT_MODEL_NAME
+        self.client = genai.Client(api_key=GEMINI_API_KEY)
+        print(f"INFO: Init BaseSubsidiaryAgent: {self.agent_name}")
 
     def _prepare_gemini_content(self, intent: Intent, prompt_prefix: str) -> List[Any]:
         parts: List[Any] = [prompt_prefix]
@@ -69,26 +69,31 @@ class BaseSubsidiaryAgent:
             if expected_mime_type == "application/json":
                 current_gen_config_dict["response_mime_type"] = "application/json"
             
-            generation_config_obj = GenerationConfig(**current_gen_config_dict) # MODIFIED: Use imported GenerationConfig
-            
             time.sleep(0.7) 
-            response = self.model.generate_content(gemini_parts, generation_config=generation_config_obj)
+            response = self.client.models.generate_content(
+                model=self.model_name,
+                contents=[gemini_parts],
+                config=current_gen_config_dict  # type: ignore
+            )
 
-            if not response.candidates or not response.candidates[0].content.parts:
-                feedback = response.prompt_feedback if hasattr(response, 'prompt_feedback') else None
-                block_reason = feedback.block_reason if feedback and hasattr(feedback, 'block_reason') else 'Unknown'
-                safety_ratings_str = str(feedback.safety_ratings) if feedback and hasattr(feedback, 'safety_ratings') else 'N/A'
-                error_detail = f"Agent '{self.agent_name}' LLM call resulted in no content. Block Reason: {block_reason}. Safety Ratings: {safety_ratings_str}"
-                intent.provenance.add_action(error_detail, {"block_reason": block_reason, "safety_ratings": safety_ratings_str})
-                raise Exception(error_detail)
+            # Robust response parsing
+            raw_text = getattr(response, "text", None)
+            if not raw_text and hasattr(response, "candidates") and response.candidates:
+                first_candidate = response.candidates[0]
+                content = getattr(first_candidate, "content", None)
+                parts = getattr(content, "parts", None) if content else None
+                if parts:
+                    # Only join non-None, str parts
+                    raw_text = "".join([getattr(p, 'text', '') for p in parts if getattr(p, 'text', None)])
+            if not raw_text or not isinstance(raw_text, str):
+                raise ValueError("No valid text response from Gemini API.")
 
-            raw_output_text = "".join([part.text for part in response.candidates[0].content.parts if hasattr(part, 'text')])
-            intent.provenance.add_action(f"Agent '{self.agent_name}' LLM call successful.", {"output_length": len(raw_output_text)})
+            intent.provenance.add_action(f"Agent '{self.agent_name}' LLM call successful.", {"output_length": len(raw_text)})
 
-            output_payload = {"generated_raw": raw_output_text}
-            if generation_config_obj.response_mime_type == "application/json":
+            output_payload = {"generated_raw": raw_text}
+            if current_gen_config_dict["response_mime_type"] == "application/json":
                 try:
-                    output_payload["structured_payload"] = json.loads(raw_output_text)
+                    output_payload["structured_payload"] = json.loads(raw_text)
                 except json.JSONDecodeError as json_err:
                     intent.provenance.add_action(f"Agent '{self.agent_name}' failed to parse its JSON output.", {"error": str(json_err)})
                     output_payload["structured_payload_error"] = f"Failed to parse agent JSON output: {json_err}"
@@ -108,3 +113,26 @@ class BaseSubsidiaryAgent:
                 "status": "FAILED",
                 "error_message": f"Agent '{self.agent_name}' failed: {type(e).__name__} - {str(e)}"
             }
+
+    def _call_llm(self, prompt: str, config: dict) -> str:
+        try:
+            response = self.client.models.generate_content(
+                model=self.model_name,
+                contents=[prompt],
+                config=config  # type: ignore
+            )
+            # Robust response parsing
+            text = getattr(response, "text", None)
+            if not text and hasattr(response, "candidates") and response.candidates:
+                first_candidate = response.candidates[0]
+                content = getattr(first_candidate, "content", None)
+                parts = getattr(content, "parts", None) if content else None
+                if parts:
+                    # Only join non-None, string parts
+                    text = "".join([getattr(p, 'text', '') for p in parts if getattr(p, 'text', None)])
+            if not text or not isinstance(text, str):
+                raise ValueError("No valid text response from Gemini API.")
+            return text
+        except Exception as e:
+            print(f"ERROR in _call_llm: {e}")
+            return ""

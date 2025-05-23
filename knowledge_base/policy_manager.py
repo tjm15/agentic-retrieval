@@ -4,12 +4,8 @@ import os
 from typing import List, Dict, Optional, Any
 from uuid import UUID
 
-try:
-    from db_manager import DatabaseManager, get_embedding as db_get_embedding # For direct execution
-    from config import POLICY_KB_DIR, EMBEDDING_DIMENSION
-except ImportError: # For package structure
-    from ..db_manager import DatabaseManager, get_embedding as db_get_embedding
-    from ..config import POLICY_KB_DIR, EMBEDDING_DIMENSION
+from db_manager import DatabaseManager, get_embedding as db_get_embedding
+from config import POLICY_KB_DIR, EMBEDDING_DIMENSION
 
 
 class PolicyManager:

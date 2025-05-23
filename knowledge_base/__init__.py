@@ -1,4 +1,4 @@
 # knowledge_base/__init__.py
-from .report_template_manager import ReportTemplateManager
-from .material_consideration_ontology import MaterialConsiderationOntology
-from .policy_manager import PolicyManager
+from knowledge_base.report_template_manager import ReportTemplateManager
+from knowledge_base.material_consideration_ontology import MaterialConsiderationOntology
+from knowledge_base.policy_manager import PolicyManager

@@ -1,22 +1,20 @@
 # agents/visual_heritage_agent.py
 from typing import Dict, Any, List, Optional
-from google.generativeai.generative_models import GenerativeModel # MODIFIED: Corrected import path
-from google.generativeai.types import GenerationConfig
+from google import genai
+from config import VISUAL_HERITAGE_AGENT_GEN_CONFIG, GEMINI_PRO_VISION_MODEL_NAME
 import json 
 from PIL import Image # Assuming PIL is installed
 import io 
 
 from agents.base_agent import BaseSubsidiaryAgent
 from core_types import Intent, SecurityAssessment 
-from config import VISUAL_HERITAGE_AGENT_GEN_CONFIG, GEMINI_PRO_VISION_MODEL_NAME
 
 class VisualHeritageAgent(BaseSubsidiaryAgent):
-    def __init__(self, agent_name: str, model_instance: GenerativeModel):
-        super().__init__(agent_name, model_instance)
-        print(f"INFO: Init VisualHeritageAgent: {self.agent_name} with model {self.model.model_name}")
-        if self.model.model_name != GEMINI_PRO_VISION_MODEL_NAME: 
-            print(f"WARNING: VisualHeritageAgent initialized with model {self.model.model_name}, but expected {GEMINI_PRO_VISION_MODEL_NAME} for image processing.")
-
+    def __init__(self, agent_name: str):
+        super().__init__(agent_name)
+        self.model_name = GEMINI_PRO_VISION_MODEL_NAME  # Override with vision model
+        print(f"INFO: Init VisualHeritageAgent: {self.agent_name} with model {GEMINI_PRO_VISION_MODEL_NAME}")
+        
     def _prepare_image_parts(self, intent: Intent) -> List[Any]:
         image_parts = []
         if intent.image_context: # Now using the added attribute
@@ -84,30 +82,45 @@ class VisualHeritageAgent(BaseSubsidiaryAgent):
             if expected_mime_type == "application/json":
                  current_gen_config_dict["response_mime_type"] = "application/json"
             
-            generation_config_obj = GenerationConfig(**current_gen_config_dict)
+            generation_config_obj = current_gen_config_dict
 
-            response = self.model.generate_content(final_gemini_parts, generation_config=generation_config_obj)
-
-            if not response.candidates or not response.candidates[0].content.parts:
-                feedback = response.prompt_feedback if hasattr(response, 'prompt_feedback') else None
-                block_reason = feedback.block_reason if feedback and hasattr(feedback, 'block_reason') else 'Unknown'
-                safety_ratings_str = str(feedback.safety_ratings) if feedback and hasattr(feedback, 'safety_ratings') else 'N/A'
-                error_detail = f"Agent '{self.agent_name}' LLM call resulted in no content. Block Reason: {block_reason}. Safety Ratings: {safety_ratings_str}"
-                intent.provenance.add_action(error_detail, {"block_reason": block_reason, "safety_ratings": safety_ratings_str})
-                raise Exception(error_detail)
-
-            raw_output_text = "".join([part.text for part in response.candidates[0].content.parts if hasattr(part, 'text')])
-            intent.provenance.add_action(f"Agent '{self.agent_name}' LLM call successful.", {"output_length": len(raw_output_text)})
+            # Convert mixed content list to proper Gemini API format
+            gemini_content = []
+            for part in final_gemini_parts:
+                if isinstance(part, str):
+                    gemini_content.append(part)
+                elif isinstance(part, dict) and 'mime_type' in part and 'data' in part:
+                    # Image part - keep as is for Gemini API
+                    gemini_content.append(part)
             
-            output_payload = {"generated_raw": raw_output_text}
-            if generation_config_obj.response_mime_type == "application/json":
+            response = self.client.models.generate_content(
+                model=GEMINI_PRO_VISION_MODEL_NAME,
+                contents=gemini_content,
+                config=generation_config_obj  # type: ignore
+            )
+
+            # Robust response parsing
+            raw_text = getattr(response, "text", None)
+            if not raw_text and hasattr(response, "candidates") and response.candidates:
+                first_candidate = response.candidates[0]
+                content = getattr(first_candidate, "content", None)
+                parts = getattr(content, "parts", None) if content else None
+                if parts:
+                    raw_text = "".join([getattr(p, 'text', '') for p in parts if hasattr(p, 'text') and isinstance(p.text, str)])
+            if not raw_text or not isinstance(raw_text, str):
+                raise ValueError("No valid text response from Gemini API.")
+            
+            intent.provenance.add_action(f"Agent '{self.agent_name}' LLM call successful.", {"output_length": len(raw_text)})
+            
+            output_payload = {"generated_raw": raw_text}
+            if generation_config_obj.get("response_mime_type") == "application/json":
                 try:
-                    output_payload["structured_payload"] = json.loads(raw_output_text)
+                    output_payload["structured_payload"] = json.loads(raw_text)
                 except json.JSONDecodeError as json_err:
                     intent.provenance.add_action(f"Agent '{self.agent_name}' failed to parse its JSON output.", {"error": str(json_err)})
                     output_payload["structured_payload_error"] = f"Failed to parse agent JSON output: {json_err}"
             
-            intent.visual_assessment_text = raw_output_text
+            intent.visual_assessment_text = raw_text
 
             return {
                 "agent_name": self.agent_name,
@@ -125,3 +138,24 @@ class VisualHeritageAgent(BaseSubsidiaryAgent):
                 "status": "FAILED",
                 "error_message": f"Agent '{self.agent_name}' (VisualHeritage) failed: {type(e).__name__} - {str(e)}"
             }
+    
+    def _call_llm(self, prompt: str, config: dict) -> str:
+        try:
+            response = self.client.models.generate_content(
+                model=self.model_name,
+                contents=[prompt],
+                config=config  # type: ignore
+            )
+            text = getattr(response, "text", None)
+            if not text and hasattr(response, "candidates") and response.candidates:
+                first_candidate = response.candidates[0]
+                content = getattr(first_candidate, "content", None)
+                parts = getattr(content, "parts", None) if content else None
+                if parts:
+                    text = "".join([getattr(p, 'text', '') for p in parts if getattr(p, 'text', None)])
+            if not text or not isinstance(text, str):
+                raise ValueError("No valid text response from Gemini API.")
+            return text
+        except Exception as e:
+            print(f"ERROR in _call_llm: {e}")
+            return ""

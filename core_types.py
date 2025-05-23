@@ -43,7 +43,7 @@ class SecurityAssessment: # ADDED CLASS
         return json.dumps(self.__dict__, default=str, indent=2)
 
 class Intent:
-    def __init__(self, parent_node_id: str, task_type: str, application_refs: List[str],
+    def __init__(self, parent_node_id: Optional[str] = None, task_type: Optional[str] = None, application_refs: Optional[List[str]] = None,
                  data_requirements: Optional[Dict] = None, satisfaction_criteria: Optional[List[Dict]] = None,
                  parent_intent_id: Optional[uuid.UUID] = None, retrieval_config: Optional[Dict] = None,
                  agent_to_invoke: Optional[str] = None, agent_input_data: Optional[Dict] = None,
@@ -52,10 +52,29 @@ class Intent:
                  chunk_context: Optional[List[Dict[str, Any]]] = None, llm_policy_context_summary: Optional[List[Dict]] = None,
                  image_context: Optional[List[Dict[str, Any]]] = None, 
                  visual_assessment_text: Optional[str] = None,
-                 security_assessments: Optional[List[SecurityAssessment]] = None): # ADDED
+                 security_assessments: Optional[List['SecurityAssessment']] = None, # ADDED
+                 policy_context_tags_to_consider: Optional[List[str]] = None,
+                 data_requirements_schema: Optional[Dict] = None, # ALIAS for LLM compatibility
+                 **kwargs):
+        # Allow LLM-generated dicts to work by extracting required fields from kwargs if not explicitly passed
+        if parent_node_id is None:
+            parent_node_id = kwargs.get('parent_node_id')
+        if application_refs is None:
+            application_refs = kwargs.get('application_refs')
+        if task_type is None:
+            task_type = kwargs.get('task_type')
+        if parent_node_id is None or application_refs is None or task_type is None:
+            raise ValueError("Intent requires 'parent_node_id', 'application_refs', and 'task_type'.")
+        # Accept both data_requirements and data_requirements_schema, prefer explicit data_requirements if both are present
+        if data_requirements is not None:
+            self.data_requirements = data_requirements
+        elif data_requirements_schema is not None:
+            self.data_requirements = data_requirements_schema
+        else:
+            self.data_requirements = {"schema": {}}
         self.intent_id = uuid.uuid4(); self.parent_node_id = parent_node_id; self.parent_intent_id = parent_intent_id
         self.task_type = task_type; self.application_refs = application_refs
-        self.data_requirements = data_requirements or {"schema": {}}; self.satisfaction_criteria = satisfaction_criteria or [{"type": "GENERIC_COMPLETION"}]
+        self.satisfaction_criteria = satisfaction_criteria or [{"type": "GENERIC_COMPLETION"}]
         self.retrieval_config = retrieval_config or {}; self.agent_to_invoke = agent_to_invoke; self.agent_input_data = agent_input_data or {}
         self.assessment_focus = assessment_focus or "General assessment"; self.output_format_request = output_format_request
         self.context_data_from_prior_steps = context_data_from_prior_steps or {}; self.llm_policy_context_summary = llm_policy_context_summary or []
@@ -63,7 +82,8 @@ class Intent:
         self.image_context = image_context or [] 
         self.visual_assessment_text = visual_assessment_text
         self.security_assessments = security_assessments or [] # ADDED
-        self.status = IntentStatus.PENDING; self.result: Optional[List[RetrievedItem]] = None
+        self.policy_context_tags_to_consider = policy_context_tags_to_consider or [] # ADDED
+        self.status = IntentStatus.PENDING; self.result: Optional[List['RetrievedItem']] = None
         self.synthesized_text_output: Optional[str] = None; self.structured_json_output: Optional[Dict] = None
         self.error_message: Optional[str] = None; self.confidence_score: Optional[float] = None
         self.provenance = ProvenanceLog(self.intent_id, f"Intent: {self.task_type} for node {self.parent_node_id}")

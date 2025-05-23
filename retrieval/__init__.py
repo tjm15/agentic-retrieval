@@ -1,2 +1,2 @@
 # retrieval/__init__.py
-from .retriever import AgenticRetriever
+from retrieval.retriever import AgenticRetriever

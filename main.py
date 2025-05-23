@@ -4,6 +4,7 @@ import psycopg2
 from dotenv import load_dotenv
 import time
 import os
+from google import genai
 
 # Modular imports
 from db_manager import DatabaseManager
@@ -11,11 +12,15 @@ from mrm.mrm_orchestrator import MRMOrchestrator # MODIFIED: Renamed MRM to MRMO
 from knowledge_base.policy_manager import PolicyManager
 from knowledge_base.report_template_manager import ReportTemplateManager
 from knowledge_base.material_consideration_ontology import MaterialConsiderationOntology
-from config import GEMINI_API_KEY, REPORT_TEMPLATE_DIR, POLICY_KB_DIR, MC_ONTOLOGY_DIR, DB_CONFIG # ADDED DB_CONFIG
+import importlib
+import config
 
 if __name__ == "__main__":
+    load_dotenv()  # Ensure .env is loaded before any config import
+    importlib.reload(config)
+    from config import GEMINI_API_KEY, REPORT_TEMPLATE_DIR, POLICY_KB_DIR, MC_ONTOLOGY_DIR, DB_CONFIG
+    print("DEBUG DB_CONFIG:", DB_CONFIG)  # DEBUG PRINT
     start_time = time.time()
-    load_dotenv()
     if not GEMINI_API_KEY: print("CRITICAL: GEMINI_API_KEY is not set. Exiting."); exit(1)
     # ADDED: Check for DB_CONFIG components
     if not all(DB_CONFIG.get(k) for k in ['dbname', 'user', 'password', 'host', 'port']):

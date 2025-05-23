@@ -5,36 +5,29 @@
 import json
 import time
 import uuid
-from google.generativeai.generative_models import GenerativeModel # MODIFIED: Corrected import path
+from google import genai
 from typing import Dict, List, Optional, Any
 
 # Core application components
-from core_types import ReasoningNode, Intent, IntentStatus, ProvenanceLog # Assuming ProvenanceLog has a to_dict or similar method for serialization
+from core_types import ReasoningNode, Intent, IntentStatus, ProvenanceLog
 from db_manager import DatabaseManager
 from knowledge_base.report_template_manager import ReportTemplateManager
 from knowledge_base.material_consideration_ontology import MaterialConsiderationOntology
 from knowledge_base.policy_manager import PolicyManager
 from retrieval.retriever import AgenticRetriever
-from .intent_definer import IntentDefiner
-from .node_processor import NodeProcessor
+from mrm.intent_definer import IntentDefiner
+from mrm.node_processor import NodeProcessor
 
 from agents.visual_heritage_agent import VisualHeritageAgent # MODIFIED: Corrected class name
 from agents.base_agent import BaseSubsidiaryAgent 
 
-from config import (
-    GEMINI_API_KEY, MRM_MODEL_NAME, SUBSIDIARY_AGENT_MODEL_NAME,
-    DB_CONFIG, REPORT_TEMPLATE_DIR, MC_ONTOLOGY_DIR, POLICY_KB_DIR
-)
+from config import GEMINI_API_KEY, MRM_MODEL_NAME, SUBSIDIARY_AGENT_MODEL_NAME, DB_CONFIG, REPORT_TEMPLATE_DIR, MC_ONTOLOGY_DIR, POLICY_KB_DIR
 
 if not GEMINI_API_KEY:
     raise ValueError("CRITICAL: GEMINI_API_KEY not found. Please set it in your environment or .env file.")
 # Assuming genai.configure is the correct way to set the API key for the version of the library used.
 # If not, this might need to be genai.API_KEY = GEMINI_API_KEY or similar.
 # genai.configure(api_key=GEMINI_API_KEY) # REMOVED: API key is typically handled by GOOGLE_API_KEY env var
-
-subsidiary_llm_instance = GenerativeModel(SUBSIDIARY_AGENT_MODEL_NAME)
-mrm_core_llm_instance = GenerativeModel(MRM_MODEL_NAME)
-
 
 class MRMOrchestrator:
     MAX_CLARIFICATION_ATTEMPTS_PER_NODE = 2
@@ -55,20 +48,24 @@ class MRMOrchestrator:
         print(f"INFO: AgenticRetriever initialized with DB: {type(db_manager).__name__}")
 
         self.subsidiary_agents: Dict[str, BaseSubsidiaryAgent] = {
-            "VisualHeritageAssessment_GeminiFlash_V1": VisualHeritageAgent(agent_name="VisualHeritageAssessment_GeminiFlash_V1", model_instance=subsidiary_llm_instance),
+            "VisualHeritageAssessment_GeminiFlash_V1": VisualHeritageAgent(agent_name="VisualHeritageAssessment_GeminiFlash_V1"),
         }
         print(f"INFO: Initialized {len(self.subsidiary_agents)} subsidiary agents: {list(self.subsidiary_agents.keys())}")
 
-        self.intent_definer = IntentDefiner(self.policy_manager)
+        self.intent_definer = IntentDefiner(
+            policy_manager=self.policy_manager,
+            api_key=GEMINI_API_KEY
+        )
         print(f"INFO: IntentDefiner initialized with PolicyManager: {type(policy_manager).__name__}")
 
+        # Instantiate NodeProcessor and agents with correct config usage
         self.node_processor = NodeProcessor(
-            mrm_model_instance=mrm_core_llm_instance,
+            api_key=GEMINI_API_KEY,
             retriever=self.retriever,
             subsidiary_agents=self.subsidiary_agents,
             policy_manager=self.policy_manager
         )
-        print(f"INFO: NodeProcessor initialized with MRM Model: {mrm_core_llm_instance.model_name}, Retriever, {len(self.subsidiary_agents)} agents, and PolicyManager.")
+        print(f"INFO: NodeProcessor initialized with MRM Model: {MRM_MODEL_NAME}, Retriever, {len(self.subsidiary_agents)} agents, and PolicyManager.")
 
         self.application_context_cache: Dict[str, Dict[str, Any]] = {}
         self.overall_provenance_logs: List[ProvenanceLog] = []
@@ -292,6 +289,26 @@ class MRMOrchestrator:
                 node_provenance=node_provenance
             )
 
+            if current_intent_spec is not None and isinstance(current_intent_spec, dict):
+                # --- Robustify intent spec dict: inject required fields if missing ---
+                injected_fields = []
+                if not current_intent_spec.get('parent_node_id'):
+                    current_intent_spec['parent_node_id'] = node.node_id
+                    injected_fields.append('parent_node_id')
+                if not current_intent_spec.get('application_refs'):
+                    current_intent_spec['application_refs'] = application_refs
+                    injected_fields.append('application_refs')
+                if not current_intent_spec.get('task_type'):
+                    # Use node.node_type_tag if available, else fallback to 'GENERAL'
+                    current_intent_spec['task_type'] = getattr(node, 'node_type_tag', None) or 'GENERAL'
+                    injected_fields.append('task_type')
+                if injected_fields and node_provenance:
+                    node_provenance.add_action(
+                        f"Injected missing required fields into intent spec: {injected_fields}",
+                        {k: current_intent_spec[k] for k in injected_fields}
+                    )
+                # --- End robustification ---
+
             if current_intent_spec:
                 current_intent = Intent(**current_intent_spec)
                 node.intents_issued.append(current_intent)
@@ -319,6 +336,25 @@ class MRMOrchestrator:
                         node_provenance=clarif_provenance
                     )
                     if clarification_spec:
+                        # --- Robustify clarification_spec: inject required fields if missing ---
+                        if clarification_spec is not None and isinstance(clarification_spec, dict):
+                            injected_fields = []
+                            if not clarification_spec.get('parent_node_id'):
+                                clarification_spec['parent_node_id'] = node.node_id
+                                injected_fields.append('parent_node_id')
+                            if not clarification_spec.get('application_refs'):
+                                clarification_spec['application_refs'] = application_refs
+                                injected_fields.append('application_refs')
+                            if not clarification_spec.get('task_type'):
+                                clarification_spec['task_type'] = getattr(node, 'node_type_tag', None) or 'GENERAL'
+                                injected_fields.append('task_type')
+                            if injected_fields and clarif_provenance:
+                                clarif_provenance.add_action(
+                                    f"Injected missing required fields into clarification intent spec: {injected_fields}",
+                                    {k: clarification_spec[k] for k in injected_fields}
+                                )
+                        # --- End robustification ---
+
                         clarification_intent = Intent(**clarification_spec)
                         node.intents_issued.append(clarification_intent)
                         if clarif_provenance: clarif_provenance.intent_id = clarification_intent.intent_id
@@ -473,19 +509,5 @@ class MRMOrchestrator:
             "specific_policy_focus_ids": node.specific_policy_focus_ids or [],
             "key_evidence_document_types": node.key_evidence_document_types or [],
             "linked_ontology_entry_id": node.linked_ontology_entry_id,
-            "is_dynamic_parent_node": node.is_dynamic_parent_node,
-            "agent_to_invoke_hint": node.agent_to_invoke_hint,
-            "data_requirements_schema_hint": node.data_requirements_schema_hint,
-            "depends_on_nodes": node.depends_on_nodes or [],
-            "final_synthesized_text": node.final_synthesized_text,
-            "final_structured_data": node.final_structured_data,
-            "confidence_score": node.confidence_score,
-            "error_message": node_error_message, 
-            "application_refs": node.application_refs or [],
-            "intents_issued_summary": dumped_intents_summary,
-            "node_level_provenance_summary": provenance_summary,
-            "sub_nodes": dumped_sub_nodes
+            "is_dynamic_parent_node": node.is_dynamic_parent_node
         }
-
-if __name__ == '__main__':
-    print("MRM Orchestrator module loaded. Standalone execution would require mock setup.")

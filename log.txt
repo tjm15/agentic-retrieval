@@ -1,0 +1,1764 @@
+DEBUG DB_CONFIG: {'dbname': 'tpa', 'user': 'tpa', 'password': 'tpa', 'host': 'localhost', 'port': '5432'}
+
+--- Initializing Database Manager ---
+
+--- Initializing Knowledge Base Managers ---
+INFO: ReportTemplateManager initialized with 1 templates.
+INFO: MaterialConsiderationOntology initialized with 4 entries.
+INFO: PolicyManager initialized (uses database for policy storage).
+INFO: A policy document (e.g., NPPF_SAMPLE) seems to exist in DB. Assuming policies are ingested.
+
+--- Ensuring Schema and Ingesting Minimal Sample Data (if first run) ---
+Tables exist. Skipping schema/data ingestion.
+
+--- Initializing MRM Orchestrator ---
+INFO: MRMOrchestrator initializing with DB: DatabaseManager, PolicyMgr: PolicyManager
+INFO: AgenticRetriever initialized with DB: DatabaseManager
+INFO: Init BaseSubsidiaryAgent: VisualHeritageAssessment_GeminiFlash_V1
+INFO: Init VisualHeritageAgent: VisualHeritageAssessment_GeminiFlash_V1 with model gemini-2.5-flash-preview-05-20
+INFO: Initialized 1 subsidiary agents: ['VisualHeritageAssessment_GeminiFlash_V1']
+INFO: IntentDefiner initialized with Gemini client.
+INFO: IntentDefiner initialized with PolicyManager: PolicyManager
+INFO: NodeProcessor initialized.
+INFO: NodeProcessor initialized with MRM Model: gemini-2.5-flash-preview-05-20, Retriever, 1 agents, and PolicyManager.
+
+--- Starting Generalized Report Orchestration for type: Default_MajorHybrid ---
+
+
+--- FINAL DRAFT REPORT (GEMINI - GENERALIZED ENGINE V9 - Policy DB & Agents) ---
+{
+  "report_type": "Default_MajorHybrid",
+  "application_display_name": "Earl's Court Development",
+  "application_refs": [
+    "ECDC_EarlsCourt_App"
+  ],
+  "generation_duration_seconds": 237.78381061553955,
+  "root_reasoning_node_dump": {
+    "node_id": "ROOT_Default_MajorHybrid",
+    "description": "Default Standard Report for Major Hybrid Planning Applications",
+    "status": "FAILED",
+    "node_type_tag": null,
+    "generic_material_considerations": [],
+    "specific_policy_focus_ids": [],
+    "key_evidence_document_types": [],
+    "linked_ontology_entry_id": null,
+    "is_dynamic_parent_node": false
+  },
+  "processed_node_outputs_summary": {
+    "ROOT_Default_MajorHybrid/1.0_SiteAndApplication/1.1_SiteLocationAndDescription": {
+      "status": "COMPLETED_WITH_CLARIFICATION_NEEDED",
+      "confidence": 0.05,
+      "error": null,
+      "text_preview": null
+    },
+    "ROOT_Default_MajorHybrid/1.0_SiteAndApplication/1.2_ProposalInDetail": {
+      "status": "FAILED",
+      "confidence": 0.05,
+      "error": "Agent 'None' not found.",
+      "text_preview": null
+    },
+    "ROOT_Default_MajorHybrid/1.0_SiteAndApplication/1.3_RelevantPlanningHistory": {
+      "status": "FAILED",
+      "confidence": 0.05,
+      "error": "Agent 'None' not found.",
+      "text_preview": null
+    },
+    "ROOT_Default_MajorHybrid/1.0_SiteAndApplication": {
+      "status": "COMPLETED_WITH_CLARIFICATION_NEEDED",
+      "confidence": 0.05,
+      "error": null,
+      "text_preview": null
+    },
+    "ROOT_Default_MajorHybrid/2.0_ConsultationResponses": {
+      "status": "SKIPPED",
+      "confidence": null,
+      "error": "Skipped due to unmet dependencies.",
+      "text_preview": null
+    },
+    "ROOT_Default_MajorHybrid/3.0_PlanningPolicyFramework/3.1_NationalPolicy": {
+      "status": "FAILED",
+      "confidence": 0.05,
+      "error": "Agent 'PolicyAnalysisAgent' not found.",
+      "text_preview": null
+    },
+    "ROOT_Default_MajorHybrid/3.0_PlanningPolicyFramework/3.2_RegionalPolicy": {
+      "status": "COMPLETED_WITH_CLARIFICATION_NEEDED",
+      "confidence": 0.05,
+      "error": null,
+      "text_preview": null
+    },
+    "ROOT_Default_MajorHybrid/3.0_PlanningPolicyFramework/3.3_LocalPlanRBKC": {
+      "status": "FAILED",
+      "confidence": 0.05,
+      "error": "Agent 'PolicyAnalysisAgent' not found.",
+      "text_preview": null
+    },
+    "ROOT_Default_MajorHybrid/3.0_PlanningPolicyFramework/3.4_LocalPlanLBHF": {
+      "status": "COMPLETED_WITH_CLARIFICATION_NEEDED",
+      "confidence": 0.05,
+      "error": null,
+      "text_preview": null
+    },
+    "ROOT_Default_MajorHybrid/3.0_PlanningPolicyFramework/3.5_SPDsAndSPGs": {
+      "status": "FAILED",
+      "confidence": 0.05,
+      "error": "Agent 'default_planning_analyst_agent' not found.",
+      "text_preview": null
+    },
+    "ROOT_Default_MajorHybrid/3.0_PlanningPolicyFramework/3.6_EmergingPolicy": {
+      "status": "FAILED",
+      "confidence": 0.05,
+      "error": "Agent 'LLM_PlanningPolicyAnalyst' not found.",
+      "text_preview": null
+    },
+    "ROOT_Default_MajorHybrid/3.0_PlanningPolicyFramework": {
+      "status": "FAILED",
+      "confidence": 0.05,
+      "error": "Agent 'None' not found.",
+      "text_preview": null
+    },
+    "ROOT_Default_MajorHybrid/4.0_AssessmentOfMaterialConsiderations": {
+      "status": "SKIPPED",
+      "confidence": null,
+      "error": "Skipped due to unmet dependencies.",
+      "text_preview": null
+    },
+    "ROOT_Default_MajorHybrid/5.0_OtherRelevantMatters": {
+      "status": "SKIPPED",
+      "confidence": null,
+      "error": "Skipped due to unmet dependencies.",
+      "text_preview": null
+    },
+    "ROOT_Default_MajorHybrid/6.0_PlanningBalanceAndConclusion": {
+      "status": "SKIPPED",
+      "confidence": null,
+      "error": "Skipped due to unmet dependencies.",
+      "text_preview": null
+    },
+    "ROOT_Default_MajorHybrid/7.0_Recommendation": {
+      "status": "SKIPPED",
+      "confidence": null,
+      "error": "Skipped due to unmet dependencies.",
+      "text_preview": null
+    }
+  }
+}
+
+--- PROVENANCE SUMMARY ---
+{
+  "log_id": "d1bb2557-112d-48b7-afd2-1fea542b4055",
+  "intent_id": null,
+  "task_description": "MRM Orchestration Started for Report: Default_MajorHybrid, App: Earl's Court Development",
+  "timestamp_start": 1748021955.5709784,
+  "timestamp_end": 1748022193.3547924,
+  "actions": [
+    {
+      "time": 1748021955.5709817,
+      "action": "Fetching report template and application context.",
+      "details": {}
+    },
+    {
+      "time": 1748021955.5726905,
+      "action": "App context summary prepared.",
+      "details": {
+        "summary_preview": "{'application_name': \"Earl's Court Development\", 'application_identifiers': ['ECDC_EarlsCourt_App'], 'site_summary_placeholder': \"No detailed site description found for Earl's Court Development via pl..."
+      }
+    },
+    {
+      "time": 1748021955.572851,
+      "action": "Reasoning tree built.",
+      "details": {
+        "root_id": "ROOT_Default_MajorHybrid",
+        "children": 7
+      }
+    },
+    {
+      "time": 1748022193.3547907,
+      "action": "All nodes processed. Root status updated.",
+      "details": {
+        "root_status": "FAILED"
+      }
+    }
+  ],
+  "status": "COMPLETED_SUCCESS",
+  "result_summary": {
+    "duration_s": 237.78381061553955,
+    "final_root_status": "FAILED"
+  }
+}
+{
+  "log_id": "b8f1499b-347a-41f7-be16-371ed77feafd",
+  "intent_id": "ab67abc7-b888-4549-be9a-133fc51f573c",
+  "task_description": "MRM Orchestration for Node: ROOT_Default_MajorHybrid/1.0_SiteAndApplication",
+  "timestamp_start": 1748021955.5728583,
+  "timestamp_end": 1748022056.3405428,
+  "actions": [
+    {
+      "time": 1748021955.5728602,
+      "action": "Processing node: ROOT_Default_MajorHybrid/1.0_SiteAndApplication (Type: IntroductionBlock)",
+      "details": {}
+    },
+    {
+      "time": 1748022025.518818,
+      "action": "Defining main processing intent for node ROOT_Default_MajorHybrid/1.0_SiteAndApplication.",
+      "details": {}
+    },
+    {
+      "time": 1748022025.5188284,
+      "action": "LLM-driven Intent definition started by IntentDefiner",
+      "details": {}
+    },
+    {
+      "time": 1748022025.519597,
+      "action": "Prompting IntentDefiner LLM for Intent Spec",
+      "details": {
+        "prompt_len": 2302
+      }
+    },
+    {
+      "time": 1748022041.9023814,
+      "action": "IntentDefiner LLM generated Intent Spec",
+      "details": {
+        "keys": [
+          "task_type",
+          "assessment_focus",
+          "policy_context_tags_to_consider",
+          "retrieval_config",
+          "data_requirements_schema",
+          "agent_to_invoke",
+          "agent_input_data_preparation_notes",
+          "output_format_request_for_llm"
+        ]
+      }
+    },
+    {
+      "time": 1748022041.9023933,
+      "action": "Injected missing required fields into intent spec: ['parent_node_id', 'application_refs']",
+      "details": {
+        "parent_node_id": "ROOT_Default_MajorHybrid/1.0_SiteAndApplication",
+        "application_refs": [
+          "ECDC_EarlsCourt_App"
+        ]
+      }
+    },
+    {
+      "time": 1748022041.9024203,
+      "action": "Intent processing started by NodeProcessor V8+",
+      "details": {}
+    },
+    {
+      "time": 1748022041.9024227,
+      "action": "WARN: Intent no primary action.",
+      "details": {}
+    },
+    {
+      "time": 1748022041.902424,
+      "action": "Satisfaction check",
+      "details": {
+        "criteria_len": 1
+      }
+    },
+    {
+      "time": 1748022041.902439,
+      "action": "Clarification attempt 1/2 for ROOT_Default_MajorHybrid/1.0_SiteAndApplication.",
+      "details": {
+        "reason": "No output from LLM/Agent."
+      }
+    },
+    {
+      "time": 1748022048.7641125,
+      "action": "Clarification attempt 2/2 for ROOT_Default_MajorHybrid/1.0_SiteAndApplication.",
+      "details": {
+        "reason": "No output from LLM/Agent."
+      }
+    },
+    {
+      "time": 1748022056.340538,
+      "action": "Node ROOT_Default_MajorHybrid/1.0_SiteAndApplication main intent done. Status: COMPLETED_WITH_CLARIFICATION_NEEDED, Conf: 0.05",
+      "details": {}
+    }
+  ],
+  "status": "COMPLETED_WITH_CLARIFICATION_NEEDED",
+  "result_summary": {
+    "final_confidence_orch": 0.05,
+    "output_keys": [
+      "status",
+      "node_id",
+      "final_synthesized_text_preview",
+      "final_structured_data",
+      "confidence_score",
+      "error"
+    ]
+  }
+}
+{
+  "log_id": "6045c08e-c273-403a-af39-fa95a4d5bf91",
+  "intent_id": "0a1b16de-49d9-4ad2-ba6e-d50188eff757",
+  "task_description": "MRM Orchestration for Node: ROOT_Default_MajorHybrid/1.0_SiteAndApplication/1.1_SiteLocationAndDescription",
+  "timestamp_start": 1748021955.5728648,
+  "timestamp_end": 1748021991.089775,
+  "actions": [
+    {
+      "time": 1748021955.5728662,
+      "action": "Processing node: ROOT_Default_MajorHybrid/1.0_SiteAndApplication/1.1_SiteLocationAndDescription (Type: SiteDescription)",
+      "details": {}
+    },
+    {
+      "time": 1748021955.572868,
+      "action": "Defining main processing intent for node ROOT_Default_MajorHybrid/1.0_SiteAndApplication/1.1_SiteLocationAndDescription.",
+      "details": {}
+    },
+    {
+      "time": 1748021955.5728712,
+      "action": "LLM-driven Intent definition started by IntentDefiner",
+      "details": {}
+    },
+    {
+      "time": 1748021955.573664,
+      "action": "Prompting IntentDefiner LLM for Intent Spec",
+      "details": {
+        "prompt_len": 2209
+      }
+    },
+    {
+      "time": 1748021970.8360722,
+      "action": "IntentDefiner LLM generated Intent Spec",
+      "details": {
+        "keys": [
+          "task_type",
+          "assessment_focus",
+          "policy_context_tags_to_consider",
+          "retrieval_config",
+          "data_requirements_schema",
+          "agent_to_invoke",
+          "agent_input_data_preparation_notes",
+          "output_format_request_for_llm"
+        ]
+      }
+    },
+    {
+      "time": 1748021970.836089,
+      "action": "Injected missing required fields into intent spec: ['parent_node_id', 'application_refs']",
+      "details": {
+        "parent_node_id": "ROOT_Default_MajorHybrid/1.0_SiteAndApplication/1.1_SiteLocationAndDescription",
+        "application_refs": [
+          "ECDC_EarlsCourt_App"
+        ]
+      }
+    },
+    {
+      "time": 1748021970.8361268,
+      "action": "Intent processing started by NodeProcessor V8+",
+      "details": {}
+    },
+    {
+      "time": 1748021970.8361304,
+      "action": "WARN: Intent no primary action.",
+      "details": {}
+    },
+    {
+      "time": 1748021970.8361323,
+      "action": "Satisfaction check",
+      "details": {
+        "criteria_len": 1
+      }
+    },
+    {
+      "time": 1748021970.836146,
+      "action": "Clarification attempt 1/2 for ROOT_Default_MajorHybrid/1.0_SiteAndApplication/1.1_SiteLocationAndDescription.",
+      "details": {
+        "reason": "No output from LLM/Agent."
+      }
+    },
+    {
+      "time": 1748021983.6366994,
+      "action": "Clarification attempt 2/2 for ROOT_Default_MajorHybrid/1.0_SiteAndApplication/1.1_SiteLocationAndDescription.",
+      "details": {
+        "reason": "No output from LLM/Agent."
+      }
+    },
+    {
+      "time": 1748021991.0897672,
+      "action": "Node ROOT_Default_MajorHybrid/1.0_SiteAndApplication/1.1_SiteLocationAndDescription main intent done. Status: COMPLETED_WITH_CLARIFICATION_NEEDED, Conf: 0.05",
+      "details": {}
+    }
+  ],
+  "status": "COMPLETED_WITH_CLARIFICATION_NEEDED",
+  "result_summary": {
+    "final_confidence_orch": 0.05,
+    "output_keys": [
+      "status",
+      "node_id",
+      "final_synthesized_text_preview",
+      "final_structured_data",
+      "confidence_score",
+      "error"
+    ]
+  }
+}
+{
+  "log_id": "a9fa9ffb-e7ef-43f7-9fc1-0d6b40db5e62",
+  "intent_id": "1c39f32e-a7d1-4654-ac6b-2573b4e0fbc0",
+  "task_description": "Clarif Intent for Node ROOT_Default_MajorHybrid/1.0_SiteAndApplication/1.1_SiteLocationAndDescription, Attempt 1",
+  "timestamp_start": 1748021970.8361506,
+  "timestamp_end": 1748021983.6366897,
+  "actions": [
+    {
+      "time": 1748021970.8361557,
+      "action": "Parent Node Log ID",
+      "details": {
+        "id": "6045c08e-c273-403a-af39-fa95a4d5bf91"
+      }
+    },
+    {
+      "time": 1748021970.8361583,
+      "action": "LLM defining clarification intent spec",
+      "details": {
+        "original_reason": "No output from LLM/Agent."
+      }
+    },
+    {
+      "time": 1748021983.6365843,
+      "action": "Clarification spec generated by LLM.",
+      "details": {
+        "original_intent_id": "0a1b16de-49d9-4ad2-ba6e-d50188eff757",
+        "spec_preview": "{\n  \"intent_name\": \"RetrieveEarlsCourtSiteDetails\",\n  \"parent_node_id\": \"ROOT_Default_MajorHybrid/1.0_SiteAndApplication/1.1_SiteLocationAndDescriptio"
+      }
+    },
+    {
+      "time": 1748021983.6366005,
+      "action": "Injected missing required fields into clarification intent spec: ['task_type']",
+      "details": {
+        "task_type": "SiteDescription"
+      }
+    },
+    {
+      "time": 1748021983.636662,
+      "action": "Intent processing started by NodeProcessor V8+",
+      "details": {}
+    },
+    {
+      "time": 1748021983.636669,
+      "action": "WARN: Intent no primary action.",
+      "details": {}
+    },
+    {
+      "time": 1748021983.636673,
+      "action": "Satisfaction check",
+      "details": {
+        "criteria_len": 1
+      }
+    }
+  ],
+  "status": "COMPLETED_WITH_CLARIFICATION_NEEDED",
+  "result_summary": {
+    "conf": 0.05,
+    "out_prev": "None"
+  }
+}
+{
+  "log_id": "ba0fef9e-344f-4ca4-b11c-31cff76be288",
+  "intent_id": "0302d1ff-36b6-43d8-a260-bc3f1708a8b8",
+  "task_description": "Clarif Intent for Node ROOT_Default_MajorHybrid/1.0_SiteAndApplication/1.1_SiteLocationAndDescription, Attempt 2",
+  "timestamp_start": 1748021983.6367104,
+  "timestamp_end": 1748021991.089755,
+  "actions": [
+    {
+      "time": 1748021983.6367145,
+      "action": "Parent Node Log ID",
+      "details": {
+        "id": "6045c08e-c273-403a-af39-fa95a4d5bf91"
+      }
+    },
+    {
+      "time": 1748021983.6367185,
+      "action": "LLM defining clarification intent spec",
+      "details": {
+        "original_reason": "No output from LLM/Agent."
+      }
+    },
+    {
+      "time": 1748021991.0896847,
+      "action": "Clarification spec generated by LLM.",
+      "details": {
+        "original_intent_id": "1c39f32e-a7d1-4654-ac6b-2573b4e0fbc0",
+        "spec_preview": "{\n  \"intent_name\": \"ECDC_EarlsCourt_KeySiteDetails\",\n  \"parent_node_id\": \"ROOT_Default_MajorHybrid/1.0_SiteAndApplication/1.1_SiteLocationAndDescripti"
+      }
+    },
+    {
+      "time": 1748021991.0897021,
+      "action": "Injected missing required fields into clarification intent spec: ['task_type']",
+      "details": {
+        "task_type": "SiteDescription"
+      }
+    },
+    {
+      "time": 1748021991.0897424,
+      "action": "Intent processing started by NodeProcessor V8+",
+      "details": {}
+    },
+    {
+      "time": 1748021991.089746,
+      "action": "WARN: Intent no primary action.",
+      "details": {}
+    },
+    {
+      "time": 1748021991.0897477,
+      "action": "Satisfaction check",
+      "details": {
+        "criteria_len": 1
+      }
+    }
+  ],
+  "status": "COMPLETED_WITH_CLARIFICATION_NEEDED",
+  "result_summary": {
+    "conf": 0.05,
+    "out_prev": "None"
+  }
+}
+{
+  "log_id": "756c51f3-f6ed-497c-a558-4a5e39396dba",
+  "intent_id": "1c9db43f-c50d-4065-8ac1-d490c43ef6d9",
+  "task_description": "MRM Orchestration for Node: ROOT_Default_MajorHybrid/1.0_SiteAndApplication/1.2_ProposalInDetail",
+  "timestamp_start": 1748021991.089786,
+  "timestamp_end": 1748022004.5262022,
+  "actions": [
+    {
+      "time": 1748021991.0897875,
+      "action": "Processing node: ROOT_Default_MajorHybrid/1.0_SiteAndApplication/1.2_ProposalInDetail (Type: ProposalSummary)",
+      "details": {}
+    },
+    {
+      "time": 1748021991.0897899,
+      "action": "Defining main processing intent for node ROOT_Default_MajorHybrid/1.0_SiteAndApplication/1.2_ProposalInDetail.",
+      "details": {}
+    },
+    {
+      "time": 1748021991.0897944,
+      "action": "LLM-driven Intent definition started by IntentDefiner",
+      "details": {}
+    },
+    {
+      "time": 1748021991.0906224,
+      "action": "Prompting IntentDefiner LLM for Intent Spec",
+      "details": {
+        "prompt_len": 2309
+      }
+    },
+    {
+      "time": 1748022004.5261362,
+      "action": "IntentDefiner LLM generated Intent Spec",
+      "details": {
+        "keys": [
+          "task_type",
+          "assessment_focus",
+          "policy_context_tags_to_consider",
+          "retrieval_config",
+          "data_requirements_schema",
+          "agent_to_invoke",
+          "agent_input_data_preparation_notes",
+          "output_format_request_for_llm"
+        ]
+      }
+    },
+    {
+      "time": 1748022004.5261497,
+      "action": "Injected missing required fields into intent spec: ['parent_node_id', 'application_refs']",
+      "details": {
+        "parent_node_id": "ROOT_Default_MajorHybrid/1.0_SiteAndApplication/1.2_ProposalInDetail",
+        "application_refs": [
+          "ECDC_EarlsCourt_App"
+        ]
+      }
+    },
+    {
+      "time": 1748022004.5261815,
+      "action": "Intent processing started by NodeProcessor V8+",
+      "details": {}
+    },
+    {
+      "time": 1748022004.5261977,
+      "action": "Node ROOT_Default_MajorHybrid/1.0_SiteAndApplication/1.2_ProposalInDetail main intent done. Status: FAILED, Conf: 0.05",
+      "details": {}
+    }
+  ],
+  "status": "FAILED",
+  "result_summary": {
+    "final_confidence_orch": 0.05,
+    "output_keys": [
+      "status",
+      "node_id",
+      "final_synthesized_text_preview",
+      "final_structured_data",
+      "confidence_score",
+      "error"
+    ]
+  }
+}
+{
+  "log_id": "1836b401-4ff0-4cae-9f68-c9a9578cf8cd",
+  "intent_id": "c74df941-4181-46d6-a722-37e12f0056e9",
+  "task_description": "MRM Orchestration for Node: ROOT_Default_MajorHybrid/1.0_SiteAndApplication/1.3_RelevantPlanningHistory",
+  "timestamp_start": 1748022004.5262074,
+  "timestamp_end": 1748022025.5188148,
+  "actions": [
+    {
+      "time": 1748022004.5262089,
+      "action": "Processing node: ROOT_Default_MajorHybrid/1.0_SiteAndApplication/1.3_RelevantPlanningHistory (Type: PlanningHistory)",
+      "details": {}
+    },
+    {
+      "time": 1748022004.5262098,
+      "action": "Defining main processing intent for node ROOT_Default_MajorHybrid/1.0_SiteAndApplication/1.3_RelevantPlanningHistory.",
+      "details": {}
+    },
+    {
+      "time": 1748022004.5262115,
+      "action": "LLM-driven Intent definition started by IntentDefiner",
+      "details": {}
+    },
+    {
+      "time": 1748022004.5268857,
+      "action": "Prompting IntentDefiner LLM for Intent Spec",
+      "details": {
+        "prompt_len": 2226
+      }
+    },
+    {
+      "time": 1748022025.518737,
+      "action": "IntentDefiner LLM generated Intent Spec",
+      "details": {
+        "keys": [
+          "task_type",
+          "assessment_focus",
+          "policy_context_tags_to_consider",
+          "retrieval_config",
+          "data_requirements_schema",
+          "agent_to_invoke",
+          "agent_input_data_preparation_notes",
+          "output_format_request_for_llm"
+        ]
+      }
+    },
+    {
+      "time": 1748022025.518752,
+      "action": "Injected missing required fields into intent spec: ['parent_node_id', 'application_refs']",
+      "details": {
+        "parent_node_id": "ROOT_Default_MajorHybrid/1.0_SiteAndApplication/1.3_RelevantPlanningHistory",
+        "application_refs": [
+          "ECDC_EarlsCourt_App"
+        ]
+      }
+    },
+    {
+      "time": 1748022025.518788,
+      "action": "Intent processing started by NodeProcessor V8+",
+      "details": {}
+    },
+    {
+      "time": 1748022025.5188096,
+      "action": "Node ROOT_Default_MajorHybrid/1.0_SiteAndApplication/1.3_RelevantPlanningHistory main intent done. Status: FAILED, Conf: 0.05",
+      "details": {}
+    }
+  ],
+  "status": "FAILED",
+  "result_summary": {
+    "final_confidence_orch": 0.05,
+    "output_keys": [
+      "status",
+      "node_id",
+      "final_synthesized_text_preview",
+      "final_structured_data",
+      "confidence_score",
+      "error"
+    ]
+  }
+}
+{
+  "log_id": "953907e3-2bc1-4e8c-bcee-983b42919c5a",
+  "intent_id": "fa85ac98-3416-42f8-b2d0-599b70bed7dd",
+  "task_description": "Clarif Intent for Node ROOT_Default_MajorHybrid/1.0_SiteAndApplication, Attempt 1",
+  "timestamp_start": 1748022041.902444,
+  "timestamp_end": 1748022048.7641094,
+  "actions": [
+    {
+      "time": 1748022041.902448,
+      "action": "Parent Node Log ID",
+      "details": {
+        "id": "b8f1499b-347a-41f7-be16-371ed77feafd"
+      }
+    },
+    {
+      "time": 1748022041.9024491,
+      "action": "LLM defining clarification intent spec",
+      "details": {
+        "original_reason": "No output from LLM/Agent."
+      }
+    },
+    {
+      "time": 1748022048.764059,
+      "action": "Clarification spec generated by LLM.",
+      "details": {
+        "original_intent_id": "ab67abc7-b888-4549-be9a-133fc51f573c",
+        "spec_preview": "{\n  \"intent_name\": \"ECDC_EarlsCourt_App_CoreFunctionalityClarification\",\n  \"description\": \"A new, focused intent to clarify the primary purpose, core "
+      }
+    },
+    {
+      "time": 1748022048.7640686,
+      "action": "Injected missing required fields into clarification intent spec: ['task_type']",
+      "details": {
+        "task_type": "IntroductionBlock"
+      }
+    },
+    {
+      "time": 1748022048.7640975,
+      "action": "Intent processing started by NodeProcessor V8+",
+      "details": {}
+    },
+    {
+      "time": 1748022048.7641003,
+      "action": "WARN: Intent no primary action.",
+      "details": {}
+    },
+    {
+      "time": 1748022048.7641017,
+      "action": "Satisfaction check",
+      "details": {
+        "criteria_len": 1
+      }
+    }
+  ],
+  "status": "COMPLETED_WITH_CLARIFICATION_NEEDED",
+  "result_summary": {
+    "conf": 0.05,
+    "out_prev": "None"
+  }
+}
+{
+  "log_id": "7d4a3cff-8362-44ea-95b1-2a6c5df8c2fc",
+  "intent_id": "47409d40-eb6c-420b-9241-594c9bf35c50",
+  "task_description": "Clarif Intent for Node ROOT_Default_MajorHybrid/1.0_SiteAndApplication, Attempt 2",
+  "timestamp_start": 1748022048.764116,
+  "timestamp_end": 1748022056.340533,
+  "actions": [
+    {
+      "time": 1748022048.764118,
+      "action": "Parent Node Log ID",
+      "details": {
+        "id": "b8f1499b-347a-41f7-be16-371ed77feafd"
+      }
+    },
+    {
+      "time": 1748022048.7641194,
+      "action": "LLM defining clarification intent spec",
+      "details": {
+        "original_reason": "No output from LLM/Agent."
+      }
+    },
+    {
+      "time": 1748022056.3404825,
+      "action": "Clarification spec generated by LLM.",
+      "details": {
+        "original_intent_id": "fa85ac98-3416-42f8-b2d0-599b70bed7dd",
+        "spec_preview": "{\n  \"intent_name\": \"GenerateECDCAppIntroduction\",\n  \"parent_node_id\": \"ROOT_Default_MajorHybrid/1.0_SiteAndApplication\",\n  \"description\": \"To generate"
+      }
+    },
+    {
+      "time": 1748022056.3404918,
+      "action": "Injected missing required fields into clarification intent spec: ['task_type']",
+      "details": {
+        "task_type": "IntroductionBlock"
+      }
+    },
+    {
+      "time": 1748022056.3405228,
+      "action": "Intent processing started by NodeProcessor V8+",
+      "details": {}
+    },
+    {
+      "time": 1748022056.3405256,
+      "action": "WARN: Intent no primary action.",
+      "details": {}
+    },
+    {
+      "time": 1748022056.3405268,
+      "action": "Satisfaction check",
+      "details": {
+        "criteria_len": 1
+      }
+    }
+  ],
+  "status": "COMPLETED_WITH_CLARIFICATION_NEEDED",
+  "result_summary": {
+    "conf": 0.05,
+    "out_prev": "None"
+  }
+}
+{
+  "log_id": "4b4e557f-0320-4898-8e87-b4cbaf7b71cb",
+  "intent_id": null,
+  "task_description": "MRM Orchestration for Node: ROOT_Default_MajorHybrid/2.0_ConsultationResponses",
+  "timestamp_start": 1748022056.3405504,
+  "timestamp_end": 1748022056.3405602,
+  "actions": [
+    {
+      "time": 1748022056.3405514,
+      "action": "Processing node: ROOT_Default_MajorHybrid/2.0_ConsultationResponses (Type: ConsultationSummaryBlock)",
+      "details": {}
+    },
+    {
+      "time": 1748022056.3405547,
+      "action": "Checking 1 dependencies: ['ROOT_Default_MajorHybrid/1.0_SiteAndApplication/1.2_ProposalInDetail']",
+      "details": {}
+    },
+    {
+      "time": 1748022056.340558,
+      "action": "Dependency ROOT_Default_MajorHybrid/1.0_SiteAndApplication/1.2_ProposalInDetail not met. Status: FAILED. Skipping.",
+      "details": {}
+    }
+  ],
+  "status": "SKIPPED",
+  "result_summary": {
+    "reason": "Dependencies not met."
+  }
+}
+{
+  "log_id": "8cc9515f-4f4f-4ebf-814f-1201948d1eb2",
+  "intent_id": "c95b4b5d-a3e1-49f1-b16f-8199e63c789e",
+  "task_description": "MRM Orchestration for Node: ROOT_Default_MajorHybrid/3.0_PlanningPolicyFramework",
+  "timestamp_start": 1748022056.3405645,
+  "timestamp_end": 1748022193.3547273,
+  "actions": [
+    {
+      "time": 1748022056.340565,
+      "action": "Processing node: ROOT_Default_MajorHybrid/3.0_PlanningPolicyFramework (Type: PolicyFrameworkSummaryBlock)",
+      "details": {}
+    },
+    {
+      "time": 1748022176.1540334,
+      "action": "Defining main processing intent for node ROOT_Default_MajorHybrid/3.0_PlanningPolicyFramework.",
+      "details": {}
+    },
+    {
+      "time": 1748022176.154045,
+      "action": "LLM-driven Intent definition started by IntentDefiner",
+      "details": {}
+    },
+    {
+      "time": 1748022176.1547537,
+      "action": "Prompting IntentDefiner LLM for Intent Spec",
+      "details": {
+        "prompt_len": 2281
+      }
+    },
+    {
+      "time": 1748022193.354674,
+      "action": "IntentDefiner LLM generated Intent Spec",
+      "details": {
+        "keys": [
+          "task_type",
+          "assessment_focus",
+          "policy_context_tags_to_consider",
+          "retrieval_config",
+          "data_requirements_schema",
+          "agent_to_invoke",
+          "agent_input_data_preparation_notes",
+          "output_format_request_for_llm"
+        ]
+      }
+    },
+    {
+      "time": 1748022193.3546855,
+      "action": "Injected missing required fields into intent spec: ['parent_node_id', 'application_refs']",
+      "details": {
+        "parent_node_id": "ROOT_Default_MajorHybrid/3.0_PlanningPolicyFramework",
+        "application_refs": [
+          "ECDC_EarlsCourt_App"
+        ]
+      }
+    },
+    {
+      "time": 1748022193.3547115,
+      "action": "Intent processing started by NodeProcessor V8+",
+      "details": {}
+    },
+    {
+      "time": 1748022193.3547237,
+      "action": "Node ROOT_Default_MajorHybrid/3.0_PlanningPolicyFramework main intent done. Status: FAILED, Conf: 0.05",
+      "details": {}
+    }
+  ],
+  "status": "FAILED",
+  "result_summary": {
+    "final_confidence_orch": 0.05,
+    "output_keys": [
+      "status",
+      "node_id",
+      "final_synthesized_text_preview",
+      "final_structured_data",
+      "confidence_score",
+      "error"
+    ]
+  }
+}
+{
+  "log_id": "24fa3f4c-e651-48cf-a7ea-7888565ce5bd",
+  "intent_id": "9c0196bf-efc6-441a-8c9f-2285aed0509c",
+  "task_description": "MRM Orchestration for Node: ROOT_Default_MajorHybrid/3.0_PlanningPolicyFramework/3.1_NationalPolicy",
+  "timestamp_start": 1748022056.340569,
+  "timestamp_end": 1748022068.0385227,
+  "actions": [
+    {
+      "time": 1748022056.3405695,
+      "action": "Processing node: ROOT_Default_MajorHybrid/3.0_PlanningPolicyFramework/3.1_NationalPolicy (Type: NationalPolicy)",
+      "details": {}
+    },
+    {
+      "time": 1748022056.3405707,
+      "action": "Defining main processing intent for node ROOT_Default_MajorHybrid/3.0_PlanningPolicyFramework/3.1_NationalPolicy.",
+      "details": {}
+    },
+    {
+      "time": 1748022056.3405726,
+      "action": "LLM-driven Intent definition started by IntentDefiner",
+      "details": {}
+    },
+    {
+      "time": 1748022056.3410475,
+      "action": "Prompting IntentDefiner LLM for Intent Spec",
+      "details": {
+        "prompt_len": 1943
+      }
+    },
+    {
+      "time": 1748022068.0384502,
+      "action": "IntentDefiner LLM generated Intent Spec",
+      "details": {
+        "keys": [
+          "task_type",
+          "assessment_focus",
+          "policy_context_tags_to_consider",
+          "retrieval_config",
+          "data_requirements_schema",
+          "agent_to_invoke",
+          "agent_input_data_preparation_notes",
+          "output_format_request_for_llm"
+        ]
+      }
+    },
+    {
+      "time": 1748022068.0384681,
+      "action": "Injected missing required fields into intent spec: ['parent_node_id', 'application_refs']",
+      "details": {
+        "parent_node_id": "ROOT_Default_MajorHybrid/3.0_PlanningPolicyFramework/3.1_NationalPolicy",
+        "application_refs": [
+          "ECDC_EarlsCourt_App"
+        ]
+      }
+    },
+    {
+      "time": 1748022068.0385032,
+      "action": "Intent processing started by NodeProcessor V8+",
+      "details": {}
+    },
+    {
+      "time": 1748022068.0385184,
+      "action": "Node ROOT_Default_MajorHybrid/3.0_PlanningPolicyFramework/3.1_NationalPolicy main intent done. Status: FAILED, Conf: 0.05",
+      "details": {}
+    }
+  ],
+  "status": "FAILED",
+  "result_summary": {
+    "final_confidence_orch": 0.05,
+    "output_keys": [
+      "status",
+      "node_id",
+      "final_synthesized_text_preview",
+      "final_structured_data",
+      "confidence_score",
+      "error"
+    ]
+  }
+}
+{
+  "log_id": "954c4e9a-1156-4d6f-8f32-c7df281218b7",
+  "intent_id": "b580fddd-1864-4f20-9f42-83074a86c5a8",
+  "task_description": "MRM Orchestration for Node: ROOT_Default_MajorHybrid/3.0_PlanningPolicyFramework/3.2_RegionalPolicy",
+  "timestamp_start": 1748022068.038532,
+  "timestamp_end": 1748022098.401257,
+  "actions": [
+    {
+      "time": 1748022068.0385337,
+      "action": "Processing node: ROOT_Default_MajorHybrid/3.0_PlanningPolicyFramework/3.2_RegionalPolicy (Type: RegionalPolicy)",
+      "details": {}
+    },
+    {
+      "time": 1748022068.0385346,
+      "action": "Defining main processing intent for node ROOT_Default_MajorHybrid/3.0_PlanningPolicyFramework/3.2_RegionalPolicy.",
+      "details": {}
+    },
+    {
+      "time": 1748022068.0385401,
+      "action": "LLM-driven Intent definition started by IntentDefiner",
+      "details": {}
+    },
+    {
+      "time": 1748022068.039155,
+      "action": "Prompting IntentDefiner LLM for Intent Spec",
+      "details": {
+        "prompt_len": 1906
+      }
+    },
+    {
+      "time": 1748022079.074857,
+      "action": "IntentDefiner LLM generated Intent Spec",
+      "details": {
+        "keys": [
+          "task_type",
+          "assessment_focus",
+          "policy_context_tags_to_consider",
+          "retrieval_config",
+          "data_requirements_schema",
+          "agent_to_invoke",
+          "agent_input_data_preparation_notes",
+          "output_format_request_for_llm"
+        ]
+      }
+    },
+    {
+      "time": 1748022079.074875,
+      "action": "Injected missing required fields into intent spec: ['parent_node_id', 'application_refs']",
+      "details": {
+        "parent_node_id": "ROOT_Default_MajorHybrid/3.0_PlanningPolicyFramework/3.2_RegionalPolicy",
+        "application_refs": [
+          "ECDC_EarlsCourt_App"
+        ]
+      }
+    },
+    {
+      "time": 1748022079.0749414,
+      "action": "Intent processing started by NodeProcessor V8+",
+      "details": {}
+    },
+    {
+      "time": 1748022079.074945,
+      "action": "WARN: Intent no primary action.",
+      "details": {}
+    },
+    {
+      "time": 1748022079.0749474,
+      "action": "Satisfaction check",
+      "details": {
+        "criteria_len": 1
+      }
+    },
+    {
+      "time": 1748022079.0749595,
+      "action": "Clarification attempt 1/2 for ROOT_Default_MajorHybrid/3.0_PlanningPolicyFramework/3.2_RegionalPolicy.",
+      "details": {
+        "reason": "No output from LLM/Agent."
+      }
+    },
+    {
+      "time": 1748022088.7001293,
+      "action": "Clarification attempt 2/2 for ROOT_Default_MajorHybrid/3.0_PlanningPolicyFramework/3.2_RegionalPolicy.",
+      "details": {
+        "reason": "No output from LLM/Agent."
+      }
+    },
+    {
+      "time": 1748022098.4012527,
+      "action": "Node ROOT_Default_MajorHybrid/3.0_PlanningPolicyFramework/3.2_RegionalPolicy main intent done. Status: COMPLETED_WITH_CLARIFICATION_NEEDED, Conf: 0.05",
+      "details": {}
+    }
+  ],
+  "status": "COMPLETED_WITH_CLARIFICATION_NEEDED",
+  "result_summary": {
+    "final_confidence_orch": 0.05,
+    "output_keys": [
+      "status",
+      "node_id",
+      "final_synthesized_text_preview",
+      "final_structured_data",
+      "confidence_score",
+      "error"
+    ]
+  }
+}
+{
+  "log_id": "315beb8a-2588-4e18-90bc-7b1fec5e5cda",
+  "intent_id": "cc0db6b7-888d-4b38-8511-798e3c23c3e7",
+  "task_description": "Clarif Intent for Node ROOT_Default_MajorHybrid/3.0_PlanningPolicyFramework/3.2_RegionalPolicy, Attempt 1",
+  "timestamp_start": 1748022079.0749657,
+  "timestamp_end": 1748022088.700126,
+  "actions": [
+    {
+      "time": 1748022079.0749722,
+      "action": "Parent Node Log ID",
+      "details": {
+        "id": "954c4e9a-1156-4d6f-8f32-c7df281218b7"
+      }
+    },
+    {
+      "time": 1748022079.0749745,
+      "action": "LLM defining clarification intent spec",
+      "details": {
+        "original_reason": "No output from LLM/Agent."
+      }
+    },
+    {
+      "time": 1748022088.700072,
+      "action": "Clarification spec generated by LLM.",
+      "details": {
+        "original_intent_id": "b580fddd-1864-4f20-9f42-83074a86c5a8",
+        "spec_preview": "{\n  \"intent_id\": \"regional_policy_summary_earlscourt_development\",\n  \"parent_node_id\": \"ROOT_Default_MajorHybrid/3.0_PlanningPolicyFramework/3.2_Regio"
+      }
+    },
+    {
+      "time": 1748022088.7001138,
+      "action": "Intent processing started by NodeProcessor V8+",
+      "details": {}
+    },
+    {
+      "time": 1748022088.700117,
+      "action": "WARN: Intent no primary action.",
+      "details": {}
+    },
+    {
+      "time": 1748022088.7001188,
+      "action": "Satisfaction check",
+      "details": {
+        "criteria_len": 1
+      }
+    }
+  ],
+  "status": "COMPLETED_WITH_CLARIFICATION_NEEDED",
+  "result_summary": {
+    "conf": 0.05,
+    "out_prev": "None"
+  }
+}
+{
+  "log_id": "80712afd-b681-48fd-8c8a-2574d29ca38f",
+  "intent_id": "c12e437e-0ea6-46fe-a475-c8092ac83c83",
+  "task_description": "Clarif Intent for Node ROOT_Default_MajorHybrid/3.0_PlanningPolicyFramework/3.2_RegionalPolicy, Attempt 2",
+  "timestamp_start": 1748022088.700133,
+  "timestamp_end": 1748022098.4012465,
+  "actions": [
+    {
+      "time": 1748022088.7001355,
+      "action": "Parent Node Log ID",
+      "details": {
+        "id": "954c4e9a-1156-4d6f-8f32-c7df281218b7"
+      }
+    },
+    {
+      "time": 1748022088.7001367,
+      "action": "LLM defining clarification intent spec",
+      "details": {
+        "original_reason": "No output from LLM/Agent."
+      }
+    },
+    {
+      "time": 1748022098.4011958,
+      "action": "Clarification spec generated by LLM.",
+      "details": {
+        "original_intent_id": "cc0db6b7-888d-4b38-8511-798e3c23c3e7",
+        "spec_preview": "{\n  \"intent_id\": \"regional_policy_summary_earlscourt_development\",\n  \"parent_node_id\": \"ROOT_Default_MajorHybrid/3.0_PlanningPolicyFramework/3.2_Regio"
+      }
+    },
+    {
+      "time": 1748022098.4012349,
+      "action": "Intent processing started by NodeProcessor V8+",
+      "details": {}
+    },
+    {
+      "time": 1748022098.4012375,
+      "action": "WARN: Intent no primary action.",
+      "details": {}
+    },
+    {
+      "time": 1748022098.4012392,
+      "action": "Satisfaction check",
+      "details": {
+        "criteria_len": 1
+      }
+    }
+  ],
+  "status": "COMPLETED_WITH_CLARIFICATION_NEEDED",
+  "result_summary": {
+    "conf": 0.05,
+    "out_prev": "None"
+  }
+}
+{
+  "log_id": "b799a330-77a0-4207-b2ca-0f6d50e68d3f",
+  "intent_id": "ef008a96-ac90-4d78-9f82-4f45039605ac",
+  "task_description": "MRM Orchestration for Node: ROOT_Default_MajorHybrid/3.0_PlanningPolicyFramework/3.3_LocalPlanRBKC",
+  "timestamp_start": 1748022098.4012647,
+  "timestamp_end": 1748022114.7099571,
+  "actions": [
+    {
+      "time": 1748022098.4012656,
+      "action": "Processing node: ROOT_Default_MajorHybrid/3.0_PlanningPolicyFramework/3.3_LocalPlanRBKC (Type: LocalPolicy_RBKC)",
+      "details": {}
+    },
+    {
+      "time": 1748022098.401267,
+      "action": "Defining main processing intent for node ROOT_Default_MajorHybrid/3.0_PlanningPolicyFramework/3.3_LocalPlanRBKC.",
+      "details": {}
+    },
+    {
+      "time": 1748022098.401269,
+      "action": "LLM-driven Intent definition started by IntentDefiner",
+      "details": {}
+    },
+    {
+      "time": 1748022098.4018502,
+      "action": "Prompting IntentDefiner LLM for Intent Spec",
+      "details": {
+        "prompt_len": 1942
+      }
+    },
+    {
+      "time": 1748022114.7098892,
+      "action": "IntentDefiner LLM generated Intent Spec",
+      "details": {
+        "keys": [
+          "task_type",
+          "assessment_focus",
+          "policy_context_tags_to_consider",
+          "retrieval_config",
+          "data_requirements_schema",
+          "agent_to_invoke",
+          "agent_input_data_preparation_notes",
+          "output_format_request_for_llm"
+        ]
+      }
+    },
+    {
+      "time": 1748022114.7099004,
+      "action": "Injected missing required fields into intent spec: ['parent_node_id', 'application_refs']",
+      "details": {
+        "parent_node_id": "ROOT_Default_MajorHybrid/3.0_PlanningPolicyFramework/3.3_LocalPlanRBKC",
+        "application_refs": [
+          "ECDC_EarlsCourt_App"
+        ]
+      }
+    },
+    {
+      "time": 1748022114.7099411,
+      "action": "Intent processing started by NodeProcessor V8+",
+      "details": {}
+    },
+    {
+      "time": 1748022114.7099538,
+      "action": "Node ROOT_Default_MajorHybrid/3.0_PlanningPolicyFramework/3.3_LocalPlanRBKC main intent done. Status: FAILED, Conf: 0.05",
+      "details": {}
+    }
+  ],
+  "status": "FAILED",
+  "result_summary": {
+    "final_confidence_orch": 0.05,
+    "output_keys": [
+      "status",
+      "node_id",
+      "final_synthesized_text_preview",
+      "final_structured_data",
+      "confidence_score",
+      "error"
+    ]
+  }
+}
+{
+  "log_id": "06446077-f65b-4c7a-b970-fa6110c2d693",
+  "intent_id": "66336e75-d940-41dd-9691-cd93e36c9514",
+  "task_description": "MRM Orchestration for Node: ROOT_Default_MajorHybrid/3.0_PlanningPolicyFramework/3.4_LocalPlanLBHF",
+  "timestamp_start": 1748022114.7099621,
+  "timestamp_end": 1748022148.80975,
+  "actions": [
+    {
+      "time": 1748022114.7099633,
+      "action": "Processing node: ROOT_Default_MajorHybrid/3.0_PlanningPolicyFramework/3.4_LocalPlanLBHF (Type: LocalPolicy_LBHF)",
+      "details": {}
+    },
+    {
+      "time": 1748022114.7099645,
+      "action": "Defining main processing intent for node ROOT_Default_MajorHybrid/3.0_PlanningPolicyFramework/3.4_LocalPlanLBHF.",
+      "details": {}
+    },
+    {
+      "time": 1748022114.7099664,
+      "action": "LLM-driven Intent definition started by IntentDefiner",
+      "details": {}
+    },
+    {
+      "time": 1748022114.7104335,
+      "action": "Prompting IntentDefiner LLM for Intent Spec",
+      "details": {
+        "prompt_len": 1943
+      }
+    },
+    {
+      "time": 1748022127.4078336,
+      "action": "IntentDefiner LLM generated Intent Spec",
+      "details": {
+        "keys": [
+          "task_type",
+          "assessment_focus",
+          "policy_context_tags_to_consider",
+          "retrieval_config",
+          "data_requirements_schema",
+          "agent_to_invoke",
+          "agent_input_data_preparation_notes",
+          "output_format_request_for_llm"
+        ]
+      }
+    },
+    {
+      "time": 1748022127.4078493,
+      "action": "Injected missing required fields into intent spec: ['parent_node_id', 'application_refs']",
+      "details": {
+        "parent_node_id": "ROOT_Default_MajorHybrid/3.0_PlanningPolicyFramework/3.4_LocalPlanLBHF",
+        "application_refs": [
+          "ECDC_EarlsCourt_App"
+        ]
+      }
+    },
+    {
+      "time": 1748022127.4078882,
+      "action": "Intent processing started by NodeProcessor V8+",
+      "details": {}
+    },
+    {
+      "time": 1748022127.407892,
+      "action": "WARN: Intent no primary action.",
+      "details": {}
+    },
+    {
+      "time": 1748022127.4078937,
+      "action": "Satisfaction check",
+      "details": {
+        "criteria_len": 1
+      }
+    },
+    {
+      "time": 1748022127.4079144,
+      "action": "Clarification attempt 1/2 for ROOT_Default_MajorHybrid/3.0_PlanningPolicyFramework/3.4_LocalPlanLBHF.",
+      "details": {
+        "reason": "No output from LLM/Agent."
+      }
+    },
+    {
+      "time": 1748022135.90777,
+      "action": "Clarification attempt 2/2 for ROOT_Default_MajorHybrid/3.0_PlanningPolicyFramework/3.4_LocalPlanLBHF.",
+      "details": {
+        "reason": "No output from LLM/Agent."
+      }
+    },
+    {
+      "time": 1748022148.809746,
+      "action": "Node ROOT_Default_MajorHybrid/3.0_PlanningPolicyFramework/3.4_LocalPlanLBHF main intent done. Status: COMPLETED_WITH_CLARIFICATION_NEEDED, Conf: 0.05",
+      "details": {}
+    }
+  ],
+  "status": "COMPLETED_WITH_CLARIFICATION_NEEDED",
+  "result_summary": {
+    "final_confidence_orch": 0.05,
+    "output_keys": [
+      "status",
+      "node_id",
+      "final_synthesized_text_preview",
+      "final_structured_data",
+      "confidence_score",
+      "error"
+    ]
+  }
+}
+{
+  "log_id": "7f50f5a1-421a-4029-8964-c8d904d0d052",
+  "intent_id": "d3f01738-2b67-432c-8b2f-226f23080e63",
+  "task_description": "Clarif Intent for Node ROOT_Default_MajorHybrid/3.0_PlanningPolicyFramework/3.4_LocalPlanLBHF, Attempt 1",
+  "timestamp_start": 1748022127.407922,
+  "timestamp_end": 1748022135.907767,
+  "actions": [
+    {
+      "time": 1748022127.407928,
+      "action": "Parent Node Log ID",
+      "details": {
+        "id": "06446077-f65b-4c7a-b970-fa6110c2d693"
+      }
+    },
+    {
+      "time": 1748022127.4079301,
+      "action": "LLM defining clarification intent spec",
+      "details": {
+        "original_reason": "No output from LLM/Agent."
+      }
+    },
+    {
+      "time": 1748022135.9077256,
+      "action": "Clarification spec generated by LLM.",
+      "details": {
+        "original_intent_id": "66336e75-d940-41dd-9691-cd93e36c9514",
+        "spec_preview": "{\n  \"intent_name\": \"ExtractRelevantLocalPlanPolicies_ECDC\",\n  \"description\": \"To specifically identify and extract policy numbers, titles, and brief s"
+      }
+    },
+    {
+      "time": 1748022135.907757,
+      "action": "Intent processing started by NodeProcessor V8+",
+      "details": {}
+    },
+    {
+      "time": 1748022135.90776,
+      "action": "WARN: Intent no primary action.",
+      "details": {}
+    },
+    {
+      "time": 1748022135.907761,
+      "action": "Satisfaction check",
+      "details": {
+        "criteria_len": 1
+      }
+    }
+  ],
+  "status": "COMPLETED_WITH_CLARIFICATION_NEEDED",
+  "result_summary": {
+    "conf": 0.05,
+    "out_prev": "None"
+  }
+}
+{
+  "log_id": "1788899e-670e-412a-bb61-dd73a1e79231",
+  "intent_id": "61554538-9d67-4282-8fa6-8a3eea1a914a",
+  "task_description": "Clarif Intent for Node ROOT_Default_MajorHybrid/3.0_PlanningPolicyFramework/3.4_LocalPlanLBHF, Attempt 2",
+  "timestamp_start": 1748022135.9077735,
+  "timestamp_end": 1748022148.8097398,
+  "actions": [
+    {
+      "time": 1748022135.907776,
+      "action": "Parent Node Log ID",
+      "details": {
+        "id": "06446077-f65b-4c7a-b970-fa6110c2d693"
+      }
+    },
+    {
+      "time": 1748022135.907777,
+      "action": "LLM defining clarification intent spec",
+      "details": {
+        "original_reason": "No output from LLM/Agent."
+      }
+    },
+    {
+      "time": 1748022148.80969,
+      "action": "Clarification spec generated by LLM.",
+      "details": {
+        "original_intent_id": "d3f01738-2b67-432c-8b2f-226f23080e63",
+        "spec_preview": "{\n  \"intent_name\": \"earlscourt_local_plan_policy_analysis\",\n  \"description\": \"Extract and summarize key planning policies from the LBHF Local Plan (No"
+      }
+    },
+    {
+      "time": 1748022148.809701,
+      "action": "Injected missing required fields into clarification intent spec: ['task_type']",
+      "details": {
+        "task_type": "LocalPolicy_LBHF"
+      }
+    },
+    {
+      "time": 1748022148.809729,
+      "action": "Intent processing started by NodeProcessor V8+",
+      "details": {}
+    },
+    {
+      "time": 1748022148.8097317,
+      "action": "WARN: Intent no primary action.",
+      "details": {}
+    },
+    {
+      "time": 1748022148.8097332,
+      "action": "Satisfaction check",
+      "details": {
+        "criteria_len": 1
+      }
+    }
+  ],
+  "status": "COMPLETED_WITH_CLARIFICATION_NEEDED",
+  "result_summary": {
+    "conf": 0.05,
+    "out_prev": "None"
+  }
+}
+{
+  "log_id": "aec03612-c8f6-40b9-a844-bb032ce4c636",
+  "intent_id": "56f3296b-5b2f-4704-909c-e9012f26206d",
+  "task_description": "MRM Orchestration for Node: ROOT_Default_MajorHybrid/3.0_PlanningPolicyFramework/3.5_SPDsAndSPGs",
+  "timestamp_start": 1748022148.8097577,
+  "timestamp_end": 1748022161.3002987,
+  "actions": [
+    {
+      "time": 1748022148.8097587,
+      "action": "Processing node: ROOT_Default_MajorHybrid/3.0_PlanningPolicyFramework/3.5_SPDsAndSPGs (Type: SupplementaryGuidance)",
+      "details": {}
+    },
+    {
+      "time": 1748022148.80976,
+      "action": "Defining main processing intent for node ROOT_Default_MajorHybrid/3.0_PlanningPolicyFramework/3.5_SPDsAndSPGs.",
+      "details": {}
+    },
+    {
+      "time": 1748022148.809762,
+      "action": "LLM-driven Intent definition started by IntentDefiner",
+      "details": {}
+    },
+    {
+      "time": 1748022148.8103561,
+      "action": "Prompting IntentDefiner LLM for Intent Spec",
+      "details": {
+        "prompt_len": 1949
+      }
+    },
+    {
+      "time": 1748022161.300238,
+      "action": "IntentDefiner LLM generated Intent Spec",
+      "details": {
+        "keys": [
+          "task_type",
+          "assessment_focus",
+          "policy_context_tags_to_consider",
+          "retrieval_config",
+          "data_requirements_schema",
+          "agent_to_invoke",
+          "agent_input_data_preparation_notes",
+          "output_format_request_for_llm"
+        ]
+      }
+    },
+    {
+      "time": 1748022161.3002515,
+      "action": "Injected missing required fields into intent spec: ['parent_node_id', 'application_refs']",
+      "details": {
+        "parent_node_id": "ROOT_Default_MajorHybrid/3.0_PlanningPolicyFramework/3.5_SPDsAndSPGs",
+        "application_refs": [
+          "ECDC_EarlsCourt_App"
+        ]
+      }
+    },
+    {
+      "time": 1748022161.3002808,
+      "action": "Intent processing started by NodeProcessor V8+",
+      "details": {}
+    },
+    {
+      "time": 1748022161.300295,
+      "action": "Node ROOT_Default_MajorHybrid/3.0_PlanningPolicyFramework/3.5_SPDsAndSPGs main intent done. Status: FAILED, Conf: 0.05",
+      "details": {}
+    }
+  ],
+  "status": "FAILED",
+  "result_summary": {
+    "final_confidence_orch": 0.05,
+    "output_keys": [
+      "status",
+      "node_id",
+      "final_synthesized_text_preview",
+      "final_structured_data",
+      "confidence_score",
+      "error"
+    ]
+  }
+}
+{
+  "log_id": "68a37035-6157-43a0-915d-cf764465080e",
+  "intent_id": "1e141919-027a-434a-8e47-667de312a102",
+  "task_description": "MRM Orchestration for Node: ROOT_Default_MajorHybrid/3.0_PlanningPolicyFramework/3.6_EmergingPolicy",
+  "timestamp_start": 1748022161.3003044,
+  "timestamp_end": 1748022176.1540306,
+  "actions": [
+    {
+      "time": 1748022161.3003051,
+      "action": "Processing node: ROOT_Default_MajorHybrid/3.0_PlanningPolicyFramework/3.6_EmergingPolicy (Type: EmergingPolicy)",
+      "details": {}
+    },
+    {
+      "time": 1748022161.3003068,
+      "action": "Defining main processing intent for node ROOT_Default_MajorHybrid/3.0_PlanningPolicyFramework/3.6_EmergingPolicy.",
+      "details": {}
+    },
+    {
+      "time": 1748022161.3003087,
+      "action": "LLM-driven Intent definition started by IntentDefiner",
+      "details": {}
+    },
+    {
+      "time": 1748022161.3008661,
+      "action": "Prompting IntentDefiner LLM for Intent Spec",
+      "details": {
+        "prompt_len": 1952
+      }
+    },
+    {
+      "time": 1748022176.1539578,
+      "action": "IntentDefiner LLM generated Intent Spec",
+      "details": {
+        "keys": [
+          "task_type",
+          "assessment_focus",
+          "policy_context_tags_to_consider",
+          "retrieval_config",
+          "data_requirements_schema",
+          "agent_to_invoke",
+          "agent_input_data_preparation_notes",
+          "output_format_request_for_llm"
+        ]
+      }
+    },
+    {
+      "time": 1748022176.153974,
+      "action": "Injected missing required fields into intent spec: ['parent_node_id', 'application_refs']",
+      "details": {
+        "parent_node_id": "ROOT_Default_MajorHybrid/3.0_PlanningPolicyFramework/3.6_EmergingPolicy",
+        "application_refs": [
+          "ECDC_EarlsCourt_App"
+        ]
+      }
+    },
+    {
+      "time": 1748022176.1540103,
+      "action": "Intent processing started by NodeProcessor V8+",
+      "details": {}
+    },
+    {
+      "time": 1748022176.1540258,
+      "action": "Node ROOT_Default_MajorHybrid/3.0_PlanningPolicyFramework/3.6_EmergingPolicy main intent done. Status: FAILED, Conf: 0.05",
+      "details": {}
+    }
+  ],
+  "status": "FAILED",
+  "result_summary": {
+    "final_confidence_orch": 0.05,
+    "output_keys": [
+      "status",
+      "node_id",
+      "final_synthesized_text_preview",
+      "final_structured_data",
+      "confidence_score",
+      "error"
+    ]
+  }
+}
+{
+  "log_id": "6cb03f10-4666-4787-843e-2fa200187369",
+  "intent_id": null,
+  "task_description": "MRM Orchestration for Node: ROOT_Default_MajorHybrid/4.0_AssessmentOfMaterialConsiderations",
+  "timestamp_start": 1748022193.3547323,
+  "timestamp_end": 1748022193.354743,
+  "actions": [
+    {
+      "time": 1748022193.3547332,
+      "action": "Processing node: ROOT_Default_MajorHybrid/4.0_AssessmentOfMaterialConsiderations (Type: MaterialConsiderationsBlock_Parent)",
+      "details": {}
+    },
+    {
+      "time": 1748022193.3547368,
+      "action": "Checking 3 dependencies: ['ROOT_Default_MajorHybrid/1.0_SiteAndApplication/1.2_ProposalInDetail', 'ROOT_Default_MajorHybrid/2.0_ConsultationResponses', 'ROOT_Default_MajorHybrid/3.0_PlanningPolicyFramework']",
+      "details": {}
+    },
+    {
+      "time": 1748022193.3547404,
+      "action": "Dependency ROOT_Default_MajorHybrid/1.0_SiteAndApplication/1.2_ProposalInDetail not met. Status: FAILED. Skipping.",
+      "details": {}
+    }
+  ],
+  "status": "SKIPPED",
+  "result_summary": {
+    "reason": "Dependencies not met."
+  }
+}
+{
+  "log_id": "dee62db1-7fea-47b3-84cb-12f50e99f509",
+  "intent_id": null,
+  "task_description": "MRM Orchestration for Node: ROOT_Default_MajorHybrid/5.0_OtherRelevantMatters",
+  "timestamp_start": 1748022193.3547473,
+  "timestamp_end": 1748022193.354752,
+  "actions": [
+    {
+      "time": 1748022193.3547482,
+      "action": "Processing node: ROOT_Default_MajorHybrid/5.0_OtherRelevantMatters (Type: OtherConsiderationsBlock)",
+      "details": {}
+    },
+    {
+      "time": 1748022193.3547497,
+      "action": "Checking 1 dependencies: ['ROOT_Default_MajorHybrid/4.0_AssessmentOfMaterialConsiderations']",
+      "details": {}
+    },
+    {
+      "time": 1748022193.3547516,
+      "action": "Dependency ROOT_Default_MajorHybrid/4.0_AssessmentOfMaterialConsiderations not met. Status: SKIPPED. Skipping.",
+      "details": {}
+    }
+  ],
+  "status": "SKIPPED",
+  "result_summary": {
+    "reason": "Dependencies not met."
+  }
+}
+{
+  "log_id": "ddee897f-aae0-4433-a62d-0a491c7afe23",
+  "intent_id": null,
+  "task_description": "MRM Orchestration for Node: ROOT_Default_MajorHybrid/6.0_PlanningBalanceAndConclusion",
+  "timestamp_start": 1748022193.3547556,
+  "timestamp_end": 1748022193.3547597,
+  "actions": [
+    {
+      "time": 1748022193.3547564,
+      "action": "Processing node: ROOT_Default_MajorHybrid/6.0_PlanningBalanceAndConclusion (Type: PlanningBalanceAndConclusionBlock)",
+      "details": {}
+    },
+    {
+      "time": 1748022193.3547578,
+      "action": "Checking 2 dependencies: ['ROOT_Default_MajorHybrid/4.0_AssessmentOfMaterialConsiderations', 'ROOT_Default_MajorHybrid/5.0_OtherRelevantMatters']",
+      "details": {}
+    },
+    {
+      "time": 1748022193.354759,
+      "action": "Dependency ROOT_Default_MajorHybrid/4.0_AssessmentOfMaterialConsiderations not met. Status: SKIPPED. Skipping.",
+      "details": {}
+    }
+  ],
+  "status": "SKIPPED",
+  "result_summary": {
+    "reason": "Dependencies not met."
+  }
+}
+{
+  "log_id": "82a7a56e-763f-4923-b58b-dd7ed4868591",
+  "intent_id": null,
+  "task_description": "MRM Orchestration for Node: ROOT_Default_MajorHybrid/7.0_Recommendation",
+  "timestamp_start": 1748022193.3547626,
+  "timestamp_end": 1748022193.3547807,
+  "actions": [
+    {
+      "time": 1748022193.3547633,
+      "action": "Processing node: ROOT_Default_MajorHybrid/7.0_Recommendation (Type: FinalRecommendationBlock)",
+      "details": {}
+    },
+    {
+      "time": 1748022193.3547645,
+      "action": "Checking 1 dependencies: ['ROOT_Default_MajorHybrid/6.0_PlanningBalanceAndConclusion']",
+      "details": {}
+    },
+    {
+      "time": 1748022193.354778,
+      "action": "Dependency ROOT_Default_MajorHybrid/6.0_PlanningBalanceAndConclusion not met. Status: SKIPPED. Skipping.",
+      "details": {}
+    }
+  ],
+  "status": "SKIPPED",
+  "result_summary": {
+    "reason": "Dependencies not met."
+  }
+}
+
+--- Closing Database Connection ---
+
+Total execution time: 237.86 seconds

@@ -1,2 +1,2 @@
 # mrm/__init__.py
-from .mrm_orchestrator import MRMOrchestrator
+from mrm.mrm_orchestrator import MRMOrchestrator
