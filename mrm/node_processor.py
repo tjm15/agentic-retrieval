@@ -3,14 +3,13 @@
 from core_types import ReasoningNode, Intent
 from retrieval.retriever import AgenticRetriever
 from agents.visual_heritage_agent import VisualHeritageAssessmentAgentGemini
-import google.generativeai as genai
 
 class NodeProcessor:
     def __init__(self, db_manager, policy_manager):
         self.db_manager = db_manager
         self.policy_manager = policy_manager
         self.retriever = AgenticRetriever(db_manager)
-        self.visual_heritage_agent = VisualHeritageAssessmentAgentGemini(genai.GenerativeModel("gemini-1.5-flash-latest"))
+        self.visual_heritage_agent = VisualHeritageAssessmentAgentGemini(model_name="gemini-1.5-flash-latest")
 
     def process_reasoning_tree(self, node: ReasoningNode):
         # Recursively process subnodes first
@@ -31,7 +30,11 @@ class NodeProcessor:
         # Retrieval step
         self.retriever.retrieve_and_prepare_context(intent)
         # Agent step
-        agent_result = self.visual_heritage_agent.process(intent, intent.agent_input_data)
+        agent_result = self.visual_heritage_agent.process(
+            intent,
+            intent.agent_input_data,
+            agent_specific_prompt_prefix=node.description
+        )
         intent.synthesized_text_output = agent_result["agent_output"]["generated_raw"]
         intent.structured_json_output = agent_result["agent_output"].get("structured_summary")
         node.intents_issued.append(intent)

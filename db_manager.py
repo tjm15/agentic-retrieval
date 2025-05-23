@@ -17,19 +17,37 @@ class DatabaseManager:
         try: self.conn = psycopg2.connect(**self.db_config); self.conn.autocommit = True
         except psycopg2.Error as e: print(f"ERROR: DB connection failed: {e}"); raise
     def execute_query(self, query, params=None, fetch_one=False, fetch_all=False):
-        if not self.conn or self.conn.closed: self._connect()
+        if not self.conn or self.conn.closed:
+            self._connect()
+        if not self.conn:
+            raise RuntimeError("Database connection is not established.")
         try:
             with self.conn.cursor(cursor_factory=RealDictCursor) as cur:
                 cur.execute(query, params)
-                if fetch_one: return cur.fetchone()
-                if fetch_all: return cur.fetchall()
+                if fetch_one:
+                    return cur.fetchone()
+                if fetch_all:
+                    return cur.fetchall()
                 return None
-        except psycopg2.Error as e: print(f"ERROR: DB Query failed: {e}\nQuery: {query[:500]}...\nParams: {params}"); raise
-    def add_document(self, fn: str, t: str, dt: str, s: str, pc: int, tags: List[str]=None) -> uuid.UUID:
-        did=uuid.uuid4(); q="INSERT INTO documents (doc_id,filename,title,document_type,source,page_count,upload_date,tags) VALUES (%s,%s,%s,%s,%s,%s,NOW(),%s) RETURNING doc_id;"; r=self.execute_query(q,(did,fn,t,dt,s,pc,tags or []),True); return r['doc_id'] if r else did
-    def add_document_chunk(self, did: uuid.UUID, pn: int, ct: str, s: Optional[str]=None, tags: List[str]=None) -> uuid.UUID:
-        cid=uuid.uuid4(); q="INSERT INTO document_chunks (chunk_id,doc_id,page_number,section,chunk_text,tags) VALUES (%s,%s,%s,%s,%s,%s) RETURNING chunk_id;"; r=self.execute_query(q,(cid,did,pn,s,ct,tags or []),True); cid_to_ret=r['chunk_id'] if r else cid
-        emb=get_embedding(ct); eq="INSERT INTO chunk_embeddings (chunk_id,embedding) VALUES (%s,%s);"; self.execute_query(eq,(cid_to_ret,emb)); return cid_to_ret
+        except psycopg2.Error as e:
+            print(f"ERROR: DB Query failed: {e}\nQuery: {query[:500]}...\nParams: {params}")
+            raise
+    def add_document(self, fn: str, t: str, dt: str, s: str, pc: int, tags: Optional[List[str]]=None) -> uuid.UUID:
+        tags = tags if tags is not None else []
+        did = uuid.uuid4()
+        q = "INSERT INTO documents (doc_id,filename,title,document_type,source,page_count,upload_date,tags) VALUES (%s,%s,%s,%s,%s,%s,NOW(),%s) RETURNING doc_id;"
+        r = self.execute_query(q, (did, fn, t, dt, s, pc, tags), True)
+        return r['doc_id'] if r else did
+    def add_document_chunk(self, did: uuid.UUID, pn: int, ct: str, s: Optional[str]=None, tags: Optional[List[str]]=None) -> uuid.UUID:
+        tags = tags if tags is not None else []
+        cid = uuid.uuid4()
+        q = "INSERT INTO document_chunks (chunk_id,doc_id,page_number,section,chunk_text,tags) VALUES (%s,%s,%s,%s,%s,%s) RETURNING chunk_id;"
+        r = self.execute_query(q, (cid, did, pn, s, ct, tags), True)
+        cid_to_ret = r['chunk_id'] if r else cid
+        emb = get_embedding(ct)
+        eq = "INSERT INTO chunk_embeddings (chunk_id,embedding) VALUES (%s,%s);"
+        self.execute_query(eq, (cid_to_ret, emb))
+        return cid_to_ret
     def get_full_document_text_by_id(self, did: uuid.UUID) -> Optional[str]:
         q="SELECT chunk_text FROM document_chunks WHERE doc_id = %s ORDER BY page_number, created_at;"; r=self.execute_query(q,(did,),True,True); return "\n\n".join([row['chunk_text'] for row in r]) if r else None
     def log_retrieval(self, qt: str, f: Optional[Dict], mcids: List[uuid.UUID], ac: str):

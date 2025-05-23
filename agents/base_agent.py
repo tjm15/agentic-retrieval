@@ -1,16 +1,18 @@
 # agents/base_agent.py
-from typing import Dict, Any, Optional, List
-import google.generativeai as genai # For genai.GenerativeModel type hint
+import time
+import json
+from typing import Any, Dict, List
+from config import GEMINI_API_KEY
+import google.generativeai as genai
 from core_types import Intent # Keep ProvenanceLog on Intent
-# No need to import config here if model_name is passed
 
 class BaseSubsidiaryAgent:
-    def __init__(self, agent_name: str, model_instance: genai.GenerativeModel): # Pass model instance
+    def __init__(self, agent_name: str, model_name: str):
         self.agent_name = agent_name
-        self.model = model_instance # Use the passed model (e.g., Gemini Flash instance)
-        print(f"INFO: Initialized BaseSubsidiaryAgent: {self.agent_name} with model.")
+        self.model_name = model_name
+        print(f"INFO: Initialized BaseSubsidiaryAgent: {self.agent_name} with model {self.model_name}.")
 
-    def _prepare_gemini_content(self, intent: Intent, agent_specific_prompt_prefix: str) -> List[Any]:
+    def _prepare_gemini_content(self, intent: Intent, agent_specific_prompt_prefix: str) -> list:
         # (Same logic as in the previous agents.py _prepare_gemini_content)
         parts: List[Any] = [agent_specific_prompt_prefix]
         # Add policy summaries if present on the intent
@@ -37,33 +39,32 @@ class BaseSubsidiaryAgent:
     def process(self, intent: Intent, agent_input_data: Dict, agent_specific_prompt_prefix: str) -> Dict[str, Any]:
         intent.provenance.add_action(f"Agent '{self.agent_name}' processing started", {"inputs": list(agent_input_data.keys())})
         gemini_content_parts = self._prepare_gemini_content(intent, agent_specific_prompt_prefix)
-        
         try:
-            time.sleep(0.6) # Agent rate limit
-            # Use temperature suitable for analytical tasks by agents
-            agent_gen_config = genai.types.GenerationConfig(temperature=0.1)
-            # If agent needs to output JSON, intent_definer should specify that in agent_input_data perhaps
-            if agent_input_data.get("expected_output_mime_type") == "application/json":
-                agent_gen_config.response_mime_type = "application/json"
-
-            response = self.model.generate_content(gemini_content_parts, generation_config=agent_gen_config, request_options={'timeout': 120})
-            
-            if not response.candidates or not response.candidates[0].content.parts:
-                raise Exception(f"Agent '{self.agent_name}' Gemini call blocked/empty. Reason: {response.prompt_feedback.block_reason if response.prompt_feedback else 'Unknown'}")
-            
-            generated_text_or_json_str = "".join([part.text for part in response.candidates[0].content.parts if hasattr(part, 'text')])
+            time.sleep(0.6)
+            response = genai.models.generate_content(
+                model=self.model_name,
+                contents=gemini_content_parts,
+                generation_config={"temperature": 0.1},
+                request_options={'timeout': 120},
+                api_key=GEMINI_API_KEY
+            )
+            candidates = getattr(response, 'candidates', None)
+            if not candidates or not getattr(candidates[0], 'content', None) or not getattr(candidates[0].content, 'parts', None):
+                block_reason = getattr(getattr(response, 'prompt_feedback', None), 'block_reason', 'Unknown')
+                raise Exception(f"Agent '{self.agent_name}' Gemini call blocked/empty. Reason: {block_reason}")
+            generated_text_or_json_str = "".join([getattr(part, 'text', str(part)) for part in candidates[0].content.parts])
             intent.provenance.add_action(f"Agent '{self.agent_name}' Gemini call successful")
-
             agent_output = {"generated_raw": generated_text_or_json_str}
-            if agent_gen_config.response_mime_type == "application/json":
-                try: agent_output["structured_payload"] = json.loads(generated_text_or_json_str)
-                except json.JSONDecodeError: agent_output["structured_payload_error"] = "Failed to parse agent JSON output"
-            
+            if agent_input_data.get("expected_output_mime_type") == "application/json":
+                try:
+                    agent_output["structured_payload"] = json.loads(generated_text_or_json_str)
+                except json.JSONDecodeError:
+                    agent_output["structured_payload_error"] = "Failed to parse agent JSON output"
             return {
                 "agent_name": self.agent_name,
-                "model_used": self.model.model_name, # Access model name from instance
+                "model_used": self.model_name,
                 "agent_output": agent_output,
-                "input_echo": agent_input_data # For audit
+                "input_echo": agent_input_data
             }
         except Exception as e:
             error_msg = f"Agent '{self.agent_name}' Gemini call failed: {type(e).__name__} - {e}"

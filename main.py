@@ -4,7 +4,8 @@ import psycopg2
 from dotenv import load_dotenv
 import time
 import os
-import google.generativeai as genai # For genai.configure
+
+import google.generativeai as genai
 
 # Modular imports
 from db_manager import DatabaseManager
@@ -17,8 +18,9 @@ from config import GEMINI_API_KEY, REPORT_TEMPLATE_DIR, POLICY_KB_DIR, MC_ONTOLO
 if __name__ == "__main__":
     start_time = time.time()
     load_dotenv()
-    if not GEMINI_API_KEY: print("CRITICAL: GEMINI_API_KEY is not set. Exiting."); exit(1)
-    genai.configure(api_key=GEMINI_API_KEY) # Configure Gemini globally here
+    if not GEMINI_API_KEY:
+        print("CRITICAL: GEMINI_API_KEY is not set. Exiting.")
+        exit(1)
 
     # Ensure knowledge base directories exist
     for kb_dir_path in [REPORT_TEMPLATE_DIR, POLICY_KB_DIR, MC_ONTOLOGY_DIR]:
@@ -37,10 +39,15 @@ if __name__ == "__main__":
 
         print("\n--- Ensuring Schema and Ingesting Minimal Sample Data ---")
         schema_file_path = "./schema.sql";
-        # (Schema and sample data ingestion logic - same as previous)
         try:
             with open(schema_file_path, "r") as f_schema:
-                cur = db_man.conn.cursor(); cur.execute("SELECT to_regclass('public.documents');"); table_exists = cur.fetchone()[0]; cur.close()
+                if db_man.conn is not None:
+                    cur = db_man.conn.cursor()
+                    cur.execute("SELECT to_regclass('public.documents');")
+                    table_exists = cur.fetchone()[0]
+                    cur.close()
+                else:
+                    raise RuntimeError("Database connection is not established.")
                 if not table_exists:
                     print("Executing schema.sql..."); db_man.execute_query(f_schema.read()); print("Schema executed.")
                     ug_doc_id = db_man.add_document("UserGuide_EC.pdf", "Earls Court User Guide", "UserGuide", "ECDC_EarlsCourt_App", 54)

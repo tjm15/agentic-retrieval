@@ -1,14 +1,13 @@
 # agents/visual_heritage_agent.py
 from typing import Dict, Any
-import google.generativeai as genai # For model type hint
-from .base_agent import BaseSubsidiaryAgent # Use BaseSubsidiaryAgent
-from core_types import Intent # For type hinting
+from core_types import Intent
+from .base_agent import BaseSubsidiaryAgent
 
 class VisualHeritageAssessmentAgentGemini(BaseSubsidiaryAgent):
-    def __init__(self, model_instance: genai.GenerativeModel): # Expect model instance
-        super().__init__("VisualHeritageAssessmentAgent_V1_Gemini", model_instance) # Pass model instance up
+    def __init__(self, model_name: str):
+        super().__init__("VisualHeritageAssessmentAgent_V1_Gemini", model_name)
 
-    def process(self, intent: Intent, agent_input_data: Dict) -> Dict[str, Any]:
+    def process(self, intent: Intent, agent_input_data: Dict, agent_specific_prompt_prefix: str) -> Dict[str, Any]:
         # agent_input_data comes from MRM's IntentDefiner, which used LLM to decide what this agent needs
         # Example: {"mrm_guidance_for_agent_input_prep": "Focus on Art Deco influences...",
         #           "visual_descriptions_text_query_result": "CGI shows...", (this would be populated by MRM sub-intents if complex)
