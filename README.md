@@ -3,9 +3,9 @@
 A modular, open-source framework for agentic, LLM-driven planning application assessment and report generation. This project demonstrates a generalized architecture for orchestrating reasoning, retrieval, and assessment using LLMs (e.g., Gemini), knowledge base managers, and specialized agents.
 
 ## Features
-- **Modular Orchestration:** Central MRM orchestrator coordinates intent definition, retrieval, and agentic assessment.
+- **Modular Orchestration:** Central `MRMOrchestrator` coordinates intent definition, retrieval, and agentic assessment.
 - **Knowledge Base Management:** Pluggable managers for report templates, material consideration ontology, and policy knowledge base.
-- **Agentic Reasoning:** Specialized agents (e.g., Visual Heritage Assessment) process context and generate structured outputs.
+- **Agentic Reasoning:** Specialized agents (e.g., `VisualHeritageAgent`) process context and generate structured outputs.
 - **Retrieval-Augmented Generation:** Hybrid and semantic retrieval from a Postgres/pgvector document store.
 - **Provenance Logging:** Track actions, context, and results for every reasoning step.
 - **Extensible:** Add new agents, templates, or ontologies for other planning domains.
@@ -19,6 +19,10 @@ agentic-retrieval/
 ├── db_manager.py
 ├── requirements.txt
 ├── schema.sql
+├── README.md
+├── DOCS.md
+├── LICENSE
+├── TODO.md
 ├── agents/
 │   ├── __init__.py
 │   ├── base_agent.py
@@ -81,9 +85,9 @@ python main.py
 - Minimal sample data is ingested for demonstration.
 
 ## How It Works
-- **main.py**: Entry point. Loads config, initializes managers, sets up DB, and runs the MRM orchestrator.
-- **MRM Orchestrator**: Builds a reasoning tree from the report template, issues intents, retrieves context, and invokes agents.
-- **Agents**: Specialized LLM-driven modules (e.g., VisualHeritageAssessmentAgentGemini) process context and generate structured outputs.
+- **main.py**: Entry point. Loads config, initializes managers, sets up DB, and runs the `MRMOrchestrator`.
+- **`MRMOrchestrator`**: Builds a reasoning tree from the report template, issues intents, retrieves context, and invokes agents.
+- **Agents**: Specialized LLM-driven modules (e.g., `VisualHeritageAgent`) process context and generate structured outputs.
 - **Knowledge Base Managers**: Handle report templates, material consideration ontology, and policy KB. Create default files if missing.
 - **Retrieval**: Hybrid and semantic search over document chunks using pgvector embeddings.
 
@@ -93,7 +97,7 @@ python main.py
 - **Expand ontology or policy KB** in their respective folders.
 
 ## License
-AGPLv3 License
+AGPLv3 License. See the `LICENSE` file for details.
 
 ## Disclaimer
 This is a conceptual, research-oriented project. LLM outputs and agent logic are for demonstration and may require further development for production use.

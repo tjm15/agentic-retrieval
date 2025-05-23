@@ -55,7 +55,7 @@ class MRMOrchestrator:
         print(f"INFO: AgenticRetriever initialized with DB: {type(db_manager).__name__}")
 
         self.subsidiary_agents: Dict[str, BaseSubsidiaryAgent] = {
-            "VisualHeritageAssessment_GeminiFlash_V1": VisualHeritageAssessmentAgent(subsidiary_llm_instance),
+            "VisualHeritageAssessment_GeminiFlash_V1": VisualHeritageAgent(agent_name="VisualHeritageAssessment_GeminiFlash_V1", model_instance=subsidiary_llm_instance),
         }
         print(f"INFO: Initialized {len(self.subsidiary_agents)} subsidiary agents: {list(self.subsidiary_agents.keys())}")
 
