@@ -28,6 +28,10 @@ CREATE TABLE IF NOT EXISTS chunk_embeddings (
   embedding vector(768)
 );
 
+-- Create index for efficient vector similarity search
+CREATE INDEX IF NOT EXISTS idx_chunk_embeddings_embedding 
+ON chunk_embeddings USING hnsw (embedding vector_l2_ops);
+
 CREATE TABLE IF NOT EXISTS retrieval_logs (
   log_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   timestamp TIMESTAMP DEFAULT timezone('utc', now()),

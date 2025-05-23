@@ -3,6 +3,9 @@ import json
 import time
 from typing import Dict, Optional, Any, List, Tuple 
 from google import genai
+from typing import cast
+from google.genai.types import GenerateContentConfigDict
+
 from config import MRM_CORE_GEN_CONFIG, MRM_MODEL_NAME
 
 from core_types import ReasoningNode, Intent, IntentStatus, ProvenanceLog
@@ -129,14 +132,16 @@ class NodeProcessor:
             gemini_mrm_content = self._prepare_mrm_synthesis_content(intent, mrm_synthesis_prompt)
             try:
                 intent.provenance.add_action("MRM Synthesis (Gemini Pro) call", {"prompt_len": sum(len(str(p)) for p in gemini_mrm_content)})
-                config = MRM_CORE_GEN_CONFIG.copy()  # Use centralized config
+                config = cast(GenerateContentConfigDict, dict(MRM_CORE_GEN_CONFIG))  # Use centralized config
                 if "JSON" in intent.output_format_request.upper() or intent.data_requirements.get("schema"):
                     config["response_mime_type"] = "application/json"
+                print(f"DEBUG: NodeProcessor sending MRM synthesis request for {intent.parent_node_id} - may take 2-5 minutes...")
                 response = self.client.models.generate_content(
                     model=self.model_name,
                     contents=gemini_mrm_content,
-                    config=config  # type: ignore
+                    config=config
                 )
+                print(f"DEBUG: NodeProcessor received MRM synthesis response for {intent.parent_node_id}")
                 text = getattr(response, "text", None)
                 if not text and hasattr(response, "candidates") and response.candidates:
                     first_candidate = response.candidates[0]

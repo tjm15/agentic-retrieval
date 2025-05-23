@@ -19,6 +19,7 @@ from mrm.intent_definer import IntentDefiner
 from mrm.node_processor import NodeProcessor
 
 from agents.visual_heritage_agent import VisualHeritageAgent # MODIFIED: Corrected class name
+from agents.policy_analysis_agent import PolicyAnalysisAgent, DefaultPlanningAnalystAgent, LLMPlanningPolicyAnalyst
 from agents.base_agent import BaseSubsidiaryAgent 
 
 from config import GEMINI_API_KEY, MRM_MODEL_NAME, SUBSIDIARY_AGENT_MODEL_NAME, DB_CONFIG, REPORT_TEMPLATE_DIR, MC_ONTOLOGY_DIR, POLICY_KB_DIR
@@ -49,6 +50,9 @@ class MRMOrchestrator:
 
         self.subsidiary_agents: Dict[str, BaseSubsidiaryAgent] = {
             "VisualHeritageAssessment_GeminiFlash_V1": VisualHeritageAgent(agent_name="VisualHeritageAssessment_GeminiFlash_V1"),
+            "PolicyAnalysisAgent": PolicyAnalysisAgent(agent_name="PolicyAnalysisAgent"),
+            "default_planning_analyst_agent": DefaultPlanningAnalystAgent(agent_name="default_planning_analyst_agent"),
+            "LLM_PlanningPolicyAnalyst": LLMPlanningPolicyAnalyst(agent_name="LLM_PlanningPolicyAnalyst"),
         }
         print(f"INFO: Initialized {len(self.subsidiary_agents)} subsidiary agents: {list(self.subsidiary_agents.keys())}")
 
@@ -114,6 +118,7 @@ class MRMOrchestrator:
             node.generic_material_considerations = section_data.get("generic_material_considerations", [])
             node.specific_policy_focus_ids = section_data.get("specific_policy_focus_ids", [])
             node.key_evidence_document_types = section_data.get("key_evidence_document_types", [])
+            node.thematic_policy_descriptors = section_data.get("thematic_policy_descriptors", [])
             node.linked_ontology_entry_id = section_data.get("linked_ontology_entry_id")
             node.is_dynamic_parent_node = section_data.get("is_dynamic_parent_node", False)
             node.agent_to_invoke_hint = section_data.get("agent_to_invoke_hint")
@@ -292,16 +297,23 @@ class MRMOrchestrator:
             if current_intent_spec is not None and isinstance(current_intent_spec, dict):
                 # --- Robustify intent spec dict: inject required fields if missing ---
                 injected_fields = []
-                if not current_intent_spec.get('parent_node_id'):
+                
+                # Check for parent_node_id - ensure it's not None, empty string, or missing
+                if not current_intent_spec.get('parent_node_id') or current_intent_spec.get('parent_node_id') == '':
                     current_intent_spec['parent_node_id'] = node.node_id
                     injected_fields.append('parent_node_id')
-                if not current_intent_spec.get('application_refs'):
+                
+                # Check for application_refs - ensure it's not None, empty list, or missing
+                if not current_intent_spec.get('application_refs') or current_intent_spec.get('application_refs') == []:
                     current_intent_spec['application_refs'] = application_refs
                     injected_fields.append('application_refs')
-                if not current_intent_spec.get('task_type'):
+                
+                # Check for task_type - ensure it's not None, empty string, or missing
+                if not current_intent_spec.get('task_type') or current_intent_spec.get('task_type') == '':
                     # Use node.node_type_tag if available, else fallback to 'GENERAL'
                     current_intent_spec['task_type'] = getattr(node, 'node_type_tag', None) or 'GENERAL'
                     injected_fields.append('task_type')
+                
                 if injected_fields and node_provenance:
                     node_provenance.add_action(
                         f"Injected missing required fields into intent spec: {injected_fields}",
@@ -339,15 +351,22 @@ class MRMOrchestrator:
                         # --- Robustify clarification_spec: inject required fields if missing ---
                         if clarification_spec is not None and isinstance(clarification_spec, dict):
                             injected_fields = []
-                            if not clarification_spec.get('parent_node_id'):
+                            
+                            # Check for parent_node_id - ensure it's not None, empty string, or missing
+                            if not clarification_spec.get('parent_node_id') or clarification_spec.get('parent_node_id') == '':
                                 clarification_spec['parent_node_id'] = node.node_id
                                 injected_fields.append('parent_node_id')
-                            if not clarification_spec.get('application_refs'):
+                            
+                            # Check for application_refs - ensure it's not None, empty list, or missing
+                            if not clarification_spec.get('application_refs') or clarification_spec.get('application_refs') == []:
                                 clarification_spec['application_refs'] = application_refs
                                 injected_fields.append('application_refs')
-                            if not clarification_spec.get('task_type'):
+                            
+                            # Check for task_type - ensure it's not None, empty string, or missing
+                            if not clarification_spec.get('task_type') or clarification_spec.get('task_type') == '':
                                 clarification_spec['task_type'] = getattr(node, 'node_type_tag', None) or 'GENERAL'
                                 injected_fields.append('task_type')
+                            
                             if injected_fields and clarif_provenance:
                                 clarif_provenance.add_action(
                                     f"Injected missing required fields into clarification intent spec: {injected_fields}",

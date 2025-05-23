@@ -1,6 +1,8 @@
 # config.py
 import os
 from dotenv import load_dotenv
+from typing import cast
+from google.genai.types import GenerateContentConfigDict
 
 load_dotenv()
 
@@ -44,7 +46,7 @@ def build_gemini_generation_config(
     top_k=None,
     response_mime_type=None,
     **kwargs
-):
+) -> GenerateContentConfigDict:
     config = {}
     if temperature is not None:
         config["temperature"] = temperature
@@ -57,7 +59,7 @@ def build_gemini_generation_config(
     if response_mime_type is not None:
         config["response_mime_type"] = response_mime_type
     config.update(kwargs)
-    return config
+    return cast(GenerateContentConfigDict, config)
 
 # Standard configs for each use case
 MRM_CORE_GEN_CONFIG = build_gemini_generation_config(

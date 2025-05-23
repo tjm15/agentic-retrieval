@@ -94,6 +94,7 @@ class ReasoningNode:
         self.node_id = node_id; self.description = description; self.status = IntentStatus.PENDING; self.application_refs: List[str] = []
         self.node_type_tag: Optional[str] = None; self.generic_material_considerations: List[str] = []
         self.specific_policy_focus_ids: List[str] = []; self.key_evidence_document_types: List[str] = []
+        self.thematic_policy_descriptors: List[str] = []  # NEW: For semantic policy search
         self.linked_ontology_entry_id: Optional[str] = None; self.is_dynamic_parent_node: bool = False
         self.agent_to_invoke_hint: Optional[str] = None; self.depends_on_nodes: List[str] = []
         self.sub_nodes: Dict[str, ReasoningNode] = {}; self.intents_issued: List[Intent] = []

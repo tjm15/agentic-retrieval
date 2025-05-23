@@ -141,10 +141,10 @@ class PolicyManager:
         if semantic_query:
             # Use the get_embedding function imported from db_manager
             query_embedding = db_get_embedding(semantic_query) 
-            final_query_parts[0] += ", ce.embedding <-> %s AS distance" # Add distance to SELECT
+            final_query_parts[0] += ", ce.embedding <-> %s::vector AS distance" # Add distance to SELECT
             from_join_clause += " JOIN chunk_embeddings ce ON dc.chunk_id = ce.chunk_id"
             # pgvector expects list for embedding param, insert at the beginning of sql_params
-            sql_params.insert(0, list(query_embedding)) 
+            sql_params.insert(0, query_embedding) 
             order_by_clause = "ORDER BY distance ASC"
         else:
             order_by_clause = "ORDER BY d.source, dc.page_number" # Default order if no semantic query

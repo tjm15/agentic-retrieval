@@ -9,6 +9,7 @@
       "node_type_tag": "IntroductionBlock",
       "generic_material_considerations": ["site_context", "proposal_details", "planning_history"],
       "specific_policy_focus_ids": ["LocalPlan_IntroductoryPolicy", "NPPF_Introduction"],
+      "thematic_policy_descriptors": ["establishing development context and baseline conditions", "site identification and characterization policies", "planning history assessment framework"],
       "depends_on_nodes": [],
       "sub_sections": [
         {
@@ -17,6 +18,7 @@
           "node_type_tag": "SiteDescription",
           "generic_material_considerations": ["site_identification", "existing_site_features", "area_character", "site_constraints_overview"],
           "specific_policy_focus_ids": ["LocalPlan_SiteContextPolicy", "NPPF_ContextAnalysis"],
+          "thematic_policy_descriptors": ["site character assessment and context analysis", "understanding existing urban fabric and development patterns", "identifying site constraints and opportunities"],
           "key_evidence_document_types": ["ApplicationForm", "SiteLocationPlan", "DAS_ContextAnalysis", "UserGuide_SiteOverview", "AerialPhotography", "SitePhotos"]
         },
         {
@@ -25,6 +27,7 @@
           "node_type_tag": "ProposalSummary",
           "generic_material_considerations": ["development_quantum", "land_use_mix", "phasing_strategy", "hybrid_application_nature", "detailed_component_assessment", "outline_component_framework"],
           "specific_policy_focus_ids": ["LocalPlan_DevelopmentManagementPolicy", "NPPF_ProposalDescription"],
+          "thematic_policy_descriptors": ["development quantum and density policies", "mixed-use development guidance", "phasing and delivery strategy requirements", "hybrid planning application assessment framework"],
           "key_evidence_document_types": ["DAS_ProposalDescription", "DevelopmentSpecification", "ParameterPlans", "UserGuide_ProposalDetails", "PhasingPlans", "PlanningStatement_ProposalSummary"]
         },
         {
@@ -33,6 +36,7 @@
           "node_type_tag": "PlanningHistory",
           "generic_material_considerations": ["precedent_decisions", "extant_permissions_implications", "lapsed_permissions_relevance", "site_history_constraints"],
           "specific_policy_focus_ids": ["LocalPlan_PlanningHistoryPolicyWeight", "NPPF_DecisionMaking"],
+          "thematic_policy_descriptors": ["planning precedent and decision-making consistency", "extant planning permissions and material considerations", "planning history weight in decision-making"],
           "key_evidence_document_types": ["PlanningStatement_HistorySection", "PreviousDecisionNotices", "HistoricalMaps", "LocalAuthorityPlanningRecords"]
         }
       ]
@@ -43,11 +47,12 @@
       "node_type_tag": "ConsultationSummaryBlock",
       "generic_material_considerations": ["public_opinion_summary", "statutory_consultee_advice", "internal_consultee_feedback", "applicant_response_to_consultation"],
       "specific_policy_focus_ids": ["LocalPlan_ConsultationPolicy", "NPPF_CommunityEngagement", "StatementOfCommunityInvolvementRequirements"],
+      "thematic_policy_descriptors": ["community engagement and consultation requirements", "statutory consultee response assessment", "public participation in planning decisions"],
       "depends_on_nodes": ["1.0_SiteAndApplication/1.2_ProposalInDetail"],
       "sub_sections": [
-        {"node_id": "2.1_PublicRepresentations", "description": "Summary of Public Comments (Support, Objections, Neutral)", "node_type_tag": "PublicConsultation"},
-        {"node_id": "2.2_StatutoryConsultees", "description": "Feedback from Key Statutory Consultees (e.g., Historic England, Environment Agency, TfL/Highways)", "node_type_tag": "StatutoryConsultation"},
-        {"node_id": "2.3_OtherResponses", "description": "Feedback from Other Consultees (e.g., Local Amenity Societies, Ward Councillors, Internal Departments)", "node_type_tag": "OtherConsultation"}
+        {"node_id": "2.1_PublicRepresentations", "description": "Summary of Public Comments (Support, Objections, Neutral)", "node_type_tag": "PublicConsultation", "thematic_policy_descriptors": ["public consultation and community engagement policies", "resident concerns and community impact assessment"]},
+        {"node_id": "2.2_StatutoryConsultees", "description": "Feedback from Key Statutory Consultees (e.g., Historic England, Environment Agency, TfL/Highways)", "node_type_tag": "StatutoryConsultation", "thematic_policy_descriptors": ["statutory consultee expertise and technical assessment", "specialist agency guidance and requirements"]},
+        {"node_id": "2.3_OtherResponses", "description": "Feedback from Other Consultees (e.g., Local Amenity Societies, Ward Councillors, Internal Departments)", "node_type_tag": "OtherConsultation", "thematic_policy_descriptors": ["local stakeholder engagement", "ward member and amenity society input in planning decisions"]}
       ]
     },
     {
@@ -55,14 +60,15 @@
       "description": "Relevant Planning Policy Framework",
       "node_type_tag": "PolicyFrameworkSummaryBlock",
       "generic_material_considerations": ["policy_hierarchy_summary", "key_development_plan_policies", "material_non_dpd_guidance"],
+      "thematic_policy_descriptors": ["development plan policy hierarchy and application", "national and local planning policy integration", "supplementary guidance and material considerations"],
       "depends_on_nodes": [],
       "sub_sections": [
-          {"node_id": "3.1_NationalPolicy", "description": "National Planning Policy Framework (NPPF) - Key Relevant Chapters/Paragraphs", "node_type_tag": "NationalPolicy"},
-          {"node_id": "3.2_RegionalPolicy", "description": "The London Plan - Key Relevant Policies", "node_type_tag": "RegionalPolicy"},
-          {"node_id": "3.3_LocalPlanRBKC", "description": "Royal Borough of Kensington and Chelsea Local Plan - Key Relevant Policies", "node_type_tag": "LocalPolicy_RBKC"},
-          {"node_id": "3.4_LocalPlanLBHF", "description": "London Borough of Hammersmith and Fulham Local Plan - Key Relevant Policies", "node_type_tag": "LocalPolicy_LBHF"},
-          {"node_id": "3.5_SPDsAndSPGs", "description": "Relevant Supplementary Planning Documents/Guidance (National, Regional, Local)", "node_type_tag": "SupplementaryGuidance"},
-          {"node_id": "3.6_EmergingPolicy", "description": "Status and Weight Attributable to Emerging Local Plan Policies or Neighbourhood Plans", "node_type_tag": "EmergingPolicy"}
+          {"node_id": "3.1_NationalPolicy", "description": "National Planning Policy Framework (NPPF) - Key Relevant Chapters/Paragraphs", "node_type_tag": "NationalPolicy", "thematic_policy_descriptors": ["national planning policy framework and strategic objectives", "NPPF guidance for development assessment"]},
+          {"node_id": "3.2_RegionalPolicy", "description": "The London Plan - Key Relevant Policies", "node_type_tag": "RegionalPolicy", "thematic_policy_descriptors": ["London Plan strategic development policies", "regional planning guidance and Good Growth principles"]},
+          {"node_id": "3.3_LocalPlanRBKC", "description": "Royal Borough of Kensington and Chelsea Local Plan - Key Relevant Policies", "node_type_tag": "LocalPolicy_RBKC", "thematic_policy_descriptors": ["RBKC local plan policies and area-specific guidance", "borough-specific development management policies"]},
+          {"node_id": "3.4_LocalPlanLBHF", "description": "London Borough of Hammersmith and Fulham Local Plan - Key Relevant Policies", "node_type_tag": "LocalPolicy_LBHF", "thematic_policy_descriptors": ["LBHF local plan policies and development framework", "Hammersmith and Fulham planning guidance"]},
+          {"node_id": "3.5_SPDsAndSPGs", "description": "Relevant Supplementary Planning Documents/Guidance (National, Regional, Local)", "node_type_tag": "SupplementaryGuidance", "thematic_policy_descriptors": ["supplementary planning guidance and technical standards", "design codes and development briefs"]},
+          {"node_id": "3.6_EmergingPolicy", "description": "Status and Weight Attributable to Emerging Local Plan Policies or Neighbourhood Plans", "node_type_tag": "EmergingPolicy", "thematic_policy_descriptors": ["emerging planning policy weight and consideration", "neighbourhood plan policies and local community planning"]}
       ]
     },
     {
@@ -70,6 +76,7 @@
       "description": "Officer's Assessment of Material Planning Considerations",
       "node_type_tag": "MaterialConsiderationsBlock_Parent",
       "is_dynamic_parent_node": true,
+      "thematic_policy_descriptors": ["material planning considerations assessment framework", "development impact evaluation and policy compliance", "planning balance and material considerations weighting"],
       "depends_on_nodes": ["1.0_SiteAndApplication/1.2_ProposalInDetail", "2.0_ConsultationResponses", "3.0_PlanningPolicyFramework"]
     },
     {
@@ -77,6 +84,7 @@
       "description": "Other Relevant Matters (e.g., CIL, Planning Obligations, Equalities, Human Rights)",
       "node_type_tag": "OtherConsiderationsBlock",
       "generic_material_considerations":["CIL_liability", "equalities_impact_assessment", "human_rights_implications", "planning_conditions_preliminary", "s106_heads_of_terms_preliminary"],
+      "thematic_policy_descriptors": ["planning obligations and community infrastructure levy", "equalities and human rights considerations in planning", "planning conditions and legal agreements framework"],
       "depends_on_nodes": ["4.0_AssessmentOfMaterialConsiderations"]
     },
     {
@@ -85,12 +93,14 @@
       "node_type_tag": "PlanningBalanceAndConclusionBlock",
       "generic_material_considerations":["planning_balance_exercise", "nppf_presumption_test", "overall_scheme_acceptability"],
       "specific_policy_focus_ids": ["NPPF_Para11", "LocalPlan_OverallDecisionMakingPolicy"],
+      "thematic_policy_descriptors": ["planning balance methodology and decision-making framework", "presumption in favour of sustainable development", "overall development acceptability assessment"],
       "depends_on_nodes": ["4.0_AssessmentOfMaterialConsiderations", "5.0_OtherRelevantMatters"]
     },
     {
       "node_id": "7.0_Recommendation",
       "description": "Officer's Recommendation",
       "node_type_tag": "FinalRecommendationBlock",
+      "thematic_policy_descriptors": ["planning recommendation formulation and justification", "decision-making rationale and policy compliance"],
       "depends_on_nodes": ["6.0_PlanningBalanceAndConclusion"]
     }
   ]

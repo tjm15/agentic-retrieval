@@ -1,6 +1,7 @@
 # agents/base_agent.py
-from typing import Dict, Any, Optional, List
+from typing import Dict, Any, Optional, List, cast
 from google import genai
+from google.genai.types import GenerateContentConfigDict
 from config import SUBSIDIARY_AGENT_GEN_CONFIG, VISUAL_HERITAGE_AGENT_GEN_CONFIG, SUBSIDIARY_AGENT_MODEL_NAME, GEMINI_API_KEY
 import time
 import json
@@ -63,18 +64,19 @@ class BaseSubsidiaryAgent:
         gemini_parts = self._prepare_gemini_content(intent, prompt_prefix)
         
         try:
-            current_gen_config_dict = SUBSIDIARY_AGENT_GEN_CONFIG.copy()
-            
+            current_gen_config_dict = cast(GenerateContentConfigDict, dict(SUBSIDIARY_AGENT_GEN_CONFIG))
             expected_mime_type = agent_input_data.get("expected_output_mime_type")
             if expected_mime_type == "application/json":
                 current_gen_config_dict["response_mime_type"] = "application/json"
             
-            time.sleep(0.7) 
+            time.sleep(0.7)
+            print(f"DEBUG: {self.__class__.__name__} sending request to Gemini API - may take 2-5 minutes...")
             response = self.client.models.generate_content(
                 model=self.model_name,
                 contents=[gemini_parts],
-                config=current_gen_config_dict  # type: ignore
+                config=current_gen_config_dict
             )
+            print(f"DEBUG: {self.__class__.__name__} received response from Gemini API")
 
             # Robust response parsing
             raw_text = getattr(response, "text", None)
@@ -91,7 +93,7 @@ class BaseSubsidiaryAgent:
             intent.provenance.add_action(f"Agent '{self.agent_name}' LLM call successful.", {"output_length": len(raw_text)})
 
             output_payload = {"generated_raw": raw_text}
-            if current_gen_config_dict["response_mime_type"] == "application/json":
+            if current_gen_config_dict.get("response_mime_type") == "application/json":
                 try:
                     output_payload["structured_payload"] = json.loads(raw_text)
                 except json.JSONDecodeError as json_err:
@@ -115,11 +117,14 @@ class BaseSubsidiaryAgent:
             }
 
     def _call_llm(self, prompt: str, config: dict) -> str:
+        from google.genai.types import GenerateContentConfigDict
+        from typing import cast
         try:
+            config_cast = cast(GenerateContentConfigDict, config)
             response = self.client.models.generate_content(
                 model=self.model_name,
                 contents=[prompt],
-                config=config  # type: ignore
+                config=config_cast
             )
             # Robust response parsing
             text = getattr(response, "text", None)
@@ -131,8 +136,10 @@ class BaseSubsidiaryAgent:
                     # Only join non-None, string parts
                     text = "".join([getattr(p, 'text', '') for p in parts if getattr(p, 'text', None)])
             if not text or not isinstance(text, str):
-                raise ValueError("No valid text response from Gemini API.")
+                # Log the raw response for debugging
+                print(f"ERROR: No valid text response from Gemini API. Raw response: {response}")
+                raise ValueError(f"No valid text response from Gemini API. Raw response: {response}")
             return text
         except Exception as e:
-            print(f"ERROR in _call_llm: {e}")
-            return ""
+            print(f"ERROR in _call_llm: {e}\nPrompt: {prompt}\nConfig: {config}")
+            raise

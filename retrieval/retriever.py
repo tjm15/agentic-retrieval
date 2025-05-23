@@ -26,7 +26,7 @@ class AgenticRetriever:
         semantic_query = """
         SELECT dc.chunk_id, dc.chunk_text, dc.page_number, dc.section, 
                d.doc_id, d.title as doc_title, d.document_type,
-               ce.embedding <-> %s AS distance 
+               ce.embedding <-> %s::vector AS distance 
         FROM document_chunks dc
         JOIN documents d ON dc.doc_id = d.doc_id
         JOIN chunk_embeddings ce ON dc.chunk_id = ce.chunk_id
@@ -35,7 +35,7 @@ class AgenticRetriever:
         """
         try:
             # pgvector expects list for embedding, not tuple
-            results = self.db_manager.execute_query(semantic_query, (list(query_embedding), limit), fetch_all=True)
+            results = self.db_manager.execute_query(semantic_query, (query_embedding, limit), fetch_all=True)
             return results if results else []
         except Exception as e:
             print(f"ERROR: Semantic search failed: {type(e).__name__} - {e}")

@@ -16,13 +16,26 @@ class DatabaseManager:
         self.db_config = db_config
         self.conn = None
         self._connect()
-        # In a real system with pgvector, you might call register_vector(self.conn) here
-        # from pgvector.psycopg2 import register_vector
+        # Register pgvector extension for proper vector type support
+        try:
+            from pgvector.psycopg2 import register_vector
+            register_vector(self.conn)
+        except ImportError:
+            print("WARNING: pgvector.psycopg2 not available. Vector operations may fail.")
+        except Exception as e:
+            print(f"WARNING: Failed to register pgvector: {e}")
+    
 
     def _connect(self):
         try:
             self.conn = psycopg2.connect(**self.db_config)
             self.conn.autocommit = True # Simplifies, otherwise manage transactions explicitly
+            # Register pgvector for new connections
+            try:
+                from pgvector.psycopg2 import register_vector
+                register_vector(self.conn)
+            except (ImportError, Exception) as e:
+                print(f"WARNING: pgvector registration failed on connection: {e}")
             # print("INFO: Database connection established.") # Can be verbose
         except psycopg2.Error as e:
             print(f"ERROR: Database connection failed: {e}")
@@ -66,12 +79,12 @@ class DatabaseManager:
         INSERT INTO document_chunks (chunk_id, doc_id, page_number, section, chunk_text, tags)
         VALUES (%s, %s, %s, %s, %s, %s) RETURNING chunk_id;
         """
-        result = self.execute_query(query, (chunk_id_val, doc_id, page_number, section, chunk_text, tags or []), fetch_one=True)
+        result = self.execute_query(query, (str(chunk_id_val), str(doc_id), page_number, section, chunk_text, tags or []), fetch_one=True)
         chunk_id_to_return = result['chunk_id'] if result else chunk_id_val
         
         embedding_val = get_embedding(chunk_text) # Uses EMBEDDING_DIMENSION from config
-        emb_query = "INSERT INTO chunk_embeddings (chunk_id, embedding) VALUES (%s, %s);"
-        self.execute_query(emb_query, (chunk_id_to_return, embedding_val)) # Ensure embedding_val is a list
+        emb_query = "INSERT INTO chunk_embeddings (chunk_id, embedding) VALUES (%s, %s::vector);"
+        self.execute_query(emb_query, (str(chunk_id_to_return), embedding_val)) # Ensure embedding_val is a list
         return chunk_id_to_return
 
     def get_full_document_text_by_id(self, doc_id: uuid.UUID) -> Optional[str]:
