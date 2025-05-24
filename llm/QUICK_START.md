@@ -184,7 +184,7 @@ response = asyncio.run(client.generate_content(...))  # In sync function
 Ensure you have all required packages:
 
 ```bash
-pip install google-generativeai requests matplotlib numpy
+pip install google-genai requests matplotlib numpy
 ```
 
 ### Need help?
