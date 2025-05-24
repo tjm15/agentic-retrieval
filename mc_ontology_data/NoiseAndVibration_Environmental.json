@@ -1,0 +1,47 @@
+{
+  "id": "NoiseAndVibration_Environmental",
+  "display_name_template": "Environmental Noise and Vibration Impact for {app_name}",
+  "description_long": "Assessment of noise and vibration impacts from the development on the wider environment or from existing environmental noise sources (e.g., road traffic, railways, industrial uses) on the proposed development itself. Distinct from direct neighbour amenity noise.",
+  "primary_tags": ["noise_impact", "vibration_impact", "environmental_noise", "NPPF_Ch15"],
+  "relevant_policy_themes": ["LocalPlan_NoisePolicy", "NoisePolicyStatementForEngland_NPSE", "ProPG_PlanningAndNoise"],
+  "key_evidence_docs": ["NoiseImpactAssessment_NIA", "VibrationAssessment", "ConstructionEnvironmentalManagementPlan_CEMP_NoiseVibration"],
+  "trigger_keywords_for_llm_scan": ["noise", "vibration", "acoustic", "sound", "ProPG", "BS4142", "BS8233", "environmental noise", "traffic noise", "railway noise"],
+  "sub_questions": [
+    "What are the existing baseline noise levels at the site and in the surrounding area?",
+    "What are the potential noise sources associated with the proposed development during construction and operation (e.g., plant, traffic, activities)?",
+    "What are the predicted noise impacts on existing sensitive receptors (e.g., residential properties, schools, hospitals)?",
+    "Will future occupants of the proposed development be affected by existing environmental noise sources (e.g., road, rail, industrial)?",
+    "What mitigation measures are proposed to control noise and vibration at source, during transmission, or at the receptor?",
+    "Does the proposal comply with relevant noise standards and guidance (e.g., BS 8233, BS 4142, ProPG)?",
+    "Are there any significant vibration impacts anticipated during construction or operation?"
+  ],
+  "data_schema_hint": {
+    "baseline_noise_survey_summary": "text_block_detailing_laeq_lamax_la90_levels_at_key_locations_and_times",
+    "predicted_noise_levels_at_sensitive_receptors_operational": "text_block_or_table_showing_db_levels_and_assessment_against_criteria",
+    "internal_noise_level_targets_for_new_dwellings": "text_block_referencing_bs8233_targets",
+    "noise_mitigation_strategy_summary": "list_of_strings_e.g._acoustic_barriers_glazing_specifications_plant_enclosures",
+    "construction_noise_and_vibration_management_plan_key_measures": "list_of_strings"
+  },
+  "typical_positive_impacts": [
+    "No significant adverse noise or vibration impacts on existing sensitive receptors.",
+    "Appropriate internal noise environment achieved for future occupants.",
+    "Effective noise mitigation measures incorporated into the design.",
+    "Compliance with relevant noise standards and guidance."
+  ],
+  "typical_negative_impacts": [
+    "Significant noise disturbance to existing residents or sensitive uses.",
+    "Unacceptable internal noise levels for future occupants of the development.",
+    "Failure to adequately assess or mitigate noise/vibration impacts.",
+    "Harmful vibration impacts on structures or sensitive equipment."
+  ],
+  "common_mitigation_measures": [
+    "Strategic layout and orientation of buildings to screen noise sources or sensitive facades.",
+    "Use of acoustic barriers (fences, bunds, screens).",
+    "Enhanced glazing specifications and ventilation strategies.",
+    "Selection of low-noise plant and equipment.",
+    "Restrictions on operating hours for noisy activities.",
+    "Anti-vibration measures for plant or construction activities.",
+    "Noise insulation schemes for affected existing properties (in some cases)."
+  ],
+  "potential_agent_hint": "EnvironmentalImpactsAgent"
+}

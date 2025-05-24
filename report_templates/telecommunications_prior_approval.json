@@ -1,0 +1,153 @@
+{
+  "report_type_id": "TelecommunicationsPriorApproval",
+  "report_id_prefix": "TELPA",
+  "description": "Default Report for Prior Approval of Telecommunications Development (Part 16, Schedule 2 GPDO)",
+  "sections": [
+    {
+      "node_id": "1.0_ApplicationAndProposal",
+      "description": "Application Details, Proposed Development, and Site Context",
+      "node_type_tag": "IntroductionBlock",
+      "generic_material_considerations": ["applicant_details_operator", "description_of_proposed_telecommunications_equipment_e_g_mast_antennae_cabinets", "site_location_and_current_state_including_any_existing_telecoms_equipment", "confirmation_of_compliance_with_icao_requirements_if_applicable"],
+      "specific_policy_focus_ids": ["TownAndCountryPlanningGeneralPermittedDevelopmentOrder2015_Part16Schedule2", "NPPF_Chapter10_SupportingHighQualityCommunications"],
+      "thematic_policy_descriptors": ["understanding the scope of the prior approval application", "nature of telecommunications apparatus"],
+      "depends_on_nodes": [],
+      "sub_sections": [
+        {
+          "node_id": "1.1_SiteDescriptionAndContext",
+          "description": "Description of the Site and its Surroundings, Noting Sensitivity",
+          "node_type_tag": "SiteDescription",
+          "generic_material_considerations": ["site_characteristics_urban_rural_residential_commercial_industrial", "proximity_to_sensitive_receptors_e_g_dwellings_schools_listed_buildings_conservation_areas_aonb_sss_is", "presence_of_existing_masts_or_street_furniture_that_could_host_equipment"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["contextual understanding for siting and appearance assessment"],
+          "key_evidence_document_types": ["SiteLocationPlan", "PhotographsOfSiteAndSurroundings", "SiteSelectionRationale_IfProvided"]
+        },
+        {
+          "node_id": "1.2_ProposedDevelopmentDetails",
+          "description": "Specifics of the Proposed Telecommunications Apparatus",
+          "node_type_tag": "ProposalDescription",
+          "generic_material_considerations": ["type_and_dimensions_of_mast_or_support_structure_height_width_design", "number_size_and_type_of antennae_and_dishes", "details_of_any_associated_equipment_cabinets_fencing_access_tracks", "materials_and_colour_finish_of_all_components"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["technical specifications of the proposal"],
+          "key_evidence_document_types": ["DetailedPlansAndElevationsOfProposedEquipment", "EquipmentSpecifications", "VisualisationsOrPhotomontages_IfProvided"]
+        },
+        {
+          "node_id": "1.3_PreApplicationConsultationAndICNIRPCertificate",
+          "description": "Evidence of Pre-application Consultation (if required) and ICNIRP Compliance",
+          "node_type_tag": "ProceduralCheck",
+          "generic_material_considerations": ["confirmation_that_pre_application_consultation_with_lpa_has_been_undertaken_for_masts_over_15m_or_other_specified_development", "declaration_of_conformity_with_icnirp_public_exposure_guidelines_for_radiofrequency_emissions"],
+          "specific_policy_focus_ids": ["MobileOperatorsAssociationCodeOfBestPracticeOnMobileNetworkDevelopment"],
+          "thematic_policy_descriptors": ["procedural requirements and health and safety considerations"],
+          "key_evidence_document_types": ["ICNIRPCertificate", "PreApplicationCorrespondence_IfApplicable"]
+        },
+        {
+          "node_id": "1.4_RelevantPlanningHistory",
+          "description": "Summary of Any Relevant Planning History for Telecoms at the Site",
+          "node_type_tag": "PlanningHistory",
+          "generic_material_considerations": ["previous_telecoms_applications_approved_or_refused_at_this_location_or_nearby"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["history of telecoms development in the vicinity"],
+          "key_evidence_document_types": ["PlanningHistorySearchRecords"]
+        }
+      ]
+    },
+    {
+      "node_id": "2.0_PolicyConsiderations",
+      "description": "Relevant National and Local Planning Policies for Telecommunications",
+      "node_type_tag": "PolicyFrameworkSummaryBlock",
+      "generic_material_considerations": ["nppf_chapter_10_supporting_high_quality_communications_infrastructure", "local_plan_policies_on_telecommunications_development_design_siting_landscape_impact", "any_relevant_supplementary_planning_documents_spds_on_telecoms_or_design"],
+      "specific_policy_focus_ids": ["NPPF_Paragraph116_SitingAndAppearance", "LocalPlan_TelecommunicationsPolicies"],
+      "thematic_policy_descriptors": ["policy context for assessing siting and appearance"],
+      "depends_on_nodes": [],
+      "sub_sections": [
+        {"node_id": "2.1_NationalPolicy", "description": "NPPF Guidance on Communications Infrastructure", "node_type_tag": "NationalPolicy", "thematic_policy_descriptors": ["importance of connectivity, minimising adverse impacts"]},
+        {"node_id": "2.2_LocalPolicy", "description": "Local Plan Policies, SPDs for Telecoms", "node_type_tag": "LocalPolicy", "thematic_policy_descriptors": ["local criteria for siting, design, and landscape protection"]}
+      ]
+    },
+    {
+      "node_id": "3.0_AssessmentOfSitingAndAppearance",
+      "description": "Officer's Assessment of the Siting and Appearance of the Proposed Development (the matters for Prior Approval)",
+      "node_type_tag": "MaterialConsiderationsBlock_Parent",
+      "depends_on_nodes": ["1.0_ApplicationAndProposal", "2.0_PolicyConsiderations"],
+      "sub_sections": [
+        {
+          "node_id": "3.1_SitingConsiderations",
+          "description": "Evaluation of the Proposed Location of the Equipment",
+          "node_type_tag": "SitingAssessment",
+          "generic_material_considerations": ["appropriateness_of_the_site_for_telecoms_equipment_considering_operational_need_and_site_constraints", "availability_of_alternative_sites_including_mast_sharing_and_use_of_existing_buildings_or_structures_site_selection_process_justification", "proximity_to_sensitive_land_uses_and_potential_for_visual_intrusion_or_amenity_impacts", "relationship_to_topography_trees_buildings_and_other_features_that_may_offer_screening_or_contribute_to_visual_impact"],
+          "specific_policy_focus_ids": ["NPPF_Paragraph116a_SitingToMinimiseVisualImpact"],
+          "thematic_policy_descriptors": ["evaluating the choice of location"],
+          "key_evidence_document_types": ["SiteSelectionAnalysisOrJustificationStatement", "SupportingMapsAndPlansShowingAlternativeSitesConsidered_IfAny"]
+        },
+        {
+          "node_id": "3.2_AppearanceAndDesignConsiderations",
+          "description": "Evaluation of the Design, Scale, Materials, and Overall Visual Impact of the Equipment",
+          "node_type_tag": "DesignAssessment",
+          "generic_material_considerations": ["height_bulk_and_design_of_the_mast_antennae_and_cabinets_in_relation_to_surroundings", "choice_of_materials_and_colour_finish_to_minimise_visual_contrast_and_aid_integration", "potential_for_visual_clutter_especially_if_other_equipment_is_present", "impact_on_the_character_and_appearance_of_the_street_scene_or_landscape_including_views_into_and_out_of_sensitive_areas_e_g_conservation_areas_aonbs", "effectiveness_of_any_proposed_screening_or_landscaping"],
+          "specific_policy_focus_ids": ["NPPF_Paragraph116b_DesignToMinimiseVisualImpact", "LocalPlan_DesignPoliciesForTelecoms"],
+          "thematic_policy_descriptors": ["assessing the visual impact of the apparatus"],
+          "key_evidence_document_types": ["ProposedElevationsAndDesignDetails", "ColourAndMaterialsSchedule", "PhotomontagesOrVisualImpactAssessment_IfProvided", "LandscapeAndVisualImpactAssessment_ForSensitiveLocations"]
+        },
+        {
+          "node_id": "3.3_ImpactOnDesignatedHeritageAssets",
+          "description": "Assessment of Impact on Listed Buildings, Conservation Areas, Scheduled Monuments etc.",
+          "node_type_tag": "HeritageImpactAssessment",
+          "generic_material_considerations": ["direct_physical_impact_on_heritage_assets", "impact_on_the_setting_of_heritage_assets_including_views", "conformity_with_policies_for_protecting_the_historic_environment"],
+          "specific_policy_focus_ids": ["NPPF_Chapter16_ConservingAndEnhancingTheHistoricEnvironment", "LocalPlan_HeritagePolicies"],
+          "thematic_policy_descriptors": ["protecting heritage significance"],
+          "key_evidence_document_types": ["HeritageStatement_IfRequired"]
+        },
+        {
+          "node_id": "3.4_ImpactOnAreasOfEcologicalOrLandscapeSignificance",
+          "description": "Assessment of Impact on SSSIs, AONBs, National Parks, Local Nature Reserves etc.",
+          "node_type_tag": "EnvironmentalImpactAssessment",
+          "generic_material_considerations": ["potential_impact_on_designated_sites_habitats_species_or_landscape_character", "need_for_mitigation_measures"],
+          "specific_policy_focus_ids": ["NPPF_Chapter15_ConservingAndEnhancingTheNaturalEnvironment", "LocalPlan_LandscapeAndEcologyPolicies"],
+          "thematic_policy_descriptors": ["protecting natural beauty and biodiversity"],
+          "key_evidence_document_types": ["EcologicalSurveyOrAssessment_IfRequired", "LandscapeCharacterAssessment_IfRelevant"]
+        }
+      ]
+    },
+    {
+      "node_id": "4.0_ConsultationResponses",
+      "description": "Summary of Consultation Responses on Siting and Appearance",
+      "node_type_tag": "ConsultationSummaryBlock",
+      "generic_material_considerations": ["summary_of_responses_from_any_statutory_consultees_e_g_historic_england_natural_england_highways_if_relevant_to_siting_appearance", "summary_of_responses_from_parish_council_or_local_amenity_groups", "summary_of_any_public_representations_received_on_siting_and_appearance"],
+      "specific_policy_focus_ids": [],
+      "thematic_policy_descriptors": ["feedback from stakeholders on visual and locational aspects"],
+      "depends_on_nodes": [],
+      "sub_sections": [
+        {"node_id": "4.1_StatutoryAndNonStatutoryConsultees", "description": "Feedback from Consultees", "node_type_tag": "ConsulteeResponse", "thematic_policy_descriptors": ["technical advice and local views on siting/appearance"]},
+        {"node_id": "4.2_PublicRepresentations", "description": "Summary of Public Comments on Siting/Appearance", "node_type_tag": "PublicResponse", "thematic_policy_descriptors": ["community concerns regarding visual impact"]}
+      ]
+    },
+    {
+      "node_id": "5.0_ConclusionAndRecommendation",
+      "description": "Officer's Overall Conclusion and Recommendation on Prior Approval",
+      "node_type_tag": "PlanningBalanceAndConclusionBlock",
+      "generic_material_considerations": ["summary_of_assessment_of_siting_and_appearance", "overall_acceptability_of_the_proposal_in_terms_of_its_visual_impact_and_location", "consideration_of_consultation_responses"],
+      "specific_policy_focus_ids": [],
+      "thematic_policy_descriptors": ["overall judgement on whether prior approval should be granted or refused"],
+      "depends_on_nodes": ["3.0_AssessmentOfSitingAndAppearance", "4.0_ConsultationResponses"],
+      "sub_sections": [
+        {
+          "node_id": "5.1_OverallPlanningBalanceOnSitingAndAppearance",
+          "description": "Weighing of All Considerations for Siting and Appearance",
+          "node_type_tag": "PlanningBalance",
+          "generic_material_considerations": ["whether_the_proposed_siting_and_appearance_of_the_telecommunications_equipment_is_acceptable_and_minimises_adverse_impacts_on_the_environment_and_amenity", "whether_the_benefits_of_improved_telecommunications_network_outweigh_any_residual_harm_to_visual_amenity_if_harm_is_identified_and_cannot_be_mitigated_note_this_is_limited_assessment_not_full_planning_balance"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["final assessment of siting and appearance acceptability"],
+          "key_evidence_document_types": []
+        },
+        {
+          "node_id": "5.2_Recommendation",
+          "description": "Officer's Recommendation (Prior Approval Required and Approved/Refused, or Not Required)",
+          "node_type_tag": "FinalRecommendationBlock",
+          "generic_material_considerations": ["clear_recommendation_prior_approval_is_required_and_is_granted_or_prior_approval_is_required_and_is_refused_or_prior_approval_is_not_required", "if_granted_any_conditions_relating_to_siting_and_appearance_e_g_colour_finish_landscaping_time_limits_for_implementation_and_removal", "if_refused_clear_reasons_why_the_siting_and_appearance_are_unacceptable"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["formulating recommendation for prior approval application"],
+          "key_evidence_document_types": []
+        }
+      ]
+    }
+  ]
+}

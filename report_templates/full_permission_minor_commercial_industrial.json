@@ -1,0 +1,142 @@
+{
+  "report_type_id": "FullPermissionMinorCommercialIndustrial",
+  "report_id_prefix": "FullCommInd",
+  "description": "Default Report for Full Planning Permission for Minor Commercial / Industrial Development Applications",
+  "sections": [
+    {
+      "node_id": "1.0_SiteAndApplication",
+      "description": "Site Description, Proposal Details & Planning History",
+      "node_type_tag": "IntroductionBlock",
+      "generic_material_considerations": ["site_context_commercial_industrial_area", "proposal_details_new_build_or_extension_conversion", "planning_history_commercial_industrial_use"],
+      "specific_policy_focus_ids": ["LocalPlan_EconomicDevelopmentPolicy", "LocalPlan_IndustrialLandPolicy", "NPPF_BuildingAStrongCompetitiveEconomy"],
+      "thematic_policy_descriptors": ["establishing development context for minor commercial/industrial proposals", "site identification and characterization in commercial/industrial settings"],
+      "depends_on_nodes": [],
+      "sub_sections": [
+        {
+          "node_id": "1.1_SiteLocationAndDescription",
+          "description": "Site Location, Existing Premises/Land (Commercial/Industrial), and Surrounding Area Character (Business/Industrial Park, Mixed Use)",
+          "node_type_tag": "SiteDescription",
+          "generic_material_considerations": ["site_identification_employment_zone", "existing_buildings_or_vacant_land_status_previous_use", "surrounding_land_uses_and_character_proximity_to_sensitive_receptors", "accessibility_for_employees_customers_deliveries_hgv_access"],
+          "specific_policy_focus_ids": ["LocalPlan_EmploymentAreaPolicy", "NPPF_ContextAnalysis"],
+          "thematic_policy_descriptors": ["commercial/industrial site character assessment", "understanding existing business/industrial environment and infrastructure"],
+          "key_evidence_document_types": ["ApplicationForm", "SiteLocationPlan", "ExistingSitePhotosOrPlans", "ContextAnalysis_CommercialIndustrialArea"]
+        },
+        {
+          "node_id": "1.2_ProposalInDetail",
+          "description": "The Proposed Commercial/Industrial Development (e.g., New Unit, Extension, Change of Use, Mezzanine, External Plant/Storage)",
+          "node_type_tag": "ProposalSummary",
+          "generic_material_considerations": ["scale_massing_of_development", "design_materials_functional_character", "proposed_use_class_b1_b2_b8_e", "floor_space_quantum_gia_nia_site_coverage", "servicing_and_access_arrangements_hgv_manoeuvring", "external_storage_plant_equipment_details"],
+          "specific_policy_focus_ids": ["LocalPlan_DevelopmentManagementPolicy_CommercialIndustrial", "LocalDesignGuide_CommercialIndustrial"],
+          "thematic_policy_descriptors": ["design and scale of minor commercial/industrial development", "functional requirements for commercial/industrial operations"],
+          "key_evidence_document_types": ["ProposedFloorPlansAndElevations", "DesignAndAccessStatement_CommercialIndustrial", "SiteLayoutPlan_ShowingParkingServicingLoading", "MaterialsSchedule", "PlantAndEquipmentDetails"]
+        },
+        {
+          "node_id": "1.3_RelevantPlanningHistory",
+          "description": "Relevant Planning History of the Site and Adjoining Commercial/Industrial Properties",
+          "node_type_tag": "PlanningHistory",
+          "generic_material_considerations": ["previous_commercial_industrial_developments_on_site", "extant_permissions_for_commercial_industrial_use", "history_of_use_changes_or_intensification_if_relevant", "enforcement_history_if_any"],
+          "specific_policy_focus_ids": ["LocalPlan_PlanningHistoryPolicyWeight"],
+          "thematic_policy_descriptors": ["planning history of commercial/industrial sites", "patterns of development in the employment area"],
+          "key_evidence_document_types": ["PreviousDecisionNotices_CommercialIndustrial", "LocalAuthorityPlanningRecords_SiteHistory"]
+        }
+      ]
+    },
+    {
+      "node_id": "2.0_ConsultationResponses",
+      "description": "Summary and Analysis of Consultation Responses",
+      "node_type_tag": "ConsultationSummaryBlock",
+      "generic_material_considerations": ["neighbouring_business_comments", "resident_comments_if_near_residential_or_sensitive_uses", "statutory_consultee_advice_highways_environment_agency_environmental_health", "business_improvement_district_or_industrial_estate_management_views"],
+      "specific_policy_focus_ids": ["LocalPlan_ConsultationPolicy", "NPPF_CommunityEngagement"],
+      "thematic_policy_descriptors": ["consultation on minor commercial/industrial development", "balancing business/industrial needs with neighbour amenity and environmental protection"],
+      "depends_on_nodes": ["1.0_SiteAndApplication/1.2_ProposalInDetail"],
+      "sub_sections": [
+        {"node_id": "2.1_PublicAndBusinessRepresentations", "description": "Summary of Comments from Public and Neighbouring Businesses/Residents", "node_type_tag": "PublicConsultation", "thematic_policy_descriptors": ["assessing local business and resident concerns", "impact on commercial/industrial vitality and local amenity/environment"]},
+        {"node_id": "2.2_StatutoryConsultees", "description": "Feedback from Key Statutory Consultees (e.g., Highways, Environmental Health, Environment Agency, Lead Local Flood Authority)", "node_type_tag": "StatutoryConsultation", "thematic_policy_descriptors": ["technical advice on operational impacts, infrastructure capacity, and environmental protection"]},
+        {"node_id": "2.3_OtherResponses", "description": "Feedback from Other Consultees (e.g., Ward Councillors, Local Business Groups, Parish Council)", "node_type_tag": "OtherConsultation", "thematic_policy_descriptors": ["local stakeholder perspectives on economic development, local character, and environmental impact"]}
+      ]
+    },
+    {
+      "node_id": "3.0_PlanningPolicyFramework",
+      "description": "Relevant Planning Policy Framework for Minor Commercial/Industrial Development",
+      "node_type_tag": "PolicyFrameworkSummaryBlock",
+      "generic_material_considerations": ["local_plan_policies_for_economic_growth_employment_land_industrial_estates_town_centres", "nppf_guidance_on_supporting_a_prosperous_economy", "relevant_spds_commercial_industrial_design_sustainable_construction"],
+      "thematic_policy_descriptors": ["policy framework for assessing minor commercial/industrial proposals", "promoting sustainable economic development and job creation"],
+      "depends_on_nodes": [],
+      "sub_sections": [
+          {"node_id": "3.1_NationalPolicy", "description": "NPPF - Key Relevant Chapters/Paragraphs (e.g., Building a Strong Economy, Promoting Sustainable Transport, Achieving Well-Designed Places)", "node_type_tag": "NationalPolicy", "thematic_policy_descriptors": ["NPPF support for sustainable economic growth and commercial/industrial development"]},
+          {"node_id": "3.2_LocalPlan", "description": "Local Plan - Key Relevant Policies for Commercial/Industrial Development, Employment Land Allocations, Design, Amenity, Transport", "node_type_tag": "LocalPolicy", "thematic_policy_descriptors": ["local plan policies guiding location, scale, design, and operation of commercial/industrial development"]},
+          {"node_id": "3.3_SPDsAndSPGs", "description": "Relevant Supplementary Planning Documents/Guidance (e.g., Employment Development SPD, Design Guide for Industrial Areas, Parking Standards)", "node_type_tag": "SupplementaryGuidance", "thematic_policy_descriptors": ["detailed design, operational, and sustainability guidance for commercial/industrial development"]}
+      ]
+    },
+    {
+      "node_id": "4.0_AssessmentOfMaterialConsiderations",
+      "description": "Officer's Assessment of Material Planning Considerations for the Minor Commercial/Industrial Development",
+      "node_type_tag": "MaterialConsiderationsBlock_Parent",
+      "is_dynamic_parent_node": true,
+      "dynamic_node_source_fields": ["generic_material_considerations"],
+      "dynamic_node_config": {
+        "PrincipleOfDevelopmentAndEconomicBenefit": {
+            "description_template": "Principle of Commercial/Industrial Development in this Location and Economic Benefits",
+            "generic_material_considerations": ["appropriateness_of_commercial_industrial_use_or_expansion_in_zone", "contribution_to_local_economy_job_creation_retention_skills", "support_for_vitality_of_employment_area_or_town_centre_if_commercial", "need_for_proposed_type_of_commercial_industrial_space_market_demand", "loss_of_other_uses_if_change_of_use"],
+            "specific_policy_focus_ids": ["LocalPlan_EconomicDevelopmentStrategy", "LocalPlan_EmploymentLandProtectionPolicy", "NPPF_Chapter6_BuildingAStrongCompetitiveEconomy"],
+            "thematic_policy_descriptors": ["assessing compliance with economic development and employment land policies", "evaluating economic benefits and job creation potential"],
+            "key_evidence_document_types": ["PlanningStatement_EconomicJustification", "MarketAppraisal_IfRelevant", "EmploymentFiguresStatement"]
+        },
+        "DesignVisualImpactAndCharacter": {
+            "description_template": "Design, Scale, Materials and Impact on Street Scene, Landscape and Area Character (Commercial/Industrial)",
+            "generic_material_considerations": ["design_quality_functional_aesthetics_industrial_context", "scale_massing_in_relation_to_surroundings_and_landscape", "materials_suitability_durability_for_commercial_industrial_context", "impact_on_street_scene_public_realm_visual_amenity", "landscaping_and_boundary_treatment_screening", "signage_advertisements_impact_corporate_identity"],
+            "specific_policy_focus_ids": ["LocalPlan_DesignPolicy_CommercialIndustrial", "NPPF_Chapter12_AchievingWellDesignedPlaces", "IndustrialAreaDesignGuideSPD"],
+            "thematic_policy_descriptors": ["achieving appropriate design in commercial/industrial development", "integrating development with industrial/commercial character and landscape"],
+            "key_evidence_document_types": ["ProposedElevationsAndFloorPlans", "DesignAndAccessStatement_CommercialIndustrial", "MaterialSchedule", "StreetSceneElevationsOrVisualisations", "LandscapingPlan", "LightingAssessment"]
+        },
+        "ImpactOnAmenity": {
+            "description_template": "Impact on Amenity of Neighbouring Properties (Residential, Commercial, or other Sensitive Uses - Noise, Odour, Dust, Vibration, Hours, Light, Disturbance)",
+            "generic_material_considerations": ["noise_from_operations_plant_machinery_deliveries_hgv_movements", "odour_fumes_dust_emissions_from_industrial_processes", "hours_of_operation_impact_shift_patterns", "light_spill_from_security_operational_lighting", "privacy_overlooking_visual_intrusion_if_near_sensitive_uses", "disturbance_from_site_activities_traffic_personnel", "vibration_impacts_from_machinery_or_processes"],
+            "specific_policy_focus_ids": ["LocalPlan_AmenityPolicy", "LocalPlan_PollutionControlPolicy", "NPPF_AmenityConsiderations", "EnvironmentalHealthGuidance_IndustrialCommercial"],
+            "thematic_policy_descriptors": ["protecting amenity of neighbouring uses from commercial/industrial operations", "mitigating environmental impacts like noise, air quality, light pollution"],
+            "key_evidence_document_types": ["NoiseImpactAssessment", "AirQualityAssessment", "OdourManagementPlan", "DetailsOfPlantAndMachinery_NoiseLevels", "LightingSchemeDetails_ImpactAssessment", "VibrationAssessment_IfRequired", "HoursOfOperationStatement"]
+        },
+        "HighwaysParkingServicingAndAccess": {
+            "description_template": "Impact on Highway Safety, Capacity, Parking Provision, Servicing Arrangements (inc. HGVs) and Accessibility",
+            "generic_material_considerations": ["traffic_generation_type_volume_hgv_movements_peak_hours", "impact_on_highway_network_capacity_and_safety_junction_performance", "parking_demand_staff_visitor_operational_vehicle_parking_standards", "servicing_delivery_arrangements_loading_unloading_turning_areas_safety_frequency_hgv_access_routes", "accessibility_by_sustainable_transport_modes_public_transport_cycling_walking_for_employees", "impact_on_pedestrian_cyclist_environment_and_safety", "construction_traffic_management_plan_if_significant_build"],
+            "specific_policy_focus_ids": ["LocalPlan_ParkingStandards_CommercialIndustrial", "LocalPlan_TransportPolicy_AccessForIndustry", "ManualForStreets", "FreightManagementGuidance", "LocalHighwayAuthorityGuidance"],
+            "thematic_policy_descriptors": ["assessing transport and access impacts of commercial/industrial development", "ensuring adequate and safe servicing, parking, and HGV access", "promoting sustainable travel for employees"],
+            "key_evidence_document_types": ["TransportStatementOrAssessment", "ParkingAndServicingManagementPlan", "TravelPlan", "SweptPathAnalysis_HGVs", "ConstructionTrafficManagementPlan_IfRequired"]
+        },
+        "EnvironmentalConsiderations": {
+            "description_template": "Environmental Considerations (e.g. Contamination, Flood Risk, Drainage, Biodiversity, Waste Management)",
+            "generic_material_considerations": ["contaminated_land_risk_and_remediation_if_brownfield_site", "flood_risk_sequential_exception_tests_suds", "surface_water_and_foul_drainage_capacity_and_strategy", "impact_on_biodiversity_and_ecological_networks_net_gain", "waste_management_and_minimisation_storage_and_collection_of_commercial_industrial_waste", "energy_efficiency_and_sustainable_construction_measures", "pollution_control_water_air_land"],
+            "specific_policy_focus_ids": ["LocalPlan_ContaminatedLandPolicy", "LocalPlan_FloodRiskPolicy", "LocalPlan_BiodiversityPolicy", "LocalPlan_SustainableConstructionPolicy", "NPPF_Chapter14_MeetingTheChallengeOfClimateChangeFloodingAndCoastalChange", "NPPF_Chapter15_ConservingAndEnhancingTheNaturalEnvironment"],
+            "thematic_policy_descriptors": ["addressing environmental risks and impacts of industrial/commercial development", "promoting sustainable development practices"],
+            "key_evidence_document_types": ["Phase1ContaminatedLandAssessment_Phase2IfRequired", "FloodRiskAssessment", "DrainageStrategy_SuDSReport", "EcologicalImpactAssessment_BiodiversityNetGainReport", "WasteManagementPlan", "EnergyStatement_BREEAMAssessment_IfRequired"]
+        }
+      },
+      "thematic_policy_descriptors": ["material considerations for minor commercial/industrial development", "balancing economic benefits with environmental, social, and operational impacts"],
+      "depends_on_nodes": ["1.0_SiteAndApplication/1.2_ProposalInDetail", "2.0_ConsultationResponses", "3.0_PlanningPolicyFramework"]
+    },
+    {
+      "node_id": "5.0_OtherRelevantMatters",
+      "description": "Other Relevant Matters (e.g., CIL, Conditions, Informatives, S106 if applicable, Developer Contributions)",
+      "node_type_tag": "OtherConsiderationsBlock",
+      "generic_material_considerations":["CIL_liability_commercial_industrial_development", "planning_conditions_operational_controls_design_details_environmental_mitigation_hours_noise_limits_landscaping", "informatives_for_applicant_business_rates_licensing_environmental_permits_health_and_safety", "s106_obligations_if_specific_local_impacts_e_g_local_employment_training_transport_improvements_environmental_enhancements"],
+      "thematic_policy_descriptors": ["CIL for commercial/industrial schemes", "drafting robust conditions for commercial/industrial developments", "securing planning obligations for local benefits or impact mitigation"],
+      "depends_on_nodes": ["4.0_AssessmentOfMaterialConsiderations"]
+    },
+    {
+      "node_id": "6.0_PlanningBalanceAndConclusion",
+      "description": "Overall Planning Balance and Officer's Conclusion",
+      "node_type_tag": "PlanningBalanceAndConclusionBlock",
+      "generic_material_considerations":["planning_balance_minor_commercial_industrial", "overall_acceptability_of_commercial_industrial_proposal_economic_social_environmental"],
+      "specific_policy_focus_ids": ["NPPF_PresumptionInFavourOfSustainableDevelopment", "LocalPlan_DecisionMakingPolicy"],
+      "thematic_policy_descriptors": ["weighing material considerations for minor commercial/industrial development", "application of presumption in favour of sustainable development in economic context"],
+      "depends_on_nodes": ["4.0_AssessmentOfMaterialConsiderations", "5.0_OtherRelevantMatters"]
+    },
+    {
+      "node_id": "7.0_Recommendation",
+      "description": "Officer's Recommendation",
+      "node_type_tag": "FinalRecommendationBlock",
+      "thematic_policy_descriptors": ["formulating recommendation for full permission commercial/industrial application", "justification based on economic, social, and environmental policies and material considerations"],
+      "depends_on_nodes": ["6.0_PlanningBalanceAndConclusion"]
+    }
+  ]
+}

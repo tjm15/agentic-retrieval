@@ -1,0 +1,47 @@
+{
+  "id": "RetailImpactAndTownCentreVitality",
+  "display_name_template": "Retail Impact and Town Centre Vitality for {app_name}",
+  "description_long": "For retail, leisure, office, or other main town centre uses proposed outside of existing centres, assessment of their impact on the vitality and viability of defined town centres. Application of the sequential test and, if necessary, the impact test.",
+  "primary_tags": ["retail_impact", "town_centre_vitality", "sequential_test", "impact_test", "NPPF_Ch7"],
+  "relevant_policy_themes": ["LocalPlan_TownCentres", "LocalPlan_RetailHierarchy", "RetailAndLeisureStudies"],
+  "key_evidence_docs": ["RetailImpactAssessment_RIA", "SequentialSiteAssessment", "TownCentreHealthCheckData"],
+  "trigger_keywords_for_llm_scan": ["retail", "town centre", "sequential test", "impact assessment", "vitality", "viability", "leisure", "main town centre uses", "out-of-centre"],
+  "sub_questions": [
+    "Is the proposed use a 'main town centre use' as defined by the NPPF?",
+    "If proposed in an out-of-centre or edge-of-centre location, has a sequential site assessment been undertaken to demonstrate that no suitable, available, and viable sites exist in or closer to a defined centre?",
+    "What is the appropriate scale for the impact assessment, considering local policy thresholds?",
+    "What is the likely impact of the proposal on existing, committed, and planned public and private investment in relevant town centres?",
+    "What is the likely impact on town centre vitality and viability, including local consumer choice and trade diversion?",
+    "Are there any other impacts, such as on local employment or accessibility?",
+    "If significant adverse impacts are identified, can they be mitigated?"
+  ],
+  "data_schema_hint": {
+    "sequential_test_outcome_summary": "text_block_pass_fail_with_justification_and_sites_considered",
+    "retail_impact_assessment_catchment_area_definition": "text_block",
+    "predicted_trade_diversion_percentage_from_key_centres": "text_block_or_table",
+    "assessment_of_impact_on_town_centre_investment": "text_block",
+    "assessment_of_impact_on_town_centre_vitality_and_viability_indicators": "text_block"
+  },
+  "typical_positive_impacts": [
+    "Proposal is located within a defined town centre, supporting its vitality.",
+    "Sequential test robustly passed for out-of-centre proposals.",
+    "No significant adverse impact identified on any defined town centre.",
+    "Potential to enhance consumer choice or address a deficiency in provision.",
+    "Complements existing town centre offer."
+  ],
+  "typical_negative_impacts": [
+    "Failure of the sequential test, with suitable in-centre sites available.",
+    "Significant adverse impact on the vitality and viability of one or more existing town centres.",
+    "Undermining of planned investment in town centres.",
+    "Reduction in consumer choice or creation of a retail oversupply in a particular catchment.",
+    "Increased vacancy rates in existing centres."
+  ],
+  "common_mitigation_measures": [
+    "Relocating the proposal to an in-centre or edge-of-centre site.",
+    "Reducing the scale or changing the nature of the proposed development.",
+    "Restrictions on the range of goods sold or services offered (e.g., to prevent direct competition with sensitive town centre uses).",
+    "Financial contributions towards town centre management or improvement schemes (less common as direct mitigation for impact).",
+    "Phasing of development or conditions linking occupation to town centre health indicators (rare)."
+  ],
+  "potential_agent_hint": "SocioEconomicAndCommunityAgent"
+}

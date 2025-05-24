@@ -1,0 +1,172 @@
+{
+  "report_type_id": "OutlinePermissionSomeMattersReserved",
+  "report_id_prefix": "OUTSMR",
+  "description": "Default Report for Outline Planning Permission with Some Matters Reserved",
+  "sections": [
+    {
+      "node_id": "1.0_ApplicationAndProposal",
+      "description": "Application Details, Proposed Development (Principles), and Site Context",
+      "node_type_tag": "IntroductionBlock",
+      "generic_material_considerations": ["applicant_details", "description_of_the_proposed_development_in_outline_form_e_g_residential_development_for_up_to_x_dwellings_commercial_development_of_y_sqm", "clear_statement_of_which_matters_are_reserved_for_subsequent_approval_layout_scale_appearance_access_landscaping_and_which_are_to_be_considered_at_this_stage_typically_access_if_not_all_matters_reserved", "site_location_and_current_state_including_any_constraints_or_opportunities"],
+      "specific_policy_focus_ids": ["TownAndCountryPlanningAct1990_Section92", "NPPF_GeneralPrinciples"],
+      "thematic_policy_descriptors": ["establishing the principle of development", "defining scope of outline permission"],
+      "depends_on_nodes": [],
+      "sub_sections": [
+        {
+          "node_id": "1.1_SiteDescriptionAndContext",
+          "description": "Description of the Site, its Surroundings, and Key Characteristics",
+          "node_type_tag": "SiteDescription",
+          "generic_material_considerations": ["site_area_boundaries_topography_existing_features_vegetation_buildings", "relationship_to_surrounding_area_land_uses_character_sensitive_receptors", "site_designations_e_g_conservation_area_flood_zone_aonb_sssi_green_belt", "accessibility_and_connectivity_to_local_services_and_transport_networks"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["understanding site suitability and constraints for proposed use"],
+          "key_evidence_document_types": ["SiteLocationPlan", "ExistingSiteSurvey", "PreliminaryEcologicalAppraisal", "FloodRiskAssessment_IfApplicable", "DesignAndAccessStatement_Outline"]
+        },
+        {
+          "node_id": "1.2_ProposedDevelopmentParametersAndPrinciples",
+          "description": "Details of the Development for which Outline Approval is Sought, Including Any Parameters for Reserved Matters",
+          "node_type_tag": "ProposalDescription",
+          "generic_material_considerations": ["type_and_quantum_of_development_proposed_e_g_number_of_dwellings_mix_floor_space_for_commercial_uses", "indicative_layout_or_development_zones_if_provided_to_establish_principles", "details_of_any_matters_for_which_approval_is_sought_at_this_stage_e_g_principal_means_of_access_to_the_site", "any_parameter_plans_or_design_codes_submitted_to_guide_future_reserved_matters_applications_e_g_maximum_building_heights_density_ranges_key_landscape_features_to_be_retained_or_created"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["defining the extent and nature of development approved in principle"],
+          "key_evidence_document_types": ["IllustrativeMasterplanOrConceptDiagrams_IfProvided", "ParameterPlans_IfProvided", "AccessDrawings_IfAccessIsBeingConsidered", "PlanningStatementExplainingTheProposal"]
+        },
+        {
+          "node_id": "1.3_MattersToBeReserved",
+          "description": "Clear Identification of Matters Reserved for Later Approval",
+          "node_type_tag": "LegalContext",
+          "generic_material_considerations": ["explicit_list_of_reserved_matters_layout_scale_appearance_access_landscaping_as_applicable", "confirmation_that_all_other_matters_are_for_outline_consideration_or_that_only_specified_matters_are_for_outline_consideration"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["clarifying the scope of future applications"],
+          "key_evidence_document_types": ["ApplicationFormsStatingReservedMatters"]
+        },
+        {
+          "node_id": "1.4_RelevantPlanningHistory",
+          "description": "Summary of Relevant Planning History for the Site and Surrounding Area",
+          "node_type_tag": "PlanningHistory",
+          "generic_material_considerations": ["previous_applications_on_the_site_approved_or_refused_including_any_previous_outline_permissions", "relevant_planning_history_in_the_vicinity_that_may_set_precedent_or_indicate_sensitivities"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["understanding previous planning decisions and site context evolution"],
+          "key_evidence_document_types": ["PlanningHistorySearchRecords"]
+        }
+      ]
+    },
+    {
+      "node_id": "2.0_PolicyConsiderations",
+      "description": "Relevant National and Local Planning Policies for Determining the Principle of Development",
+      "node_type_tag": "PolicyFrameworkSummaryBlock",
+      "generic_material_considerations": ["national_planning_policy_framework_nppf_relevant_chapters_e_g_housing_delivery_economic_growth_design_green_belt_environmental_protection", "local_plan_strategic_policies_site_allocations_development_management_policies", "neighbourhood_plan_policies_if_applicable", "relevant_supplementary_planning_documents_spds_e_g_on_housing_mix_affordable_housing_design_guides_open_space_provision"],
+      "specific_policy_focus_ids": ["NPPF_PresumptionInFavourOfSustainableDevelopment", "LocalPlan_SiteAllocationPolicies_IfApplicable", "LocalPlan_DevelopmentManagementPoliciesRelevantToProposedUseAndLocation"],
+      "thematic_policy_descriptors": ["policy framework for assessing acceptability in principle"],
+      "depends_on_nodes": [],
+      "sub_sections": [
+        {"node_id": "2.1_NationalPolicy", "description": "NPPF Guidance on Key Issues", "node_type_tag": "NationalPolicy", "thematic_policy_descriptors": ["overarching national objectives and principles"]},
+        {"node_id": "2.2_LocalPolicyAndSiteAllocations", "description": "Local Plan Policies, Site Specific Allocations, Neighbourhood Plan", "node_type_tag": "LocalPolicy", "thematic_policy_descriptors": ["local development strategy and specific site requirements"]},
+        {"node_id": "2.3_OtherPolicyGuidance", "description": "Relevant SPDs, Design Codes, Masterplans", "node_type_tag": "GuidanceDocuments", "thematic_policy_descriptors": ["detailed local guidance influencing development principles"]}
+      ]
+    },
+    {
+      "node_id": "3.0_AssessmentOfThePrincipleOfDevelopmentAndMattersForApproval",
+      "description": "Officer's Assessment of the Acceptability of the Proposed Development in Principle and Any Matters Submitted for Full Approval (e.g., Access)",
+      "node_type_tag": "MaterialConsiderationsBlock_Parent",
+      "depends_on_nodes": ["1.0_ApplicationAndProposal", "2.0_PolicyConsiderations"],
+      "sub_sections": [
+        {
+          "node_id": "3.1_PrincipleOfDevelopmentLandUse",
+          "description": "Assessment of the Suitability of the Proposed Land Use(s) at this Location",
+          "node_type_tag": "LandUseAssessment",
+          "generic_material_considerations": ["conformity_with_local_plan_site_allocation_or_general_land_use_policies_for_the_area", "appropriateness_of_the_proposed_use_s_in_relation_to_surrounding_land_uses_and_character_of_the_area", "contribution_to_meeting_identified_needs_e_g_housing_employment_community_facilities", "impact_on_any_protected_designations_e_g_green_belt_loss_of_employment_land_impact_on_retail_hierarchy"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["evaluating fundamental land use acceptability"],
+          "key_evidence_document_types": ["LocalPlanProposalsMapAndPolicyDocuments", "HousingNeedAssessment_IfResidential", "EconomicDevelopmentStrategy_IfCommercial"]
+        },
+        {
+          "node_id": "3.2_AssessmentOfMatterSubmittedForApproval_Access",
+          "description": "Detailed Assessment of Access Arrangements if Submitted for Approval at Outline Stage",
+          "node_type_tag": "AccessAndTransportAssessment",
+          "generic_material_considerations": ["suitability_of_proposed_vehicular_access_point_s_junction_design_visibility_splays_highway_safety", "impact_on_the_local_highway_network_capacity_congestion_safety", "provision_for_pedestrian_cycle_and_public_transport_access_to_and_from_the_site", "adequacy_of_internal_access_arrangements_if_indicatively_shown_and_relevant_to_main_access_points"],
+          "specific_policy_focus_ids": ["NPPF_PromotingSustainableTransport", "LocalPlan_TransportAndAccessPolicies", "ManualForStreetsGuidance"],
+          "thematic_policy_descriptors": ["evaluating safety and suitability of proposed access"],
+          "key_evidence_document_types": ["AccessDrawingsAndSpecifications", "TransportAssessmentOrStatement_IfRequired", "HighwayAuthorityConsultationResponse"]
+        },
+        {
+          "node_id": "3.3_IndicativeLayoutScaleAndQuantumOfDevelopment",
+          "description": "Assessment of Any Indicative Information on Layout, Scale, and Quantum of Development",
+          "node_type_tag": "DesignPrincipleAssessment",
+          "generic_material_considerations": ["appropriateness_of_the_proposed_density_and_scale_in_relation_to_site_context_and_local_character_even_if_scale_is_reserved_parameters_may_be_set", "general_principles_of_site_layout_e_g_distribution_of_land_uses_main_movement_routes_location_of_open_space_if_shown_indicatively", "potential_to_achieve_a_high_quality_design_at_reserved_matters_stage_based_on_outline_proposals_and_parameters"],
+          "specific_policy_focus_ids": ["NPPF_AchievingWellDesignedPlaces", "LocalPlan_DesignPolicies"],
+          "thematic_policy_descriptors": ["assessing whether the indicative scheme demonstrates acceptable development principles"],
+          "key_evidence_document_types": ["IllustrativeMasterplanOrLayoutConcepts", "ParameterPlansForScaleAndDensity_IfProvided"]
+        },
+        {
+          "node_id": "3.4_ImpactOnAmenity",
+          "description": "Assessment of Potential Impacts on Amenity of Neighbouring Properties and Future Occupiers (at an Outline Level)",
+          "node_type_tag": "AmenityImpactAssessment",
+          "generic_material_considerations": ["potential_for_impacts_such_as_overlooking_loss_of_privacy_loss_of_light_noise_and_disturbance_from_the_proposed_type_and_quantum_of_development", "ability_to_mitigate_potential_amenity_impacts_through_detailed_design_at_reserved_matters_stage_within_any_approved_parameters"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["considering broad amenity implications of the principle of development"],
+          "key_evidence_document_types": []
+        },
+        {
+          "node_id": "3.5_EnvironmentalImpacts",
+          "description": "Consideration of Key Environmental Impacts (e.g., Ecology, Flood Risk, Trees, Contamination) at Outline Stage",
+          "node_type_tag": "EnvironmentalImpactAssessment",
+          "generic_material_considerations": ["impact_on_biodiversity_and_ecological_networks_need_for_mitigation_and_enhancement_based_on_preliminary_surveys", "flood_risk_and_drainage_implications_acceptability_of_sequential_and_exception_tests_if_required_outline_drainage_strategy", "impact_on_trees_and_hedgerows_need_for_protection_or_mitigation_planting", "potential_for_land_contamination_and_need_for_remediation_strategy", "landscape_and_visual_impact_assessment_if_required_for_sensitive_locations_or_large_scale_proposals"],
+          "specific_policy_focus_ids": ["NPPF_Chapter15_ConservingAndEnhancingTheNaturalEnvironment", "LocalPlan_EnvironmentalProtectionPolicies"],
+          "thematic_policy_descriptors": ["addressing key environmental constraints and opportunities in principle"],
+          "key_evidence_document_types": ["PreliminaryEcologicalAppraisal", "FloodRiskAssessmentAndDrainageStrategy", "ArboriculturalSurveyImpactAssessment", "Phase1ContaminatedLandAssessment", "LandscapeAndVisualImpactAssessment_IfApplicable"]
+        },
+        {
+          "node_id": "3.6_InfrastructureAndCommunityBenefits",
+          "description": "Consideration of Infrastructure Requirements and Potential Community Benefits (e.g., S106 Contributions)",
+          "node_type_tag": "InfrastructureAndObligationsAssessment",
+          "generic_material_considerations": ["need_for_contributions_towards_local_infrastructure_e_g_schools_healthcare_transport_improvements_open_space_affordable_housing_based_on_local_plan_policies_and_spd_s", "capacity_of_existing_utilities_and_need_for_upgrades", "potential_for_securing_benefits_through_planning_obligations_s106_agreement_or_cil_community_infrastructure_levy"],
+          "specific_policy_focus_ids": ["NPPF_EnsuringViabilityAndDeliverability", "LocalPlan_InfrastructureAndDeveloperContributionsPolicies", "CILChargingSchedule"],
+          "thematic_policy_descriptors": ["ensuring development is supported by necessary infrastructure and contributes to community needs"],
+          "key_evidence_document_types": ["DraftHeadsOfTermsForS106_IfApplicable", "InfrastructureDeliveryPlan_IfRelevant"]
+        }
+      ]
+    },
+    {
+      "node_id": "4.0_ConsultationResponses",
+      "description": "Summary of Consultation Responses on the Outline Application",
+      "node_type_tag": "ConsultationSummaryBlock",
+      "generic_material_considerations": ["summary_of_responses_from_statutory_consultees_e_g_highways_authority_environment_agency_natural_england_historic_england_lead_local_flood_authority", "summary_of_responses_from_non_statutory_consultees_e_g_parish_council_civic_society_utility_providers_police_architectural_liaison", "summary_of_any_public_representations_received_on_the_application"],
+      "specific_policy_focus_ids": [],
+      "thematic_policy_descriptors": ["feedback from stakeholders on the principle of development and any approved matters"],
+      "depends_on_nodes": [],
+      "sub_sections": [
+        {"node_id": "4.1_StatutoryConsultees", "description": "Feedback from Statutory Bodies", "node_type_tag": "ConsulteeResponse", "thematic_policy_descriptors": ["technical advice on key aspects like access, flooding, ecology"]},
+        {"node_id": "4.2_NonStatutoryAndPublicResponses", "description": "Feedback from Other Consultees and Public", "node_type_tag": "ConsulteeResponse", "thematic_policy_descriptors": ["local concerns, community views, and specialist advice"]}
+      ]
+    },
+    {
+      "node_id": "5.0_ConclusionAndRecommendation",
+      "description": "Officer's Overall Conclusion and Recommendation on the Outline Application",
+      "node_type_tag": "PlanningBalanceAndConclusionBlock",
+      "generic_material_considerations": ["summary_of_assessment_of_the_principle_of_development_and_any_matters_submitted_for_full_approval", "overall_compliance_with_planning_policies_and_material_considerations", "consideration_of_consultation_responses_and_planning_obligations"],
+      "specific_policy_focus_ids": [],
+      "thematic_policy_descriptors": ["overall judgement on the acceptability of the outline proposal"],
+      "depends_on_nodes": ["3.0_AssessmentOfThePrincipleOfDevelopmentAndMattersForApproval", "4.0_ConsultationResponses"],
+      "sub_sections": [
+        {
+          "node_id": "5.1_OverallPlanningBalance",
+          "description": "Weighing of All Considerations for the Outline Application",
+          "node_type_tag": "PlanningBalance",
+          "generic_material_considerations": ["whether_the_proposed_development_is_acceptable_in_principle_at_this_location_having_regard_to_all_material_considerations_including_policy_environmental_impacts_amenity_and_infrastructure", "whether_any_adverse_impacts_can_be_satisfactorily_addressed_through_conditions_or_planning_obligations_or_at_reserved_matters_stage", "consideration_of_the_presumption_in_favour_of_sustainable_development_if_applicable"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["final assessment of merits of the outline proposal"],
+          "key_evidence_document_types": []
+        },
+        {
+          "node_id": "5.2_Recommendation",
+          "description": "Officer's Recommendation (Approve or Refuse Outline Permission)",
+          "node_type_tag": "FinalRecommendationBlock",
+          "generic_material_considerations": ["clear_recommendation_for_approval_or_refusal_of_outline_planning_permission", "if_approval_suggested_conditions_covering_time_limits_for_submission_of_reserved_matters_and_commencement_of_development_approved_plans_and_parameters_any_matters_approved_at_outline_stage_requirements_for_future_submissions_e_g_design_codes_phasing_plans_and_any_necessary_mitigation_measures_to_be_secured_prior_to_or_during_reserved_matters_or_implementation", "identification_of_heads_of_terms_for_any_s106_planning_obligation", "if_refusal_clear_reasons_linked_to_conflict_with_planning_policies_or_unacceptable_adverse_impacts_that_cannot_be_mitigated"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["formulating recommendation for outline planning permission"],
+          "key_evidence_document_types": []
+        }
+      ]
+    }
+  ]
+}

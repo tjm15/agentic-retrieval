@@ -1,0 +1,153 @@
+{
+  "report_type_id": "VariationOrRemovalOfCondition",
+  "report_id_prefix": "S73",
+  "description": "Default Report for Application to Vary or Remove a Condition (Section 73)",
+  "sections": [
+    {
+      "node_id": "1.0_ApplicationAndProposal",
+      "description": "Application Details, Proposed Variation/Removal, and Site Context",
+      "node_type_tag": "IntroductionBlock",
+      "generic_material_considerations": ["applicant_details", "description_of_the_original_planning_permission_and_the_specific_condition_s_to_be_varied_or_removed", "details_of_the_proposed_variation_or_justification_for_removal", "site_location_and_current_state"],
+      "specific_policy_focus_ids": ["TownAndCountryPlanningAct1990_Section73"],
+      "thematic_policy_descriptors": ["understanding the scope of the S73 application", "identifying the parent permission and relevant condition(s)"],
+      "depends_on_nodes": [],
+      "sub_sections": [
+        {
+          "node_id": "1.1_SiteDescriptionAndContext",
+          "description": "Description of the Site and its Surroundings",
+          "node_type_tag": "SiteDescription",
+          "generic_material_considerations": ["site_characteristics_constraints_opportunities", "relationship_to_surrounding_area_and_land_uses"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["contextual understanding for assessing impact of change"],
+          "key_evidence_document_types": ["SiteLocationPlan", "OriginalPlanningPermissionDecisionNotice"]
+        },
+        {
+          "node_id": "1.2_DetailsOfTheOriginalPermissionAndCondition",
+          "description": "Identification of the Parent Planning Permission and the Specific Condition(s) in Question",
+          "node_type_tag": "LegalContext",
+          "generic_material_considerations": ["original_planning_permission_reference_number_and_date_of_grant", "full_wording_of_the_condition_s_subject_to_the_application", "reason_for_the_imposition_of_the_original_condition_s"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["establishing the baseline for assessment"],
+          "key_evidence_document_types": ["OriginalPlanningPermissionDecisionNotice", "OfficerReportForOriginalApplication_IfAvailable"]
+        },
+        {
+          "node_id": "1.3_ProposedVariationOrReasonForRemoval",
+          "description": "Detailed Explanation of the Proposed Change to the Condition or Justification for its Removal",
+          "node_type_tag": "ProposalDescription",
+          "generic_material_considerations": ["if_variation_proposed_wording_of_the_new_condition", "if_removal_justification_why_the_condition_is_no_longer_necessary_or_relevant", "any_supporting_information_or_evidence_for_the_change_e_g_updated_plans_technical_reports_changes_in_circumstances"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["clarity of the proposed amendment"],
+          "key_evidence_document_types": ["CoveringLetterOrPlanningStatementExplainingTheProposal", "AnyRevisedPlansOrDocumentsSupportingTheVariation"]
+        },
+        {
+          "node_id": "1.4_RelevantPlanningHistory",
+          "description": "Summary of Relevant Planning History, Including the Original Permission",
+          "node_type_tag": "PlanningHistory",
+          "generic_material_considerations": ["details_of_the_parent_permission", "any_previous_S73_applications_or_other_relevant_applications_on_the_site"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["understanding the evolution of the development and its conditions"],
+          "key_evidence_document_types": ["PlanningHistorySearchRecords"]
+        }
+      ]
+    },
+    {
+      "node_id": "2.0_PolicyConsiderations",
+      "description": "Relevant National and Local Planning Policies for Assessing the Variation/Removal",
+      "node_type_tag": "PolicyFrameworkSummaryBlock",
+      "generic_material_considerations": ["national_planning_policy_framework_nppf_relevant_sections", "local_plan_policies_relevant_to_the_site_and_the_nature_of_the_condition_and_proposed_change", "any_relevant_supplementary_planning_documents_spds"],
+      "specific_policy_focus_ids": ["NPPF_GeneralPrinciples", "RelevantLocalPlanPoliciesImpactingTheCondition"],
+      "thematic_policy_descriptors": ["policy context for the proposed change"],
+      "depends_on_nodes": [],
+      "sub_sections": [
+        {"node_id": "2.1_NationalPolicy", "description": "NPPF Guidance", "node_type_tag": "NationalPolicy", "thematic_policy_descriptors": ["overarching planning principles"]},
+        {"node_id": "2.2_LocalPolicy", "description": "Local Plan Policies, SPDs", "node_type_tag": "LocalPolicy", "thematic_policy_descriptors": ["specific local requirements and considerations"]}
+      ]
+    },
+    {
+      "node_id": "3.0_AssessmentOfTheProposedVariationOrRemoval",
+      "description": "Officer's Assessment of the Proposed Change(s)",
+      "node_type_tag": "MaterialConsiderationsBlock_Parent",
+      "depends_on_nodes": ["1.0_ApplicationAndProposal", "2.0_PolicyConsiderations"],
+      "sub_sections": [
+        {
+          "node_id": "3.1_ConsiderationOfTheOriginalReasonForTheCondition",
+          "description": "Assessment of Whether the Original Justification for the Condition Still Applies",
+          "node_type_tag": "ImpactAssessment",
+          "generic_material_considerations": ["review_of_the_original_reason_for_imposing_the_condition", "assessment_of_any_changes_in_circumstances_policy_or_site_context_that_may_affect_the_relevance_of_the_condition", "whether_the_condition_still_serves_a_valid_planning_purpose"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["evaluating the continued necessity of the condition"],
+          "key_evidence_document_types": ["OfficerReportForOriginalApplication_IfAvailable"]
+        },
+        {
+          "node_id": "3.2_ImpactOfTheProposedVariationOrRemoval",
+          "description": "Assessment of the Planning Implications of Varying or Removing the Condition",
+          "node_type_tag": "ImpactAssessment",
+          "generic_material_considerations": ["impact_on_amenity_of_neighbouring_properties_e_g_noise_privacy_light_if_condition_related_to_these_matters", "impact_on_character_and_appearance_of_the_area_if_condition_related_to_design_materials_landscaping", "impact_on_highway_safety_if_condition_related_to_access_parking_visibility", "impact_on_environmental_matters_e_g_ecology_trees_drainage_if_condition_related_to_these", "any_other_relevant_planning_impacts_arising_from_the_proposed_change"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["assessing consequences of the proposed change"],
+          "key_evidence_document_types": ["SupportingStatementsOrReportsSubmittedWithApplication", "SiteVisitObservations"]
+        },
+        {
+          "node_id": "3.3_ComplianceWithPolicy",
+          "description": "Assessment of the Proposal Against Relevant Planning Policies",
+          "node_type_tag": "PolicyComplianceAssessment",
+          "generic_material_considerations": ["whether_the_development_as_modified_by_the_varied_or_removed_condition_would_comply_with_current_national_and_local_planning_policies", "consideration_of_whether_the_change_would_result_in_a_fundamentally_different_development_than_originally_approved_which_may_not_be_appropriate_under_s73"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["ensuring policy adherence of the modified scheme"],
+          "key_evidence_document_types": []
+        },
+        {
+          "node_id": "3.4_ConsiderationOfNewConditionsOrAmendmentsToOtherConditions",
+          "description": "Whether New Conditions are Necessary or if Other Existing Conditions Need Amending as a Consequence",
+          "node_type_tag": "ConditionConsideration",
+          "generic_material_considerations": ["if_the_proposed_variation_necessitates_consequential_amendments_to_other_conditions_on_the_original_permission", "if_new_conditions_are_required_to_mitigate_any_impacts_of_the_variation_or_to_ensure_the_development_remains_acceptable_in_planning_terms", "all_other_conditions_from_the_original_permission_will_be_re-imposed_unless_they_are_also_subject_to_variation_or_removal_or_are_no_longer_relevant"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["ensuring a coherent and enforceable set of conditions on any new permission"],
+          "key_evidence_document_types": []
+        }
+      ]
+    },
+    {
+      "node_id": "4.0_ConsultationResponses",
+      "description": "Summary of Consultation Responses on the Proposed Variation/Removal",
+      "node_type_tag": "ConsultationSummaryBlock",
+      "generic_material_considerations": ["summary_of_responses_from_any_relevant_statutory_or_non_statutory_consultees_e_g_if_condition_related_to_highways_noise_ecology", "summary_of_any_public_representations_received_on_the_application"],
+      "specific_policy_focus_ids": [],
+      "thematic_policy_descriptors": ["feedback from stakeholders on the proposed change"],
+      "depends_on_nodes": [],
+      "sub_sections": [
+        {"node_id": "4.1_ConsulteeResponses", "description": "Feedback from Relevant Consultees", "node_type_tag": "ConsulteeResponse", "thematic_policy_descriptors": ["technical advice and local views"]},
+        {"node_id": "4.2_PublicRepresentations", "description": "Summary of Public Comments", "node_type_tag": "PublicResponse", "thematic_policy_descriptors": ["neighbour and public concerns"]}
+      ]
+    },
+    {
+      "node_id": "5.0_ConclusionAndRecommendation",
+      "description": "Officer's Overall Conclusion and Recommendation on the S73 Application",
+      "node_type_tag": "PlanningBalanceAndConclusionBlock",
+      "generic_material_considerations": ["summary_of_assessment_of_the_proposed_variation_or_removal", "overall_impact_of_the_change_and_compliance_with_planning_policies", "consideration_of_consultation_responses"],
+      "specific_policy_focus_ids": [],
+      "thematic_policy_descriptors": ["overall judgement on the acceptability of the proposed change"],
+      "depends_on_nodes": ["3.0_AssessmentOfTheProposedVariationOrRemoval", "4.0_ConsultationResponses"],
+      "sub_sections": [
+        {
+          "node_id": "5.1_OverallPlanningBalance",
+          "description": "Weighing of All Considerations for the S73 Application",
+          "node_type_tag": "PlanningBalance",
+          "generic_material_considerations": ["whether_the_proposed_variation_or_removal_is_acceptable_in_planning_terms", "whether_the_development_would_remain_compliant_with_planning_policy_if_the_condition_is_varied_or_removed_as_proposed", "whether_any_adverse_impacts_can_be_adequately_mitigated_by_new_or_amended_conditions"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["final assessment of merits"],
+          "key_evidence_document_types": []
+        },
+        {
+          "node_id": "5.2_Recommendation",
+          "description": "Officer's Recommendation (Approve or Refuse S73 Application)",
+          "node_type_tag": "FinalRecommendationBlock",
+          "generic_material_considerations": ["clear_recommendation_for_approval_or_refusal", "if_approval_a_new_planning_permission_will_be_issued_with_the_new_set_of_conditions_including_any_varied_conditions_and_all_other_original_conditions_that_remain_relevant_and_unaltered", "if_refusal_clear_reasons_why_the_proposed_variation_or_removal_is_unacceptable"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["formulating recommendation for S73 application"],
+          "key_evidence_document_types": []
+        }
+      ]
+    }
+  ]
+}

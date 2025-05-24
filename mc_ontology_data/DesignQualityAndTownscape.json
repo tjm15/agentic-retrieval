@@ -1,0 +1,56 @@
+{
+  "id": "DesignQualityAndTownscape",
+  "display_name_template": "Design Quality, Urban Design, and Townscape Impact for {app_name}",
+  "description_long": "Assessment of the overall design quality of the proposed development, including its architectural approach, urban design strategy (layout, massing, scale, height, relationship to public realm), impact on local townscape character, and visual impact from key viewpoints.",
+  "primary_tags": ["design_quality", "urban_design", "townscape_visual_impact", "NPPF_Ch12", "NationalDesignGuide"],
+  "relevant_policy_themes": ["LondonPlan_D_Series", "LocalPlan_DesignPolicies", "LocalPlan_TallBuildingsPolicy", "LocalPlan_PublicRealmDesign"],
+  "key_evidence_docs": ["DAS_AllVolumes", "DesignCode", "IllustrativeMasterplan", "CGIs_VerifiedViews", "ES_TVIA", "MaterialsSchedule"],
+  "trigger_keywords_for_llm_scan": ["design quality", "urban design", "townscape", "visual impact", "architecture", "massing", "scale", "height", "public realm", "materials", "layout", "aesthetics"],
+  "sub_questions": [
+    "What is the overarching design concept and architectural language?",
+    "How does the proposed layout, scale, and massing respond to the site's context and surrounding urban grain?",
+    "Is the proposed height appropriate for the location and are there any impacts on sensitive views or receptors?",
+    "How does the development address the public realm and create active frontages?",
+    "What is the quality of proposed materials and are they appropriate for the local character?",
+    "Does the scheme positively contribute to local distinctiveness and sense of place?",
+    "Have key views been adequately assessed, and what is the visual impact from these viewpoints?",
+    "Does the scheme adhere to relevant design guides and policies (e.g., National Design Guide, local design codes)?",
+    "How does the scheme integrate with existing movement patterns for pedestrians and cyclists?"
+  ],
+  "data_schema_hint": {
+      "design_concept_and_architectural_rationale": "text_block_explaining_design_philosophy_and_influences",
+      "urban_design_strategy_analysis": {"layout_response_to_context": "text_block", "massing_and_scale_justification": "text_block", "height_in_relation_to_surroundings": "text_block", "relationship_to_public_realm_and_streetscape": "text_block"},
+      "townscape_character_impact_assessment": "text_block_evaluating_impact_on_local_character_areas_and_distinctiveness",
+      "visual_impact_assessment_summary": {"key_viewpoints_assessed": "list_of_strings", "summary_of_visual_effects_per_viewpoint": "text_block", "verified_views_compliance_statement": "boolean_with_commentary"},
+      "materials_palette_specification_and_appropriateness": "text_block_detailing_proposed_materials_and_their_suitability_for_context_and_durability",
+      "public_realm_and_landscaping_proposals": "text_block_describing_hard_and_soft_landscaping_street_furniture_and_amenity_spaces",
+      "design_policy_compliance_matrix": "dict_policy_to_compliance_statement",
+      "accessibility_and_inclusivity_features": "text_block_detailing_adherence_to_inclusive_design_principles"
+  },
+  "typical_positive_impacts": [
+    "Creates a high-quality piece of architecture that enhances the built environment.",
+    "Responds positively to and reinforces local character and distinctiveness.",
+    "Improves the public realm and pedestrian experience.",
+    "Provides a well-designed, legible, and permeable layout.",
+    "Uses high-quality, durable, and contextually appropriate materials.",
+    "Minimises adverse visual impacts and potentially creates positive new views."
+  ],
+  "typical_negative_impacts": [
+    "Poor architectural quality, out of character with the surroundings.",
+    "Inappropriate scale, massing, or height leading to overbearing impacts.",
+    "Detrimental impact on townscape character and key views.",
+    "Poor quality public realm or inactive street frontages.",
+    "Use of inappropriate or low-quality materials.",
+    "Scheme fails to integrate with its surroundings or creates a hostile environment."
+  ],
+  "common_mitigation_measures": [
+    "Revisions to building height, massing, or footprint.",
+    "Improved architectural detailing and articulation.",
+    "Enhanced public realm design and landscaping.",
+    "Selection of more appropriate materials.",
+    "Introduction of active uses at ground floor level.",
+    "Screening or strategic landscaping to soften visual impacts.",
+    "Further studies (e.g., additional verified views, wind microclimate assessment)."
+  ],
+  "agent_to_invoke_hint": "HeritageAndDesignAgent"
+}

@@ -1,0 +1,153 @@
+{
+  "report_type_id": "TreeWorksTPOConservationArea",
+  "report_id_prefix": "TREE",
+  "description": "Default Report for Application for Works to Trees Protected by a TPO or in a Conservation Area",
+  "sections": [
+    {
+      "node_id": "1.0_ApplicationAndProposal",
+      "description": "Application Details, Proposed Works, and Tree/Site Context",
+      "node_type_tag": "IntroductionBlock",
+      "generic_material_considerations": ["applicant_details", "location_of_the_tree_s_and_site_plan", "species_and_approximate_age_size_of_tree_s", "details_of_proposed_works_e_g_fell_prune_crown_lift_reduce_thin_with_clear_specification_to_bs3998", "reasons_for_the_proposed_works_e_g_safety_damage_light_nuisance_good_arboricultural_practice"],
+      "specific_policy_focus_ids": ["TownAndCountryPlanningAct1990_PartVIII_Chapter1_Trees", "TownAndCountryPlanningTreePreservationRegulations2012", "PlanningListedBuildingsAndConservationAreasAct1990_Section211_NotificationForTreesInConservationAreas"],
+      "thematic_policy_descriptors": ["understanding the scope of proposed tree works", "identifying the protected tree(s)"],
+      "depends_on_nodes": [],
+      "sub_sections": [
+        {
+          "node_id": "1.1_SiteDescriptionAndTreeDetails",
+          "description": "Description of the Site and Specifics of the Tree(s) in Question",
+          "node_type_tag": "SiteDescription",
+          "generic_material_considerations": ["site_context_e_g_garden_woodland_street_public_open_space", "relationship_of_tree_s_to_buildings_boundaries_and_other_features", "confirmation_of_tpo_status_reference_number_or_conservation_area_designation", "health_and_condition_of_the_tree_s_supported_by_arborist_report_if_available_or_necessary"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["detailed understanding of the tree and its setting"],
+          "key_evidence_document_types": ["SiteLocationPlanMarkedWithTreeLocation", "TreeSurveyArboriculturalReport_IfProvidedOrRequired", "PhotographsOfTreeAndRelevantIssues"]
+        },
+        {
+          "node_id": "1.2_ProposedWorksAndJustification",
+          "description": "Detailed Specification of Proposed Works and Full Justification",
+          "node_type_tag": "ProposalDescription",
+          "generic_material_considerations": ["precise_nature_of_works_e_g_crown_reduction_by_x_metres_removal_of_specific_limbs_felling", "methods_to_be_used_in_accordance_with_bs3998_2010_tree_work_recommendations", "reasons_for_work_e_g_tree_is_dead_dying_dangerous_causing_subsidence_obstructing_light_to_unreasonable_degree_essential_for_development_approved_under_planning_permission", "details_of_any_proposed_replacement_planting_species_size_location_timetable_if_felling_is_proposed"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["clarity and justification for tree surgery or removal"],
+          "key_evidence_document_types": ["DetailedSpecificationOfWorks", "SupportingEvidenceForJustification_e_g_StructuralEngineersReportForSubsidence_DecayDetectionReport"]
+        },
+        {
+          "node_id": "1.3_RelevantPlanningHistory",
+          "description": "Summary of Any Previous Tree Applications or Relevant Planning Permissions",
+          "node_type_tag": "PlanningHistory",
+          "generic_material_considerations": ["previous_applications_for_works_to_the_same_tree_s", "any_planning_permissions_that_have_implications_for_the_tree_s_e_g_conditions_requiring_tree_protection_or_retention"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["history of management or impact on the tree(s)"],
+          "key_evidence_document_types": ["PlanningHistorySearchRecords"]
+        }
+      ]
+    },
+    {
+      "node_id": "2.0_PolicyConsiderations",
+      "description": "Relevant National and Local Planning Policies for Trees",
+      "node_type_tag": "PolicyFrameworkSummaryBlock",
+      "generic_material_considerations": ["nppf_guidance_on_conserving_and_enhancing_the_natural_environment_including_trees_and_woodland", "local_plan_policies_on_tree_protection_landscape_character_biodiversity_and_green_infrastructure", "any_relevant_supplementary_planning_documents_spds_on_trees_and_landscape", "conservation_area_appraisal_if_applicable_regarding_contribution_of_trees_to_character"],
+      "specific_policy_focus_ids": ["NPPF_Chapter15_ConservingAndEnhancingTheNaturalEnvironment", "LocalPlan_TreeAndLandscapePolicies", "LocalPlan_ConservationAreaPolicies_IfApplicable"],
+      "thematic_policy_descriptors": ["policy context for assessing proposed tree works"],
+      "depends_on_nodes": [],
+      "sub_sections": [
+        {"node_id": "2.1_NationalPolicy", "description": "NPPF Guidance on Trees and Hedgerows", "node_type_tag": "NationalPolicy", "thematic_policy_descriptors": ["value of trees, presumption in favour of retention"]},
+        {"node_id": "2.2_LocalPolicy", "description": "Local Plan Policies, SPDs, Conservation Area Appraisals", "node_type_tag": "LocalPolicy", "thematic_policy_descriptors": ["local criteria for tree works, replacement planting standards"]}
+      ]
+    },
+    {
+      "node_id": "3.0_AssessmentOfProposedWorks",
+      "description": "Officer's Assessment of the Proposed Works and Their Impact",
+      "node_type_tag": "MaterialConsiderationsBlock_Parent",
+      "depends_on_nodes": ["1.0_ApplicationAndProposal", "2.0_PolicyConsiderations"],
+      "sub_sections": [
+        {
+          "node_id": "3.1_ImpactOnTheHealthAndConditionOfTheTree",
+          "description": "Assessment of How the Proposed Works Will Affect the Tree's Physiological and Structural Condition",
+          "node_type_tag": "ArboriculturalAssessment",
+          "generic_material_considerations": ["whether_the_works_are_in_accordance_with_good_arboricultural_practice_bs3998", "potential_for_works_to_cause_long_term_harm_or_instability_to_the_tree", "appropriateness_of_the_works_in_relation_to_the_tree_s_species_age_and_condition", "if_felling_is_the_tree_dead_dying_dangerous_or_of_such_poor_quality_that_retention_is_not_justified"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["evaluating arboricultural impact of works"],
+          "key_evidence_document_types": ["ArboriculturalReportOrOfficerAssessment", "BS3998Standard"]
+        },
+        {
+          "node_id": "3.2_ImpactOnPublicAmenityAndVisualCharacter",
+          "description": "Assessment of the Tree's Contribution to Public Amenity and the Character of the Area, and How This Would Be Affected",
+          "node_type_tag": "AmenityImpactAssessment",
+          "generic_material_considerations": ["visibility_of_the_tree_from_public_vantage_points", "contribution_of_the_tree_to_local_landscape_streetscape_or_character_of_a_conservation_area", "significance_of_the_tree_due_to_its_size_age_species_or_rarity", "impact_of_works_on_this_amenity_value_e_g_will_pruning_significantly_reduce_canopy_size_or_alter_form_will_felling_result_in_a_significant_loss_of_amenity"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["assessing loss of public benefit and visual impact"],
+          "key_evidence_document_types": ["PhotographsShowingTreeInContext", "ConservationAreaAppraisal_IfApplicable"]
+        },
+        {
+          "node_id": "3.3_JustificationForTheProposedWorks",
+          "description": "Evaluation of the Reasons Provided for the Works",
+          "node_type_tag": "JustificationAssessment",
+          "generic_material_considerations": ["validity_and_strength_of_the_justification_e_g_evidence_of_damage_safety_risk_level_of_nuisance", "are_there_alternative_solutions_that_would_avoid_or_reduce_the_need_for_works_e_g_different_pruning_regime_root_barriers_managing_expectations_about_light_levels", "balancing_the_harm_caused_by_the_works_against_the_benefits_claimed_by_the_applicant"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["weighing the applicant's reasons against tree preservation duties"],
+          "key_evidence_document_types": ["SupportingEvidenceFromApplicant_e_g_Photos_Reports"]
+        },
+        {
+          "node_id": "3.4_NeedForReplacementPlanting",
+          "description": "Consideration of Replacement Planting if Felling is Proposed or Significant Pruning Occurs",
+          "node_type_tag": "MitigationAssessment",
+          "generic_material_considerations": ["if_felling_is_justified_the_need_for_a_replacement_tree_of_appropriate_species_size_and_location_to_mitigate_the_loss", "suitability_of_any_proposed_replacement_planting_scheme", "conditions_to_secure_replacement_planting_and_its_establishment_if_consent_is_granted"],
+          "specific_policy_focus_ids": ["TownAndCountryPlanningTreePreservationRegulations2012_DutyToPlantReplacementTrees"],
+          "thematic_policy_descriptors": ["ensuring continuity of tree cover"],
+          "key_evidence_document_types": ["ReplacementPlantingProposal_IfAny"]
+        },
+        {
+          "node_id": "3.5_ImpactOnBiodiversity",
+          "description": "Consideration of Any Impact on Protected Species or Habitats",
+          "node_type_tag": "EcologicalImpactAssessment",
+          "generic_material_considerations": ["presence_or_potential_presence_of_bats_nesting_birds_or_other_protected_species_using_the_tree", "need_for_ecological_surveys_or_mitigation_measures_if_works_are_to_proceed", "timing_of_works_to_avoid_sensitive_periods_e_g_bird_nesting_season"],
+          "specific_policy_focus_ids": ["WildlifeAndCountrysideAct1981", "ConservationOfHabitatsAndSpeciesRegulations2017"],
+          "thematic_policy_descriptors": ["protecting wildlife associated with trees"],
+          "key_evidence_document_types": ["EcologicalSurvey_IfRequiredOrProvided"]
+        }
+      ]
+    },
+    {
+      "node_id": "4.0_ConsultationResponses",
+      "description": "Summary of Consultation Responses (e.g., Parish Council, Tree Warden)",
+      "node_type_tag": "ConsultationSummaryBlock",
+      "generic_material_considerations": ["summary_of_responses_from_parish_or_town_council", "comments_from_local_tree_warden_or_amenity_groups", "any_representations_from_neighbours_or_other_interested_parties_note_formal_neighbour_notification_not_always_required_for_tree_apps_but_may_be_done_for_conservation_area_notifications_or_contentious_tpo_apps"],
+      "specific_policy_focus_ids": [],
+      "thematic_policy_descriptors": ["feedback from local stakeholders"],
+      "depends_on_nodes": [],
+      "sub_sections": [
+        {"node_id": "4.1_LocalCouncilAndAmenityGroupResponses", "description": "Feedback from Local Councils and Amenity Groups", "node_type_tag": "ConsulteeResponse", "thematic_policy_descriptors": ["local views on tree value and proposed works"]},
+        {"node_id": "4.2_OtherRepresentations", "description": "Summary of Any Other Comments Received", "node_type_tag": "PublicResponse", "thematic_policy_descriptors": ["neighbour or public concerns"]}
+      ]
+    },
+    {
+      "node_id": "5.0_ConclusionAndRecommendation",
+      "description": "Officer's Overall Conclusion and Recommendation",
+      "node_type_tag": "PlanningBalanceAndConclusionBlock",
+      "generic_material_considerations": ["summary_of_assessment_of_the_proposed_works_and_their_impacts", "balancing_the_justification_for_works_against_the_amenity_value_and_health_of_the_tree_and_policy_protection", "consideration_of_consultation_responses"],
+      "specific_policy_focus_ids": [],
+      "thematic_policy_descriptors": ["overall judgement on whether the proposed works are acceptable"],
+      "depends_on_nodes": ["3.0_AssessmentOfProposedWorks", "4.0_ConsultationResponses"],
+      "sub_sections": [
+        {
+          "node_id": "5.1_OverallPlanningBalanceForTreeWorks",
+          "description": "Weighing of All Considerations",
+          "node_type_tag": "PlanningBalance",
+          "generic_material_considerations": ["whether_the_proposed_works_are_justified_and_represent_an_appropriate_balance_between_the_applicant_s_needs_and_the_public_interest_in_retaining_the_tree_and_its_amenity_value", "for_conservation_area_trees_whether_the_works_would_preserve_or_enhance_the_character_or_appearance_of_the_conservation_area"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["final assessment of merits of proposed works"],
+          "key_evidence_document_types": []
+        },
+        {
+          "node_id": "5.2_Recommendation",
+          "description": "Officer's Recommendation (Grant Consent, Grant Consent with Conditions, or Refuse Consent for TPO trees; No Objection or Object for Conservation Area notifications)",
+          "node_type_tag": "FinalRecommendationBlock",
+          "generic_material_considerations": ["clear_recommendation", "for_tpo_trees_grant_consent_grant_with_conditions_e_g_timing_supervision_replacement_planting_or_refuse_consent_with_reasons", "for_conservation_area_notifications_no_objection_to_works_or_object_and_make_a_tpo_if_tree_is_of_sufficient_amenity_value_and_under_threat"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["formulating recommendation for tree works application/notification"],
+          "key_evidence_document_types": []
+        }
+      ]
+    }
+  ]
+}

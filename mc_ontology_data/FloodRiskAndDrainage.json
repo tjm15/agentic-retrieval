@@ -1,0 +1,50 @@
+{
+  "id": "FloodRisk",
+  "display_name_template": "Flood Risk and Drainage for {app_name}",
+  "description_long": "Assessment of flood risk to and from the development, considering all sources of flooding, the application of the Sequential and Exception Tests if required, and the proposed surface water drainage strategy (SuDS).",
+  "primary_tags": ["flood_risk", "drainage", "SuDS", "NPPF_Ch14"],
+  "relevant_policy_themes": ["LocalPlan_FloodRisk", "LocalPlan_SuDS", "StrategicFloodRiskAssessment_SFRA", "LeadLocalFloodAuthority_LLFA_guidance"],
+  "key_evidence_docs": ["FloodRiskAssessment_FRA", "DrainageStrategy", "SequentialTest_IfRequired", "ExceptionTest_IfRequired"],
+  "trigger_keywords_for_llm_scan": ["flood risk", "FRA", "flood zone", "SuDS", "drainage", "surface water", "sequential test", "exception test", "LLFA"],
+  "sub_questions": [
+    "What Flood Zone is the site located in?",
+    "Has a site-specific Flood Risk Assessment (FRA) been submitted, and does it adequately assess all sources of flood risk?",
+    "Is the Sequential Test required? If so, has it been passed?",
+    "Is the Exception Test required? If so, have both parts (wider sustainability benefits and safe development) been met?",
+    "What is the proposed surface water drainage strategy, and does it incorporate Sustainable Drainage Systems (SuDS) in line with policy?",
+    "Will the development increase flood risk elsewhere?",
+    "Are there any specific requirements from the Lead Local Flood Authority (LLFA) that need to be addressed?"
+  ],
+  "data_schema_hint": {
+    "flood_zone_designation": "text_e.g._Flood_Zone_1_2_3a_3b",
+    "sequential_test_outcome_and_justification": "text_block",
+    "exception_test_outcome_and_justification": "text_block_covering_both_parts",
+    "suds_hierarchy_application_summary": "text_block_detailing_how_suds_hierarchy_has_been_followed",
+    "surface_water_discharge_rate_and_destination": "text_block",
+    "finished_floor_levels_ffl_vs_design_flood_level": "text_block_with_values_and_freeboard",
+    "llfa_consultation_summary_and_responses": "text_block"
+  },
+  "typical_positive_impacts": [
+    "Development located in Flood Zone 1, at lowest risk.",
+    "FRA demonstrates no increased flood risk on or off-site.",
+    "Effective SuDS strategy managing surface water runoff to greenfield rates.",
+    "Passes Sequential and, if necessary, Exception Tests robustly.",
+    "Incorporates flood resilience and resistance measures where appropriate."
+  ],
+  "typical_negative_impacts": [
+    "Inappropriate development in a high flood risk zone without passing Exception Test.",
+    "Increased flood risk elsewhere due to inadequate drainage or site levels.",
+    "Failure to implement effective SuDS.",
+    "Insufficient FRA or failure to address all flood sources.",
+    "Non-compliance with LLFA requirements."
+  ],
+  "common_mitigation_measures": [
+    "Raising finished floor levels above design flood levels.",
+    "Incorporating flood resilient/resistant construction techniques.",
+    "Implementation of a comprehensive SuDS scheme (e.g., permeable paving, swales, attenuation tanks).",
+    "Contributions to off-site flood defense or betterment schemes.",
+    "Safe access and egress routes during flood events.",
+    "Site layout designed to manage and direct floodwater safely."
+  ],
+  "potential_agent_hint": "EnvironmentalImpactsAgent"
+}

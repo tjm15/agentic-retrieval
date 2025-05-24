@@ -1,0 +1,46 @@
+{
+  "id": "TreesHedgerowsAndLandscaping_VisualAmenity",
+  "display_name_template": "Trees, Hedgerows, and Landscaping (Visual Amenity) for {app_name}",
+  "description_long": "Assessment of the impact on existing trees and hedgerows, particularly those subject to Tree Preservation Orders (TPOs) or located in Conservation Areas. Evaluation of new landscaping proposals, including species choice, hard and soft landscaping, and long-term management, focusing on visual amenity and character.",
+  "primary_tags": ["trees", "hedgerows", "landscaping", "visual_amenity", "TPO", "NPPF_Ch12", "NPPF_Ch15"],
+  "relevant_policy_themes": ["LocalPlan_TreesAndLandscaping", "LocalPlan_GreenInfrastructure", "ConservationAreaAppraisals"],
+  "key_evidence_docs": ["ArboriculturalImpactAssessment_AIA", "TreeSurvey_BS5837", "LandscapeMasterplan", "PlantingSchedule", "LandscapeManagementPlan"],
+  "trigger_keywords_for_llm_scan": ["trees", "arboricultural", "hedgerow", "TPO", "tree preservation order", "landscaping", "planting", "BS5837", "visual amenity", "soft landscaping", "hard landscaping"],
+  "sub_questions": [
+    "Are there any Tree Preservation Orders (TPOs) on site or affecting the development?",
+    "What is the quality and condition of existing trees and hedgerows on and adjacent to the site (as per BS5837 survey)?",
+    "What direct and indirect impacts will the development have on existing trees/hedgerows (e.g., removal, root protection areas, shading)?",
+    "What mitigation measures are proposed for protected or retained trees (e.g., tree protection fencing, specialist construction methods)?",
+    "What is the overall landscaping strategy, including proposed species, planting densities, and hard landscaping materials?",
+    "How will the proposed landscaping contribute to local character and visual amenity?",
+    "What are the long-term management and maintenance arrangements for proposed landscaping?"
+  ],
+  "data_schema_hint": {
+    "tpo_status_on_site": "boolean_with_details_if_true",
+    "bs5837_tree_survey_summary": "text_block_summarising_tree_categories_and_key_trees",
+    "arboricultural_impact_assessment_summary": "text_block_detailing_impacts_and_mitigation",
+    "proposed_tree_planting_numbers_and_species_type": "text_block_e.g._10_native_standard_trees_5_ornamental_fruit_trees",
+    "landscape_management_plan_overview": "text_block_highlighting_key_commitments"
+  },
+  "typical_positive_impacts": [
+    "Retention and successful protection of high-quality existing trees and hedgerows.",
+    "Significant new tree planting and high-quality landscaping enhancing visual amenity.",
+    "Landscaping scheme that integrates well with and enhances local character.",
+    "Long-term management plan ensuring establishment and maturity of landscaping."
+  ],
+  "typical_negative_impacts": [
+    "Loss of mature, healthy trees or TPO trees without adequate justification or replacement.",
+    "Damage to retained trees due to inadequate protection during construction.",
+    "Poor quality landscaping proposals or inappropriate species selection.",
+    "Failure to provide a robust long-term landscape management plan."
+  ],
+  "common_mitigation_measures": [
+    "Design modifications to retain important trees or hedgerows.",
+    "Adherence to BS5837 for tree protection (fencing, ground protection, no-dig construction).",
+    "Compensatory tree planting at appropriate ratios for any trees lost.",
+    "Selection of appropriate species for site conditions and local character.",
+    "Detailed landscape and ecological management plan (LEMP).",
+    "Arboricultural supervision during sensitive construction phases."
+  ],
+  "potential_agent_hint": "HeritageAndDesignAgent"
+}

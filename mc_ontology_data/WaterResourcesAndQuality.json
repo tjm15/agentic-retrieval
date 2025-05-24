@@ -1,0 +1,50 @@
+{
+  "id": "WaterResourcesAndQuality",
+  "display_name_template": "Water Resources, Quality, and Efficiency for {app_name}",
+  "description_long": "Assessment of the development's impact on water resources, including water supply, abstraction, and wastewater. Evaluation of impacts on water quality of surface and groundwaters. Consideration of water efficiency measures and achievement of water neutrality, especially in water-stressed areas.",
+  "primary_tags": ["water_resources", "water_quality", "water_efficiency", "NPPF_Ch14", "NPPF_Ch15"],
+  "relevant_policy_themes": ["LocalPlan_WaterManagement", "WaterFrameworkDirective", "EnvironmentAgencyGuidance", "WaterNeutralityPolicies"],
+  "key_evidence_docs": ["WaterResourcesAssessment", "WaterQualityImpactAssessment", "FoulSewageAndUtilitiesAssessment", "WaterEfficiencyStatement", "WaterNeutralityStrategy_IfRequired"],
+  "trigger_keywords_for_llm_scan": ["water resources", "water quality", "water efficiency", "abstraction", "discharge", "groundwater", "surface water", "WFD", "water neutrality", "foul drainage"],
+  "sub_questions": [
+    "How will the development be supplied with potable water, and is there sufficient capacity in the existing network?",
+    "What measures are proposed to achieve high levels of water efficiency within the development (e.g., fittings, rainwater harvesting, greywater recycling)?",
+    "Is the development located in a water-stressed area or one requiring water neutrality?",
+    "If water neutrality is required, how will it be achieved (on-site and/or off-site measures)?",
+    "How will foul sewage be managed, and is there capacity in the existing wastewater treatment works?",
+    "What are the potential impacts of the development on the quality of surface waters (rivers, lakes) and groundwater, from construction and operation?",
+    "What mitigation measures are proposed to protect and enhance water quality?"
+  ],
+  "data_schema_hint": {
+    "water_demand_calculated_litres_per_person_per_day": "float",
+    "water_efficiency_measures_proposed": "list_of_strings",
+    "water_neutrality_strategy_summary_if_applicable": "text_block",
+    "foul_drainage_connection_point_and_capacity_confirmation": "text_block",
+    "surface_water_quality_protection_measures": "list_of_strings_e.g._suds_treatment_train_pollution_control_devices",
+    "groundwater_protection_measures": "list_of_strings"
+  },
+  "typical_positive_impacts": [
+    "Achieves high standards of water efficiency, reducing overall demand.",
+    "Successfully implements water neutrality in sensitive catchments.",
+    "Protects or enhances the quality of local water bodies.",
+    "No adverse impact on existing water supply or wastewater infrastructure capacity.",
+    "Incorporates sustainable water management practices (e.g., rainwater harvesting)."
+  ],
+  "typical_negative_impacts": [
+    "Increased strain on water supply or wastewater treatment capacity.",
+    "Failure to meet water efficiency targets or water neutrality requirements.",
+    "Deterioration of surface water or groundwater quality due to pollution from the site.",
+    "Inadequate assessment of water-related impacts.",
+    "Increased risk of pollution incidents."
+  ],
+  "common_mitigation_measures": [
+    "Specification of water-efficient fixtures and fittings (e.g., dual-flush toilets, low-flow taps).",
+    "Installation of rainwater harvesting or greywater recycling systems.",
+    "Developer contributions towards upgrades of water supply or wastewater treatment infrastructure.",
+    "Implementation of a SuDS treatment train to improve quality of surface water runoff.",
+    "Careful management of construction activities to prevent pollution (e.g., silt traps, bunding).",
+    "Off-site water offsetting measures to achieve water neutrality.",
+    "Protection zones for groundwater sources."
+  ],
+  "potential_agent_hint": "EnvironmentalImpactsAgent"
+}

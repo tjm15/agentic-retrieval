@@ -1,0 +1,51 @@
+{
+  "id": "HeritageImpact",
+  "display_name_template": "Impact on Heritage Assets (Designated and Non-Designated, including Archaeology and Setting) for {app_name}",
+  "description_long": "Assessment of the potential direct and indirect impacts of the development on all relevant heritage assets, including listed buildings, conservation areas, scheduled monuments, registered parks/gardens, non-designated heritage assets, and archaeological remains. Includes assessment of impact on their significance and setting.",
+  "primary_tags": ["heritage_conservation", "archaeology", "setting_of_heritage_assets", "NPPF_Ch16"],
+  "relevant_policy_themes": ["LondonPlan_HC_Series", "LocalPlan_HeritagePolicies", "LocalPlan_ArchaeologyPolicy", "ConservationAreaAppraisalsAndManagementPlans"],
+  "key_evidence_docs": ["HeritageImpactAssessment", "ArchaeologicalDBA_Or_Evaluation", "ES_BuiltHeritageChapter", "ES_ArchaeologyChapter", "DAS_HeritageResponse", "HistoricEnvironmentRecordData"],
+  "trigger_keywords_for_llm_scan": ["heritage", "listed building", "conservation area", "scheduled monument", "archaeology", "historic environment", "setting of heritage asset", "non-designated heritage asset", "historic park", "historic garden"],
+  "sub_questions": [
+    "What designated heritage assets (Listed Buildings, Conservation Areas, Scheduled Monuments, Registered Parks/Gardens) are on or near the site, and what is their significance?",
+    "Are there any non-designated heritage assets that could be affected?",
+    "What is the archaeological potential of the site?",
+    "How will the development affect the significance of these heritage assets, including through impacts on their setting?",
+    "Is the level of harm identified (e.g., less than substantial harm, substantial harm, no harm) robustly justified?",
+    "What mitigation measures are proposed to avoid, minimise, or compensate for heritage harm?",
+    "Does the scheme comply with national and local heritage policies (e.g., NPPF Chapter 16)?",
+    "Has sufficient information been provided (e.g., Heritage Impact Assessment, Archaeological DBA/Evaluation)?"
+  ],
+   "data_schema_hint": {
+      "identified_heritage_assets": [{"asset_name": "string", "designation_type": "string_enum_listed_building_conservation_area_etc", "grade_if_applicable": "string", "proximity_to_site": "string_distance_and_relationship", "summary_of_significance": "text_block"}],
+      "assessment_of_impact_on_significance": [{"asset_name": "string", "nature_of_impact_direct_indirect_setting": "string", "level_of_harm_assessment_nppf": "string_enum_substantial_less_than_substantial_no_harm", "justification_for_harm_assessment": "text_block"}],
+      "archaeological_assessment_summary": {"desk_based_assessment_findings": "text_block", "evaluation_trenching_results_if_any": "text_block", "overall_archaeological_potential": "string_high_medium_low", "impact_on_archaeological_remains": "text_block"},
+      "proposed_heritage_mitigation_strategy": {"avoidance_measures": "text_block", "minimisation_measures": "text_block", "recording_or_investigation_measures_archaeology": "text_block", "enhancement_opportunities": "text_block"},
+      "nppf_heritage_policy_compliance_analysis": {"public_benefits_to_outweigh_harm_if_applicable": "text_block", "clear_and_convincing_justification_if_substantial_harm": "text_block"},
+      "setting_analysis_summary": "text_block_detailing_how_setting_contributes_to_significance_and_how_development_affects_this"
+  },
+  "typical_positive_impacts": [
+    "Enhancement of the setting of a heritage asset.",
+    "Securing the long-term viable use of a heritage asset at risk.",
+    "Revealing or better interpreting heritage significance.",
+    "Funding for archaeological investigation and recording, leading to new knowledge.",
+    "High-quality design that complements adjacent heritage assets."
+  ],
+  "typical_negative_impacts": [
+    "Direct physical harm to a heritage asset (demolition, alteration).",
+    "Adverse impact on the setting of a heritage asset, eroding its significance.",
+    "Loss of archaeological remains without adequate recording.",
+    "Introduction of incongruous development within a Conservation Area.",
+    "Failure to adequately assess or understand heritage significance leading to harm."
+  ],
+  "common_mitigation_measures": [
+    "Design changes to reduce height, massing, or proximity to heritage assets.",
+    "Use of appropriate materials and architectural detailing sympathetic to heritage context.",
+    "Preservation in situ of archaeological remains.",
+    "Comprehensive archaeological investigation and recording prior to development.",
+    "Financial contributions towards heritage asset repair or enhancement schemes.",
+    "Landscaping and screening to minimise visual impact on setting.",
+    "Production of a robust Heritage Impact Assessment and agreement on a Written Scheme of Investigation for archaeology."
+  ],
+  "agent_to_invoke_hint": "HeritageAndDesignAgent"
+}

@@ -1,0 +1,135 @@
+{
+  "report_type_id": "MinorCommercial",
+  "report_id_prefix": "MinorComm",
+  "description": "Default Report for Minor Commercial Development Applications",
+  "sections": [
+    {
+      "node_id": "1.0_SiteAndApplication",
+      "description": "Site Description, Proposal Details & Planning History",
+      "node_type_tag": "IntroductionBlock",
+      "generic_material_considerations": ["site_context_commercial_area", "proposal_details_new_build_or_extension", "planning_history_commercial_use"],
+      "specific_policy_focus_ids": ["LocalPlan_EconomicDevelopmentPolicy", "NPPF_BuildingAStrongCompetitiveEconomy"],
+      "thematic_policy_descriptors": ["establishing development context for minor commercial proposals", "site identification and characterization in commercial settings"],
+      "depends_on_nodes": [],
+      "sub_sections": [
+        {
+          "node_id": "1.1_SiteLocationAndDescription",
+          "description": "Site Location, Existing Commercial Premises/Land, and Surrounding Business Area Character",
+          "node_type_tag": "SiteDescription",
+          "generic_material_considerations": ["site_identification_commercial_zone", "existing_buildings_or_vacant_land_status", "surrounding_business_uses_and_character", "accessibility_for_employees_customers_deliveries"],
+          "specific_policy_focus_ids": ["LocalPlan_CommercialAreaPolicy", "NPPF_ContextAnalysis"],
+          "thematic_policy_descriptors": ["commercial site character assessment", "understanding existing business environment and infrastructure"],
+          "key_evidence_document_types": ["ApplicationForm", "SiteLocationPlan", "ExistingSitePhotosOrPlans", "ContextAnalysis_CommercialArea"]
+        },
+        {
+          "node_id": "1.2_ProposalInDetail",
+          "description": "The Proposed Commercial Development (e.g., New Unit, Extension, Alterations to Shopfront)",
+          "node_type_tag": "ProposalSummary",
+          "generic_material_considerations": ["scale_massing_of_development", "design_materials_commercial_character", "proposed_use_class_within_commercial_spectrum", "floor_space_quantum_gia_nia", "servicing_and_access_arrangements"],
+          "specific_policy_focus_ids": ["LocalPlan_CommercialDevelopmentManagementPolicy", "LocalDesignGuide_Commercial"],
+          "thematic_policy_descriptors": ["design and scale of minor commercial development", "functional requirements for commercial operations"],
+          "key_evidence_document_types": ["ProposedFloorPlansAndElevations", "DesignAndAccessStatement_Commercial", "SiteLayoutPlan_ShowingParkingServicing", "MaterialsSchedule"]
+        },
+        {
+          "node_id": "1.3_RelevantPlanningHistory",
+          "description": "Relevant Planning History of the Site and Adjoining Commercial Properties",
+          "node_type_tag": "PlanningHistory",
+          "generic_material_considerations": ["previous_commercial_developments_on_site", "extant_permissions_for_commercial_use", "history_of_vacancies_or_use_changes_if_relevant"],
+          "specific_policy_focus_ids": ["LocalPlan_PlanningHistoryPolicyWeight"],
+          "thematic_policy_descriptors": ["planning history of commercial sites", "patterns of development in the commercial area"],
+          "key_evidence_document_types": ["PreviousDecisionNotices_Commercial", "LocalAuthorityPlanningRecords_CommercialProperties"]
+        }
+      ]
+    },
+    {
+      "node_id": "2.0_ConsultationResponses",
+      "description": "Summary and Analysis of Consultation Responses",
+      "node_type_tag": "ConsultationSummaryBlock",
+      "generic_material_considerations": ["neighbouring_business_comments", "resident_comments_if_near_residential", "statutory_consultee_advice_highways_environment_agency", "business_improvement_district_views_if_any"],
+      "specific_policy_focus_ids": ["LocalPlan_ConsultationPolicy", "NPPF_CommunityEngagement"],
+      "thematic_policy_descriptors": ["consultation on minor commercial development", "balancing business needs with neighbour amenity"],
+      "depends_on_nodes": ["1.0_SiteAndApplication/1.2_ProposalInDetail"],
+      "sub_sections": [
+        {"node_id": "2.1_PublicAndBusinessRepresentations", "description": "Summary of Comments from Public and Neighbouring Businesses", "node_type_tag": "PublicConsultation", "thematic_policy_descriptors": ["assessing local business and resident concerns", "impact on commercial vitality and local amenity"]},
+        {"node_id": "2.2_StatutoryConsultees", "description": "Feedback from Key Statutory Consultees (e.g., Highways, Environmental Health)", "node_type_tag": "StatutoryConsultation", "thematic_policy_descriptors": ["technical advice on operational impacts and infrastructure capacity"]},
+        {"node_id": "2.3_OtherResponses", "description": "Feedback from Other Consultees (e.g., Ward Councillors, Local Business Groups)", "node_type_tag": "OtherConsultation", "thematic_policy_descriptors": ["local stakeholder perspectives on economic development and local character"]}
+      ]
+    },
+    {
+      "node_id": "3.0_PlanningPolicyFramework",
+      "description": "Relevant Planning Policy Framework for Minor Commercial Development",
+      "node_type_tag": "PolicyFrameworkSummaryBlock",
+      "generic_material_considerations": ["local_plan_policies_for_economic_growth_town_centres_employment_areas", "nppf_guidance_on_supporting_a_prosperous_rural_economy_or_town_centres", "relevant_spds_commercial_design_shopfronts"],
+      "thematic_policy_descriptors": ["policy framework for assessing minor commercial proposals", "promoting sustainable economic development"],
+      "depends_on_nodes": [],
+      "sub_sections": [
+          {"node_id": "3.1_NationalPolicy", "description": "NPPF - Key Relevant Chapters/Paragraphs (e.g., Building a Strong Economy, Ensuring Vitality of Town Centres)", "node_type_tag": "NationalPolicy", "thematic_policy_descriptors": ["NPPF support for sustainable economic growth and commercial development"]},
+          {"node_id": "3.2_LocalPlan", "description": "Local Plan - Key Relevant Policies for Commercial Development, Employment Land, Town Centre Management, Design in Commercial Areas", "node_type_tag": "LocalPolicy", "thematic_policy_descriptors": ["local plan policies guiding location, scale and design of commercial development"]},
+          {"node_id": "3.3_SPDsAndSPGs", "description": "Relevant Supplementary Planning Documents/Guidance (e.g., Shopfront Design Guide, Employment Development SPD)", "node_type_tag": "SupplementaryGuidance", "thematic_policy_descriptors": ["detailed design and operational guidance for commercial development"]}
+      ]
+    },
+    {
+      "node_id": "4.0_AssessmentOfMaterialConsiderations",
+      "description": "Officer's Assessment of Material Planning Considerations for the Minor Commercial Development",
+      "node_type_tag": "MaterialConsiderationsBlock_Parent",
+      "is_dynamic_parent_node": true,
+      "dynamic_node_source_fields": ["generic_material_considerations"],
+      "dynamic_node_config": {
+        "PrincipleOfDevelopmentAndEconomicBenefit": {
+            "description_template": "Principle of Commercial Development in this Location and Economic Benefits",
+            "generic_material_considerations": ["appropriateness_of_commercial_use_or_expansion", "contribution_to_local_economy_job_creation", "support_for_vitality_of_commercial_area_or_town_centre", "need_for_proposed_type_of_commercial_space"],
+            "specific_policy_focus_ids": ["LocalPlan_EconomicDevelopmentStrategy", "LocalPlan_TownCentreHierarchy", "NPPF_Chapter6_BuildingAStrongCompetitiveEconomy"],
+            "thematic_policy_descriptors": ["assessing compliance with economic development policies", "evaluating economic benefits of the proposal"],
+            "key_evidence_document_types": ["PlanningStatement_EconomicJustification", "MarketAppraisal_IfRelevant"]
+        },
+        "DesignAndVisualImpact": {
+            "description_template": "Design, Scale, Materials and Impact on Street Scene and Commercial Character",
+            "generic_material_considerations": ["design_quality_commercial_aesthetics", "scale_massing_in_relation_to_surroundings", "materials_suitability_for_commercial_context", "impact_on_street_scene_and_public_realm", "shopfront_design_if_applicable", "signage_advertisements_impact"],
+            "specific_policy_focus_ids": ["LocalPlan_DesignPolicyCommercial", "NPPF_Chapter12_AchievingWellDesignedPlaces", "ShopfrontDesignGuideSPD"],
+            "thematic_policy_descriptors": ["achieving high quality design in commercial development", "enhancing commercial streetscapes"],
+            "key_evidence_document_types": ["ProposedElevationsAndFloorPlans", "DesignAndAccessStatement_Commercial", "MaterialSchedule", "StreetSceneElevations", "AdvertisementConsentApplication_IfSeparate"]
+        },
+        "ImpactOnAmenityNeighbouringProperties": {
+            "description_template": "Impact on Amenity of Neighbouring Properties (Residential or Commercial - Noise, Odour, Hours, Light, Disturbance)",
+            "generic_material_considerations": ["noise_from_operations_plant_deliveries", "odour_fumes_from_commercial_processes", "hours_of_operation_impact", "light_spill_from_lighting_signage", "privacy_overlooking_if_near_residential", "disturbance_from_customers_deliveries"],
+            "specific_policy_focus_ids": ["LocalPlan_AmenityPolicy", "NPPF_AmenityConsiderations", "EnvironmentalHealthGuidance_Commercial"],
+            "thematic_policy_descriptors": ["protecting amenity of neighbouring uses from commercial operations"],
+            "key_evidence_document_types": ["NoiseImpactAssessment_IfRequired", "OdourManagementPlan_IfRequired", "DetailsOfPlantAndMachinery", "LightingSchemeDetails"]
+        },
+        "HighwaysParkingServicingAndAccess": {
+            "description_template": "Impact on Highway Safety, Parking Provision, Servicing Arrangements and Accessibility",
+            "generic_material_considerations": ["traffic_generation_commercial_vehicles_customers", "parking_demand_staff_customer_operational", "servicing_delivery_arrangements_safety_frequency", "accessibility_by_public_transport_cycling_walking", "impact_on_pedestrian_environment_and_safety"],
+            "specific_policy_focus_ids": ["LocalPlan_ParkingStandardsCommercial", "LocalPlan_TransportPolicy", "ManualForStreets", "FreightManagementGuidance"],
+            "thematic_policy_descriptors": ["assessing transport and access impacts of commercial development", "ensuring adequate and safe servicing and parking"],
+            "key_evidence_document_types": ["TransportStatementOrNote_IfRequired", "ParkingAndServicingPlan", "TravelPlan_IfRequired"]
+        }
+      },
+      "thematic_policy_descriptors": ["material considerations for minor commercial development", "balancing economic benefits with environmental and social impacts"],
+      "depends_on_nodes": ["1.0_SiteAndApplication/1.2_ProposalInDetail", "2.0_ConsultationResponses", "3.0_PlanningPolicyFramework"]
+    },
+    {
+      "node_id": "5.0_OtherRelevantMatters",
+      "description": "Other Relevant Matters (e.g., CIL, Conditions, Informatives, S106 if applicable)",
+      "node_type_tag": "OtherConsiderationsBlock",
+      "generic_material_considerations":["CIL_liability_commercial_development", "planning_conditions_operational_controls_design_details", "informatives_for_applicant_business_rates_licensing", "s106_obligations_if_specific_local_impacts_e_g_local_employment_training_public_realm_improvements"],
+      "thematic_policy_descriptors": ["CIL for commercial schemes", "drafting conditions for commercial developments", "potential for planning obligations for local benefits"],
+      "depends_on_nodes": ["4.0_AssessmentOfMaterialConsiderations"]
+    },
+    {
+      "node_id": "6.0_PlanningBalanceAndConclusion",
+      "description": "Overall Planning Balance and Officer's Conclusion",
+      "node_type_tag": "PlanningBalanceAndConclusionBlock",
+      "generic_material_considerations":["planning_balance_minor_commercial", "overall_acceptability_of_commercial_proposal"],
+      "specific_policy_focus_ids": ["NPPF_Presumption", "LocalPlan_DecisionMakingPolicy"],
+      "thematic_policy_descriptors": ["weighing material considerations for minor commercial development", "application of presumption in favour of sustainable development"],
+      "depends_on_nodes": ["4.0_AssessmentOfMaterialConsiderations", "5.0_OtherRelevantMatters"]
+    },
+    {
+      "node_id": "7.0_Recommendation",
+      "description": "Officer's Recommendation",
+      "node_type_tag": "FinalRecommendationBlock",
+      "thematic_policy_descriptors": ["formulating recommendation for minor commercial application", "justification based on economic, social, and environmental policies and material considerations"],
+      "depends_on_nodes": ["6.0_PlanningBalanceAndConclusion"]
+    }
+  ]
+}

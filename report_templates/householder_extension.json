@@ -1,0 +1,142 @@
+{
+  "report_type_id": "HouseholderExtension",
+  "report_id_prefix": "HouseholderExt",
+  "description": "Default Report for Householder Extension Applications",
+  "sections": [
+    {
+      "node_id": "1.0_SiteAndApplication",
+      "description": "Site Description, Proposal Details & Planning History",
+      "node_type_tag": "IntroductionBlock",
+      "generic_material_considerations": ["site_context", "proposal_details", "planning_history"],
+      "specific_policy_focus_ids": ["LocalPlan_GeneralResidentialPolicy", "NPPF_Design"],
+      "thematic_policy_descriptors": ["establishing development context for residential extensions", "site identification and characterization policies for residential properties"],
+      "depends_on_nodes": [],
+      "sub_sections": [
+        {
+          "node_id": "1.1_SiteLocationAndDescription",
+          "description": "Site Location, Existing Dwelling, and Curtilage Details",
+          "node_type_tag": "SiteDescription",
+          "generic_material_considerations": ["site_identification", "existing_dwelling_character", "garden_amenity_space", "boundary_treatments"],
+          "specific_policy_focus_ids": ["LocalPlan_ResidentialContextPolicy", "NPPF_ContextAnalysis"],
+          "thematic_policy_descriptors": ["residential site character assessment", "understanding existing dwelling and curtilage"],
+          "key_evidence_document_types": ["ApplicationForm", "SiteLocationPlan", "ExistingFloorPlansAndElevations", "SitePhotos"]
+        },
+        {
+          "node_id": "1.2_ProposalInDetail",
+          "description": "The Proposed Extension (Dimensions, Materials, Design)",
+          "node_type_tag": "ProposalSummary",
+          "generic_material_considerations": ["extension_scale_massing", "design_materials_proposed", "relationship_to_host_dwelling", "impact_on_amenity_space"],
+          "specific_policy_focus_ids": ["LocalPlan_HouseholderDevelopmentPolicy", "ResidentialDesignGuide"],
+          "thematic_policy_descriptors": ["householder extension design and scale", "materials and aesthetic considerations for extensions"],
+          "key_evidence_document_types": ["ProposedFloorPlansAndElevations", "DesignAndAccessStatement_Householder", "BlockPlan"]
+        },
+        {
+          "node_id": "1.3_RelevantPlanningHistory",
+          "description": "Relevant Planning History of the Property",
+          "node_type_tag": "PlanningHistory",
+          "generic_material_considerations": ["previous_extensions_or_alterations", "extant_permissions_on_site", "enforcement_history_if_any"],
+          "specific_policy_focus_ids": ["LocalPlan_PlanningHistoryPolicyWeight"],
+          "thematic_policy_descriptors": ["planning history of residential property", "cumulative impact of development"],
+          "key_evidence_document_types": ["PreviousDecisionNotices", "LocalAuthorityPlanningRecords"]
+        }
+      ]
+    },
+    {
+      "node_id": "2.0_ConsultationResponses",
+      "description": "Summary and Analysis of Consultation Responses",
+      "node_type_tag": "ConsultationSummaryBlock",
+      "generic_material_considerations": ["neighbour_comments_summary", "parish_council_views", "technical_consultee_feedback_if_any"],
+      "specific_policy_focus_ids": ["LocalPlan_NeighbourConsultationPolicy", "StatementOfCommunityInvolvementRequirements"],
+      "thematic_policy_descriptors": ["neighbour notification and consultation", "parish council role in householder applications"],
+      "depends_on_nodes": ["1.0_SiteAndApplication/1.2_ProposalInDetail"],
+      "sub_sections": [
+        {"node_id": "2.1_NeighbourRepresentations", "description": "Summary of Neighbour Comments (Support, Objections, Neutral)", "node_type_tag": "PublicConsultation", "thematic_policy_descriptors": ["assessing neighbour concerns", "impact on residential amenity"]},
+        {"node_id": "2.2_ParishTownCouncil", "description": "Feedback from Parish/Town Council", "node_type_tag": "LocalCouncilConsultation", "thematic_policy_descriptors": ["parish/town council recommendations and local knowledge"]},
+        {"node_id": "2.3_TechnicalConsultees", "description": "Feedback from Technical Consultees (e.g. Highways, Trees - if applicable)", "node_type_tag": "StatutoryConsultation", "thematic_policy_descriptors": ["technical consultee advice on specific impacts"]}
+      ]
+    },
+    {
+      "node_id": "3.0_PlanningPolicyFramework",
+      "description": "Relevant Planning Policy Framework",
+      "node_type_tag": "PolicyFrameworkSummaryBlock",
+      "generic_material_considerations": ["key_local_plan_policies_householder", "relevant_residential_design_spd", "national_policy_design_amenity"],
+      "thematic_policy_descriptors": ["local plan policies for householder development", "supplementary design guidance for extensions"],
+      "depends_on_nodes": [],
+      "sub_sections": [
+          {"node_id": "3.1_NationalPolicy", "description": "NPPF - Relevant Paragraphs (e.g., Design, Amenity)", "node_type_tag": "NationalPolicy", "thematic_policy_descriptors": ["NPPF guidance on good design and residential amenity"]},
+          {"node_id": "3.2_LocalPlan", "description": "Local Plan - Key Relevant Policies for Householder Development", "node_type_tag": "LocalPolicy", "thematic_policy_descriptors": ["local plan policies on extensions, alterations, and residential character"]},
+          {"node_id": "3.3_SPDsAndSPGs", "description": "Relevant Supplementary Planning Documents/Guidance (e.g., Residential Design Guide, Conservation Area Appraisal)", "node_type_tag": "SupplementaryGuidance", "thematic_policy_descriptors": ["detailed design guidance for householder extensions", "conservation area considerations if applicable"]}
+      ]
+    },
+    {
+      "node_id": "4.0_AssessmentOfMaterialConsiderations",
+      "description": "Officer's Assessment of Material Planning Considerations",
+      "node_type_tag": "MaterialConsiderationsBlock_Parent",
+      "is_dynamic_parent_node": true,
+      "dynamic_node_source_fields": ["generic_material_considerations"],
+      "dynamic_node_config": {
+        "ImpactOnNeighbourAmenity": {
+            "description_template": "Impact on Amenity of Neighbouring Properties at {address}",
+            "generic_material_considerations": ["overlooking_privacy", "loss_of_light_outlook", "overbearing_impact", "noise_disturbance_during_construction"],
+            "specific_policy_focus_ids": ["LocalPlan_AmenityPolicy", "ResidentialDesignGuide_AmenityStandards"],
+            "thematic_policy_descriptors": ["protecting residential amenity", "assessing impacts on neighbouring occupiers"],
+            "key_evidence_document_types": ["SiteVisitNotes", "PhotosFromNeighbouringProperties", "ShadowStudies_IfProvided"]
+        },
+        "DesignAndVisualAmenity": {
+            "description_template": "Design, Scale, Materials and Impact on Character of Host Dwelling and Street Scene",
+            "generic_material_considerations": ["design_quality_aesthetics", "scale_massing_proportion", "materials_appropriateness", "impact_on_street_scene", "relationship_to_host_dwelling_design"],
+            "specific_policy_focus_ids": ["LocalPlan_DesignPolicy", "NPPF_Chapter12", "ResidentialDesignGuide"],
+            "thematic_policy_descriptors": ["achieving high quality design in extensions", "preserving or enhancing street scene character"],
+            "key_evidence_document_types": ["ProposedElevationsAndFloorPlans", "DesignAndAccessStatement_Householder", "MaterialSchedule", "StreetSceneElevations_IfProvided"]
+        },
+        "ImpactOnCharacterAndAppearanceOfArea": {
+            "description_template": "Impact on the Character and Appearance of the Wider Area (including Conservation Area/AONB if applicable)",
+            "generic_material_considerations": ["conservation_area_impact", "aonb_impact", "heritage_asset_impact_nearby", "local_distinctiveness"],
+            "specific_policy_focus_ids": ["LocalPlan_HeritagePolicy", "NPPF_Chapter16", "ConservationAreaAppraisal"],
+            "thematic_policy_descriptors": ["protecting designated heritage assets and their settings", "preserving local distinctiveness and character"],
+            "key_evidence_document_types": ["ConservationAreaAppraisal", "HeritageStatement_IfRequired", "LandscapeVisualImpactAssessment_IfInAONB"]
+        },
+        "HighwaysParkingAndAccess": {
+            "description_template": "Impact on Highway Safety, Parking and Access",
+            "generic_material_considerations": ["parking_provision_impact", "access_visibility_safety", "traffic_generation_minimal"],
+            "specific_policy_focus_ids": ["LocalPlan_ParkingStandards", "ManualForStreets"],
+            "thematic_policy_descriptors": ["maintaining highway safety", "assessing parking and access arrangements for extensions"],
+            "key_evidence_document_types": ["SitePlan_ShowingParkingAccess", "TransportStatement_IfRequiredByThresholds"]
+        },
+        "TreesAndLandscaping": {
+            "description_template": "Impact on Trees, Hedges and Landscaping",
+            "generic_material_considerations": ["tree_protection_tpo", "impact_on_significant_trees_hedges", "landscaping_proposals_soft_hard"],
+            "specific_policy_focus_ids": ["LocalPlan_GreenInfrastructurePolicy", "BS5837_TreesInRelationToDesign"],
+            "thematic_policy_descriptors": ["protecting trees and biodiversity", "landscaping schemes for residential development"],
+            "key_evidence_document_types": ["ArboriculturalReport_IfRequired", "LandscapingPlan"]
+        }
+      },
+      "thematic_policy_descriptors": ["material planning considerations for householder extensions", "balancing development needs with amenity and character"],
+      "depends_on_nodes": ["1.0_SiteAndApplication/1.2_ProposalInDetail", "2.0_ConsultationResponses", "3.0_PlanningPolicyFramework"]
+    },
+    {
+      "node_id": "5.0_OtherRelevantMatters",
+      "description": "Other Relevant Matters (e.g., CIL, Conditions, Informatives)",
+      "node_type_tag": "OtherConsiderationsBlock",
+      "generic_material_considerations":["CIL_liability_householder", "planning_conditions_appropriateness", "informatives_for_applicant"],
+      "thematic_policy_descriptors": ["community infrastructure levy for householder extensions", "drafting appropriate planning conditions"],
+      "depends_on_nodes": ["4.0_AssessmentOfMaterialConsiderations"]
+    },
+    {
+      "node_id": "6.0_PlanningBalanceAndConclusion",
+      "description": "Overall Planning Balance and Officer's Conclusion",
+      "node_type_tag": "PlanningBalanceAndConclusionBlock",
+      "generic_material_considerations":["planning_balance_householder", "overall_acceptability_extension"],
+      "specific_policy_focus_ids": ["NPPF_Presumption", "LocalPlan_DecisionMakingPolicy"],
+      "thematic_policy_descriptors": ["weighing material considerations for householder extensions", "application of presumption in favour of sustainable development"],
+      "depends_on_nodes": ["4.0_AssessmentOfMaterialConsiderations", "5.0_OtherRelevantMatters"]
+    },
+    {
+      "node_id": "7.0_Recommendation",
+      "description": "Officer's Recommendation",
+      "node_type_tag": "FinalRecommendationBlock",
+      "thematic_policy_descriptors": ["formulating recommendation for householder application", "justification based on policy and material considerations"],
+      "depends_on_nodes": ["6.0_PlanningBalanceAndConclusion"]
+    }
+  ]
+}

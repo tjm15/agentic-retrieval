@@ -1,0 +1,58 @@
+{
+  "id": "HousingDelivery",
+  "display_name_template": "Housing Delivery: Quantum, Mix, Affordability, Density, and Standards for {app_name}",
+  "description_long": "Assessment of the proposed housing in terms of the number of units (net gain), the mix of unit sizes (1-bed, 2-bed, etc.), the provision of affordable housing (by tenure and percentage), the proposed density (DPH/HRH), and compliance with national and local internal space standards.",
+  "primary_tags": ["housing_impact", "residential_development", "NPPF_Ch5"],
+  "relevant_policy_themes": ["LondonPlan_H_Series", "LocalPlan_HousingDelivery", "LocalPlan_AffordableHousing", "LocalPlan_HousingMix", "LocalPlan_DensityPolicy", "NationalDescribedSpaceStandards"],
+  "key_evidence_docs": ["HousingStatement", "AffordableHousingStatement", "DevelopmentSpecification_ResidentialSchedule", "ViabilityAssessment_HousingSection", "DAS_ResidentialChapter", "FloorPlans_TypicalUnits"],
+  "trigger_keywords_for_llm_scan": ["housing delivery", "number of units", "affordable housing", "housing mix", "density", "space standards", "residential scheme", "new homes"],
+  "sub_questions": [
+    "What is the net gain in residential units?",
+    "What is the proposed mix of unit sizes (e.g., 1-bed, 2-bed, 3-bed+), and does it meet identified local needs?",
+    "What percentage of affordable housing is proposed, and how is it broken down by tenure (e.g., social rent, intermediate)?",
+    "Does the affordable housing provision meet policy requirements in terms of quantum and tenure split?",
+    "What is the proposed residential density (units per hectare and/or habitable rooms per hectare)?",
+    "How does the proposed density relate to the site's context, character, and public transport accessibility?",
+    "Do all proposed units comply with Nationally Described Space Standards (NDSS) and any local internal space standards?",
+    "Are there any proposed deviations from space standards, and if so, what is the justification?"
+  ],
+  "data_schema_hint": {
+    "total_units_proposed_gross": "integer",
+    "total_units_proposed_net_gain": "integer",
+    "existing_units_on_site": "integer",
+    "affordable_housing_percentage_by_unit": "float",
+    "affordable_housing_percentage_by_habitable_room": "float",
+    "affordable_housing_tenure_split": {"social_rent_units": "integer", "affordable_rent_units": "integer", "intermediate_shared_ownership_units": "integer", "other_affordable_units": "integer"},
+    "affordable_housing_policy_compliance_statement": "text_block_detailing_compliance_or_justification_for_non_compliance",
+    "unit_mix_summary": {"one_bed_units_count": "integer", "one_bed_units_percentage": "float", "two_bed_units_count": "integer", "two_bed_units_percentage": "float", "three_bed_units_count": "integer", "three_bed_units_percentage": "float", "four_plus_bed_units_count": "integer", "four_plus_bed_units_percentage": "float"},
+    "density_units_per_hectare": "float",
+    "density_habitable_rooms_per_hectare": "float",
+    "density_assessment_narrative": "text_block_comparing_to_context_ptal_and_policy_ranges",
+    "internal_space_standards_compliance_summary": "text_block_confirming_ndss_compliance_for_all_unit_types_or_detailing_specific_deviations_with_justification",
+    "private_amenity_space_provision_summary": "text_block_detailing_compliance_with_local_standards_per_unit_type"
+  },
+  "typical_positive_impacts": [
+    "Significant contribution to meeting local housing targets.",
+    "Provision of much-needed affordable housing.",
+    "Delivery of a mix of unit sizes catering to diverse household needs.",
+    "Efficient use of land through appropriate densification.",
+    "High quality internal living environment due to compliance with space standards."
+  ],
+  "typical_negative_impacts": [
+    "Insufficient affordable housing provision compared to policy requirements.",
+    "An inappropriate mix of units that doesn't reflect local needs (e.g., too many small units).",
+    "Overdevelopment due to excessive density for the site's context.",
+    "Underdevelopment, failing to make efficient use of an accessible site.",
+    "Substandard living conditions due to non-compliance with internal space standards.",
+    "Strain on local infrastructure (schools, healthcare) if not matched by contributions or improvements."
+  ],
+  "common_mitigation_measures": [
+    "Review mechanism to increase affordable housing if viability improves.",
+    "Phased delivery linked to infrastructure upgrades.",
+    "Revised unit mix to better align with strategic housing market assessments.",
+    "Design amendments to reduce density or improve integration with surroundings.",
+    "Financial contributions towards off-site affordable housing (if policy compliant).",
+    "Commitment to meet or exceed space standards for all units."
+  ],
+  "potential_agent_hint": "SocioEconomicAndCommunityAgent"
+}

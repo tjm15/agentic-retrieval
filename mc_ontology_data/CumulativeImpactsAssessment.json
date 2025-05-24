@@ -1,0 +1,45 @@
+{
+  "id": "CumulativeImpactsAssessment",
+  "display_name_template": "Cumulative Impacts Assessment for {app_name}",
+  "description_long": "Assessment of the combined or synergistic impacts of the proposed development alongside other existing, permitted, or reasonably foreseeable future developments in the vicinity. This can cover various aspects like traffic, air quality, noise, landscape, ecology, and infrastructure capacity.",
+  "primary_tags": ["cumulative_impacts", "in_combination_effects", "strategic_assessment"],
+  "relevant_policy_themes": ["LocalPlan_CumulativeImpacts", "EnvironmentalImpactAssessmentRegulations_IfApplicable"],
+  "key_evidence_docs": ["EnvironmentalStatement_CumulativeImpactsChapter_IfEIA", "TransportAssessment_CumulativeScenario", "AirQualityAssessment_CumulativeScenario", "PlanningStatement_CumulativeEffects"],
+  "trigger_keywords_for_llm_scan": ["cumulative", "in combination", "synergistic", "combined effects", "other developments", "pipeline schemes"],
+  "sub_questions": [
+    "What other developments (consented, under construction, allocated) in the vicinity have been considered in the cumulative impact assessment?",
+    "What are the potential cumulative impacts on traffic and transport networks?",
+    "What are the potential cumulative impacts on air quality or noise levels?",
+    "Are there potential cumulative impacts on ecological receptors, landscape character, or heritage assets?",
+    "What is the cumulative demand on local infrastructure (schools, healthcare, utilities, open space)?",
+    "Are the identified cumulative impacts significant, and can they be adequately mitigated by this development alone or in concert with others?",
+    "How does the proposal align with any strategic plans or masterplans for the wider area that address cumulative effects?"
+  ],
+  "data_schema_hint": {
+    "list_of_schemes_included_in_cumulative_assessment": "list_of_strings_with_planning_refs_or_names",
+    "cumulative_traffic_impact_summary": "text_block_e.g._additional_X_percent_increase_on_key_junctions_with_cumulative_flows",
+    "cumulative_air_quality_or_noise_impact_summary": "text_block",
+    "cumulative_ecological_or_landscape_impact_summary": "text_block",
+    "assessment_of_cumulative_strain_on_infrastructure_and_mitigation": "text_block"
+  },
+  "typical_positive_impacts": [
+    "Development contributes to strategic solutions for cumulative impacts (e.g., area-wide transport upgrades, green infrastructure networks).",
+    "No significant adverse cumulative impacts identified after mitigation.",
+    "Phasing of development coordinated with other schemes to manage impacts.",
+    "Robust assessment demonstrating that cumulative effects are acceptable."
+  ],
+  "typical_negative_impacts": [
+    "Development contributes to or exacerbates existing unacceptable cumulative impacts.",
+    "Failure to adequately assess or identify potential cumulative effects.",
+    "Mitigation proposed for individual scheme is insufficient to address wider cumulative problems.",
+    "Strain on infrastructure capacity reaches a tipping point due to multiple developments."
+  ],
+  "common_mitigation_measures": [
+    "Developer contributions towards strategic infrastructure improvements (e.g., S106 pooling for major transport schemes, new schools).",
+    "Coordinated phasing of multiple developments.",
+    "Area-wide mitigation strategies (e.g., strategic landscaping, habitat creation projects).",
+    "Higher standards of on-site mitigation if cumulative impacts are a concern (e.g., greater traffic reduction measures).",
+    "Refusal of permission if cumulative impacts cannot be made acceptable."
+  ],
+  "potential_agent_hint": "StrategicCoordinationAgent"
+}

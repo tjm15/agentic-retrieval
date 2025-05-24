@@ -1,0 +1,47 @@
+{
+  "id": "CommunityAndPublicRealm",
+  "display_name_template": "Community Facilities, Public Realm, and Social Infrastructure for {app_name}",
+  "description_long": "Assessment of the provision of, or impact on, community facilities (e.g., schools, healthcare, open space, leisure), the quality of public realm, and contributions to social infrastructure.",
+  "primary_tags": ["community_facilities", "public_realm", "social_infrastructure", "NPPF_Ch8", "NPPF_Ch12"],
+  "relevant_policy_themes": ["LocalPlan_CommunityFacilities", "LocalPlan_OpenSpace", "LocalPlan_PublicRealmDesign", "LocalPlan_DeveloperContributions"],
+  "key_evidence_docs": ["PlanningStatement_CommunityChapter", "OpenSpaceAssessment", "HealthImpactAssessment_IfRequired", "DeveloperContributionsStatement_S106HeadsOfTerms", "PublicRealmStrategy"],
+  "trigger_keywords_for_llm_scan": ["community facilities", "public open space", "social infrastructure", "public realm", "schools", "healthcare", "play space", "S106", "CIL"],
+  "sub_questions": [
+    "What new or improved community facilities are proposed as part of the development?",
+    "How does the proposal address any identified deficiencies in local community infrastructure?",
+    "What is the quantum and quality of public open space provided, and does it meet local standards?",
+    "How does the design of the public realm enhance connectivity, safety, and visual amenity?",
+    "Are financial contributions (S106/CIL) proposed for off-site infrastructure, and are these justified and policy compliant?",
+    "Has the impact on existing local services (e.g., school capacity, GP surgeries) been assessed and addressed?"
+  ],
+  "data_schema_hint": {
+    "new_community_facility_details": "list_of_objects_each_with_type_and_size_sqm_or_description",
+    "public_open_space_provided_sqm": "float",
+    "public_open_space_policy_requirement_sqm": "float",
+    "public_realm_enhancements_summary": "text_block",
+    "s106_contributions_summary_by_category": {"education_contribution": "float", "healthcare_contribution": "float", "open_space_contribution": "float", "transport_contribution": "float", "other_contributions": "float"},
+    "impact_on_local_services_assessment_summary": "text_block"
+  },
+  "typical_positive_impacts": [
+    "Provision of needed new community facilities or public open space.",
+    "Significant improvements to the public realm.",
+    "Appropriate financial contributions mitigating impact on local services.",
+    "Enhanced sense of community and place.",
+    "Improved access to essential services for new and existing residents."
+  ],
+  "typical_negative_impacts": [
+    "Failure to provide adequate community facilities or open space to meet the needs of the development.",
+    "Increased strain on existing local services without sufficient mitigation.",
+    "Poor quality or poorly designed public realm.",
+    "Insufficient developer contributions to address identified impacts.",
+    "Loss of existing valued community assets."
+  ],
+  "common_mitigation_measures": [
+    "On-site provision of community facilities or open space.",
+    "Increased S106/CIL contributions based on robust needs assessment.",
+    "Phasing of development linked to infrastructure delivery.",
+    "Design revisions to improve public realm quality and integration.",
+    "Legal agreements to secure long-term management and maintenance of community assets."
+  ],
+  "potential_agent_hint": "SocioEconomicAndCommunityAgent"
+}

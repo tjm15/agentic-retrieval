@@ -1,0 +1,46 @@
+{
+  "id": "EconomyAndEmployment",
+  "display_name_template": "Economic Impact and Employment Generation for {app_name}",
+  "description_long": "Assessment of the development's impact on the local economy, including job creation (construction and operational), support for local businesses, and contribution to economic growth sectors.",
+  "primary_tags": ["economic_impact", "employment", "regeneration", "NPPF_Ch6"],
+  "relevant_policy_themes": ["LocalPlan_EconomicDevelopment", "LocalPlan_EmploymentLand", "LocalPlan_TownCentres"],
+  "key_evidence_docs": ["EconomicStatement", "EmploymentAndSkillsPlan", "RetailImpactAssessment_IfApplicable", "ViabilityAssessment_EconomicBenefits"],
+  "trigger_keywords_for_llm_scan": ["economic benefits", "job creation", "employment floorspace", "local economy", "regeneration", "skills training", "GVA", "business rates"],
+  "sub_questions": [
+    "How many net additional jobs (FTE) are expected to be created during construction and operation?",
+    "What types of jobs will be created, and do they align with local skills and economic strategies?",
+    "Is new employment floorspace proposed? If so, what type and quantum?",
+    "How will the development support local businesses and supply chains?",
+    "What is the estimated Gross Value Added (GVA) contribution of the development?",
+    "Are there any specific commitments to local employment or skills training initiatives?"
+  ],
+  "data_schema_hint": {
+    "construction_jobs_fte": "integer",
+    "operational_jobs_fte": "integer",
+    "employment_floorspace_proposed_sqm_by_use_class": {"b1a_office_sqm": "integer", "b1c_light_industrial_sqm": "integer", "b2_general_industrial_sqm": "integer", "b8_storage_distribution_sqm": "integer"},
+    "gva_contribution_annual_estimate": "float_representing_currency_value",
+    "local_employment_commitments_summary": "text_block",
+    "skills_training_plan_summary": "text_block"
+  },
+  "typical_positive_impacts": [
+    "Significant job creation, particularly in target sectors or for local residents.",
+    "Provision of modern employment floorspace meeting identified needs.",
+    "Stimulation of local economic activity and regeneration.",
+    "Increased business rates revenue for the local authority.",
+    "Enhanced skills and training opportunities for the local workforce."
+  ],
+  "typical_negative_impacts": [
+    "Loss of existing employment land or businesses without adequate reprovision.",
+    "Limited job creation or jobs that do not match local skills profiles.",
+    "Negative impact on existing town centres or retail areas (if applicable).",
+    "Failure to deliver promised economic benefits or employment."
+  ],
+  "common_mitigation_measures": [
+    "Phasing of development to allow for business relocation.",
+    "Binding commitments to local employment and skills training (e.g., via S106 agreement).",
+    "Marketing strategy for new employment floorspace targeting local needs.",
+    "Measures to support displaced businesses.",
+    "Review mechanisms to monitor and report on job creation."
+  ],
+  "potential_agent_hint": "SocioEconomicAndCommunityAgent"
+}

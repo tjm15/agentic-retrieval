@@ -1,0 +1,49 @@
+{
+  "id": "GroundConditionsAndLandStability",
+  "display_name_template": "Ground Conditions and Land Stability for {app_name}",
+  "description_long": "Assessment of geological conditions, ground stability (e.g., subsidence, heave, landslides), mining legacy, and other geotechnical considerations. Evaluation of the suitability of the site for the proposed development and any necessary engineering solutions.",
+  "primary_tags": ["ground_conditions", "land_stability", "geotechnical", "mining_legacy", "subsidence", "NPPF_Ch15"],
+  "relevant_policy_themes": ["LocalPlan_GroundStability", "CoalAuthorityGuidance_IfApplicable", "BuildingRegulations_PartA_Structure"],
+  "key_evidence_docs": ["GeotechnicalInvestigationReport", "GroundStabilityReport", "CoalMiningRiskAssessment_IfApplicable", "FoundationDesignStatement"],
+  "trigger_keywords_for_llm_scan": ["ground conditions", "geotechnical", "land stability", "subsidence", "heave", "landslide", "mining", "coal mining", "foundations", "slope stability"],
+  "sub_questions": [
+    "What are the known geological and geotechnical conditions of the site?",
+    "Are there any risks associated with land instability (e.g., natural slopes, made ground, shrink-swell clays, solution features, mining activities)?",
+    "Is the site within a Coal Mining Development Referral Area or an area with other mining legacy?",
+    "Has a Coal Mining Risk Assessment or equivalent been undertaken if required?",
+    "What foundation solutions are proposed, and are they appropriate for the ground conditions?",
+    "Are there any risks to or from existing structures or infrastructure due to ground movement?",
+    "What measures are proposed to ensure the long-term stability of the development and surrounding land?"
+  ],
+  "data_schema_hint": {
+    "summary_of_ground_investigation_findings": "text_block_detailing_soil_strata_groundwater_levels_etc",
+    "assessed_ground_stability_risks": "list_of_strings_e.g._subsidence_risk_low_slope_stability_moderate",
+    "coal_mining_risk_assessment_outcome_if_applicable": "text_block",
+    "proposed_foundation_design_summary": "text_block_e.g._strip_foundations_piled_foundations_raft_foundation",
+    "land_stability_mitigation_measures": "list_of_strings_e.g._ground_improvement_retaining_structures_slope_regrading"
+  },
+  "typical_positive_impacts": [
+    "Thorough assessment of ground conditions and stability risks.",
+    "Appropriate foundation design and construction methods for the identified conditions.",
+    "Effective mitigation of any land stability risks.",
+    "No adverse impact on the stability of adjoining land or property.",
+    "Safe and durable development."
+  ],
+  "typical_negative_impacts": [
+    "Inadequate site investigation leading to unforeseen ground problems.",
+    "Inappropriate foundation design resulting in structural issues or failure.",
+    "Increased risk of land instability on or off-site.",
+    "Damage to existing structures or infrastructure.",
+    "Development in areas of unacceptable mining risk without proper mitigation."
+  ],
+  "common_mitigation_measures": [
+    "Comprehensive geotechnical site investigations.",
+    "Specific foundation designs (e.g., piled, raft, reinforced foundations).",
+    "Ground improvement techniques (e.g., vibro-compaction, grouting).",
+    "Slope stabilization measures (e.g., retaining walls, soil nailing, regrading).",
+    "Mine workings treatment (e.g., drilling and grouting voids).",
+    "Careful management of excavations and earthworks.",
+    "Monitoring of ground movement during and after construction."
+  ],
+  "potential_agent_hint": "TechnicalInfrastructureAgent"
+}

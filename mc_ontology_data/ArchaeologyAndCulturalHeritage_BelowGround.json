@@ -1,0 +1,44 @@
+{
+  "id": "ArchaeologyAndCulturalHeritage_BelowGround",
+  "display_name_template": "Archaeology and Below-Ground Cultural Heritage for {app_name}",
+  "description_long": "Assessment of the impact on known or potential below-ground archaeological remains, including requirements for desk-based assessments, field evaluations (e.g., trial trenching), and mitigation strategies (e.g., preservation in situ or by record).",
+  "primary_tags": ["archaeology", "below_ground_heritage", "cultural_heritage", "NPPF_Ch16"],
+  "relevant_policy_themes": ["LocalPlan_ArchaeologyPolicy", "HistoricEnvironmentRecord"],
+  "key_evidence_docs": ["ArchaeologicalDeskBasedAssessment", "WrittenSchemeOfInvestigation_WSI", "GeophysicalSurveyResults", "TrialTrenchEvaluationReport"],
+  "trigger_keywords_for_llm_scan": ["archaeology", "archaeological", "below-ground", "heritage assets", "WSI", "desk-based assessment", "trial trenching", "geophysical survey", "historic environment record"],
+  "sub_questions": [
+    "What is the archaeological potential of the site based on the Historic Environment Record (HER) and desk-based assessment?",
+    "Have any intrusive (e.g., trial trenching) or non-intrusive (e.g., geophysical survey) evaluations been undertaken, and what were the findings?",
+    "What is the significance of any identified archaeological remains?",
+    "How will the development impact these remains (direct physical impact, setting)?",
+    "What mitigation measures are proposed (e.g., preservation in situ, preservation by record/excavation)?",
+    "Is a Written Scheme of Investigation (WSI) required and has it been agreed with the local planning authority's archaeological advisor?"
+  ],
+  "data_schema_hint": {
+    "archaeological_potential_summary": "text_block_high_medium_low_unknown_with_justification",
+    "evaluation_findings_summary": "text_block_detailing_results_of_any_surveys_or_trenching",
+    "significance_of_remains_assessment": "text_block",
+    "proposed_mitigation_strategy": "text_block_detailing_avoidance_minimisation_or_recording_measures",
+    "wsi_status": "text_e.g._Submitted_Agreed_NotRequired"
+  },
+  "typical_positive_impacts": [
+    "Preservation in situ of significant archaeological remains.",
+    "Enhancement of knowledge through archaeological investigation and recording.",
+    "Public dissemination of archaeological findings.",
+    "Minimal impact on archaeological resource due to sensitive design."
+  ],
+  "typical_negative_impacts": [
+    "Destruction of significant archaeological remains without adequate recording.",
+    "Failure to properly assess archaeological potential leading to unexpected discoveries and delays.",
+    "Inadequate mitigation or investigation strategy.",
+    "Loss of non-designated heritage assets of archaeological interest."
+  ],
+  "common_mitigation_measures": [
+    "Design alterations to avoid sensitive archaeological areas (preservation in situ).",
+    "Phased archaeological investigation and excavation prior to or during development (preservation by record).",
+    "Archaeological watching brief during groundworks.",
+    "Development of a detailed Written Scheme of Investigation (WSI).",
+    "Post-excavation analysis, reporting, and archiving of finds."
+  ],
+  "potential_agent_hint": "HeritageAndDesignAgent"
+}

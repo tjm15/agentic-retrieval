@@ -1,0 +1,180 @@
+{
+  "report_type_id": "FullPermissionMinorResidential",
+  "report_id_prefix": "FPMR",
+  "description": "Default Report for Full Planning Permission - Minor Residential Development (e.g., 1-9 dwellings)",
+  "sections": [
+    {
+      "node_id": "1.0_ApplicationAndProposal",
+      "description": "Application Details, Proposed Development, and Site Context",
+      "node_type_tag": "IntroductionBlock",
+      "generic_material_considerations": ["applicant_details", "description_of_proposed_residential_development_number_of_units_type_mix_associated_works_e_g_access_parking_landscaping", "site_location_and_current_state_including_any_existing_buildings_or_uses_to_be_removed_or_altered"],
+      "specific_policy_focus_ids": ["NPPF_Chapter5_DeliveringASufficientSupplyOfHomes", "NPPF_Chapter12_AchievingWellDesignedPlaces"],
+      "thematic_policy_descriptors": ["understanding the scope of the minor residential proposal", "full details submitted"],
+      "depends_on_nodes": [],
+      "sub_sections": [
+        {
+          "node_id": "1.1_SiteDescriptionAndContext",
+          "description": "Description of the Site, its Surroundings, and Key Characteristics",
+          "node_type_tag": "SiteDescription",
+          "generic_material_considerations": ["site_area_boundaries_topography_existing_features", "relationship_to_surrounding_residential_properties_and_other_land_uses_character_of_the_area", "site_designations_e_g_conservation_area_flood_zone_proximity_to_listed_buildings", "accessibility_to_local_services_schools_shops_public_transport"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["understanding site suitability and constraints for residential use"],
+          "key_evidence_document_types": ["SiteLocationPlan", "BlockPlanShowingSiteInContext", "PhotographsOfSiteAndSurroundings", "DesignAndAccessStatement_IfRequired"]
+        },
+        {
+          "node_id": "1.2_ProposedDevelopmentDetails",
+          "description": "Detailed Description of the Proposed Residential Scheme",
+          "node_type_tag": "ProposalDescription",
+          "generic_material_considerations": ["number_of_dwelling_units_type_e_g_houses_flats_bungalows_and_mix_e_g_number_of_bedrooms_affordable_housing_provision_if_any", "layout_of_the_development_siting_of_dwellings_roads_footpaths_parking_areas_amenity_space", "scale_of_buildings_height_massing_footprint", "appearance_of_buildings_design_style_materials_finishes_fenestration_roofing", "access_arrangements_vehicular_and_pedestrian_access_points_internal_circulation", "parking_provision_number_of_spaces_type_e_g_on_plot_communal_cycle_storage", "landscaping_proposals_hard_and_soft_landscaping_boundary_treatments_tree_planting_retention_of_existing_trees_or_hedgerows", "drainage_strategy_surface_water_and_foul_sewage_disposal_sud_s_features"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["full details of the proposed housing scheme"],
+          "key_evidence_document_types": ["ProposedSiteLayoutPlan", "ProposedFloorPlansAndElevationsForAllHouseTypesUnits", "StreetSceneDrawingsOrVisualisations", "MaterialsSchedule", "LandscapingPlan", "DrainageStrategyOrStatement", "ArboriculturalImpactAssessmentAndMethodStatement_IfTreesAffected"]
+        },
+        {
+          "node_id": "1.3_RelevantPlanningHistory",
+          "description": "Summary of Relevant Planning History for the Site and Surrounding Area",
+          "node_type_tag": "PlanningHistory",
+          "generic_material_considerations": ["previous_applications_on_the_site_especially_for_residential_development", "relevant_planning_history_in_the_vicinity_that_may_set_precedent_or_indicate_local_sensitivities_or_character"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["understanding previous planning decisions and site context evolution"],
+          "key_evidence_document_types": ["PlanningHistorySearchRecords"]
+        }
+      ]
+    },
+    {
+      "node_id": "2.0_PolicyConsiderations",
+      "description": "Relevant National and Local Planning Policies for Minor Residential Development",
+      "node_type_tag": "PolicyFrameworkSummaryBlock",
+      "generic_material_considerations": ["nppf_relevant_chapters_housing_design_amenity_sustainable_transport_environmental_protection", "local_plan_strategic_policies_housing_policies_design_policies_development_management_policies_for_residential_areas", "neighbourhood_plan_policies_if_applicable", "relevant_supplementary_planning_documents_spds_e_g_residential_design_guide_parking_standards_open_space_affordable_housing_thresholds_and_requirements_for_minor_schemes"],
+      "specific_policy_focus_ids": ["NPPF_DeliveringASufficientSupplyOfHomes", "NPPF_AchievingWellDesignedPlaces", "LocalPlan_HousingPolicies", "LocalPlan_DesignAndAmenityPolicies", "LocalPlan_ParkingStandardsSPD"],
+      "thematic_policy_descriptors": ["policy framework for assessing minor residential proposals"],
+      "depends_on_nodes": [],
+      "sub_sections": [
+        {"node_id": "2.1_NationalPolicy", "description": "NPPF Guidance on Housing, Design, Amenity", "node_type_tag": "NationalPolicy", "thematic_policy_descriptors": ["national objectives for housing delivery and quality"]},
+        {"node_id": "2.2_LocalPolicyAndSiteSpecifics", "description": "Local Plan Policies, Neighbourhood Plan, SPDs", "node_type_tag": "LocalPolicy", "thematic_policy_descriptors": ["local housing strategy, design requirements, and amenity standards"]}
+      ]
+    },
+    {
+      "node_id": "3.0_AssessmentOfProposedDevelopment",
+      "description": "Officer's Detailed Assessment of the Proposed Residential Scheme",
+      "node_type_tag": "MaterialConsiderationsBlock_Parent",
+      "depends_on_nodes": ["1.0_ApplicationAndProposal", "2.0_PolicyConsiderations"],
+      "sub_sections": [
+        {
+          "node_id": "3.1_PrincipleOfResidentialDevelopment",
+          "description": "Assessment of the Acceptability of Residential Development on this Site",
+          "node_type_tag": "LandUseAssessment",
+          "generic_material_considerations": ["is_the_site_located_within_a_settlement_boundary_or_an_area_identified_as_suitable_for_residential_development_in_the_local_plan", "is_the_proposal_for_windfall_development_and_if_so_is_it_acceptable_in_principle_against_policy", "loss_of_any_existing_beneficial_use_on_site_e_g_employment_community_facility_garden_land_and_policy_implications", "efficient_use_of_land_density_considerations_for_minor_schemes"],
+          "specific_policy_focus_ids": ["LocalPlan_SettlementHierarchyPolicies", "LocalPlan_WindfallSitePolicies_IfApplicable"],
+          "thematic_policy_descriptors": ["evaluating fundamental land use acceptability for housing"],
+          "key_evidence_document_types": ["LocalPlanProposalsMapAndPolicyDocuments"]
+        },
+        {
+          "node_id": "3.2_DesignLayoutAndAppearance",
+          "description": "Assessment of the Design Quality, Layout, Scale, and Appearance of the Proposed Dwellings",
+          "node_type_tag": "DesignAssessment",
+          "generic_material_considerations": ["compatibility_of_the_design_scale_massing_and_materials_with_the_character_and_appearance_of_the_surrounding_area_and_street_scene", "quality_of_the_proposed_layout_siting_of_dwellings_relationship_between_buildings_and_spaces_creation_of_a_sense_of_place", "architectural_detailing_fenestration_roof_design_and_materials_appropriateness_and_quality", "integration_with_existing_site_features_and_topography", "crime_prevention_and_security_by_design_principles_e_g_natural_surveillance_defensible_space"],
+          "specific_policy_focus_ids": ["NPPF_AchievingWellDesignedPlaces", "LocalPlan_DesignPolicies", "ResidentialDesignGuideSPD"],
+          "thematic_policy_descriptors": ["evaluating aesthetic quality, functionality, and local distinctiveness"],
+          "key_evidence_document_types": ["ProposedPlansElevationsAndStreetScenes", "DesignAndAccessStatement", "MaterialSamplesOrSchedule_IfRequested"]
+        },
+        {
+          "node_id": "3.3_ImpactOnResidentialAmenityNeighbouringProperties",
+          "description": "Assessment of Impact on Amenity of Existing Neighbouring Dwellings",
+          "node_type_tag": "AmenityImpactAssessment",
+          "generic_material_considerations": ["potential_for_overlooking_and_loss_of_privacy_to_neighbouring_properties_habitable_room_windows_and_private_gardens", "potential_for_loss_of_daylight_sunlight_or_overshadowing_to_neighbouring_properties", "impact_of_scale_massing_and_proximity_of_new_dwellings_on_outlook_from_neighbouring_properties", "potential_for_noise_and_disturbance_during_construction_and_occupation_e_g_from_traffic_plant_equipment_although_construction_impacts_often_controlled_by_condition_or_other_legislation"],
+          "specific_policy_focus_ids": ["LocalPlan_AmenityProtectionPolicies", "BREGuidelinesOnSiteLayoutPlanningForDaylightAndSunlight_IfReferencedLocally"],
+          "thematic_policy_descriptors": ["protecting the amenity of existing residents"],
+          "key_evidence_document_types": ["SiteLayoutPlanShowingRelationshipToNeighbours", "SectionsShowingHeightDifferencesAndDistances", "SunlightDaylightAssessment_IfSignificantConcerns"]
+        },
+        {
+          "node_id": "3.4_AmenityForFutureOccupiers",
+          "description": "Assessment of the Quality of Accommodation and Amenity for Future Occupiers of the Proposed Dwellings",
+          "node_type_tag": "AmenityStandardAssessment",
+          "generic_material_considerations": ["internal_space_standards_room_sizes_and_layout_compliance_with_nationally_described_space_standard_if_adopted_locally", "provision_of_private_outdoor_amenity_space_gardens_balconies_patios_adequacy_and_usability", "outlook_daylight_and_sunlight_for_proposed_dwellings", "privacy_between_proposed_dwellings_within_the_scheme", "noise_and_disturbance_within_the_site_e_g_from_parking_areas_or_shared_spaces", "accessibility_and adaptability_standards_e_g_lifetime_homes_wheelchair_accessibility_if_required_by_policy"],
+          "specific_policy_focus_ids": ["LocalPlan_HousingStandardsPolicies", "NationallyDescribedSpaceStandard_IfApplicable", "AccessibleAndAdaptableDwellingsSPD_IfApplicable"],
+          "thematic_policy_descriptors": ["ensuring a good quality living environment for new residents"],
+          "key_evidence_document_types": ["ProposedFloorPlansAndSiteLayout", "ScheduleOfAccommodationAndAreas"]
+        },
+        {
+          "node_id": "3.5_AccessParkingAndHighwaySafety",
+          "description": "Assessment of Vehicular and Pedestrian Access, Parking Provision, and Highway Safety Implications",
+          "node_type_tag": "AccessAndTransportAssessment",
+          "generic_material_considerations": ["suitability_and_safety_of_proposed_access_point_s_for_vehicles_pedestrians_and_cyclists_visibility_splays_junction_design", "impact_on_local_highway_network_capacity_congestion_and_safety_for_minor_schemes_usually_focused_on_immediate Auswirkungen", "adequacy_of_on_site_parking_provision_in_line_with_local_standards_car_and_cycle_parking", "manoeuvring_space_for_vehicles_including_service_and_refuse_vehicles", "pedestrian_and_cycle connectivity_within_the_site_and_to_external_networks"],
+          "specific_policy_focus_ids": ["NPPF_PromotingSustainableTransport", "LocalPlan_TransportAndAccessPolicies", "LocalPlan_ParkingStandardsSPD", "ManualForStreetsGuidance"],
+          "thematic_policy_descriptors": ["ensuring safe and appropriate access and parking arrangements"],
+          "key_evidence_document_types": ["ProposedAccessDrawingsAndSiteLayout", "ParkingLayoutAndSchedule", "TransportStatementOrNote_IfRequiredFor 규모", "HighwayAuthorityConsultationResponse"]
+        },
+        {
+          "node_id": "3.6_TreesLandscapingAndEcology",
+          "description": "Assessment of Impact on Trees, Proposed Landscaping, and Ecological Considerations",
+          "node_type_tag": "LandscapeAndEcologyAssessment",
+          "generic_material_considerations": ["impact_on_existing_trees_hedgerows_and_other_vegetation_on_or_adjoining_the_site_need_for_protection_measures_or_justification_for_removal", "quality_and_appropriateness_of_proposed_landscaping_scheme_hard_and_soft_materials_planting_species_boundary_treatments", "potential_impact_on_protected_species_or_habitats_need_for_ecological_surveys_mitigation_and_enhancement_measures_e_g_bat_boxes_bird_boxes_hedgehog_highways", "contribution_to_biodiversity_net_gain_if_required_by_policy_for_minor_schemes"],
+          "specific_policy_focus_ids": ["NPPF_Chapter15_ConservingAndEnhancingTheNaturalEnvironment", "LocalPlan_TreeAndLandscapePolicies", "LocalPlan_BiodiversityAndEcologyPolicies"],
+          "thematic_policy_descriptors": ["protecting and enhancing green infrastructure and biodiversity"],
+          "key_evidence_document_types": ["ArboriculturalSurveyImpactAssessmentAndMethodStatement", "LandscapingPlanAndPlantingSchedule", "PreliminaryEcologicalAppraisalOrProtectedSpeciesSurveyResults", "BiodiversityNetGainAssessment_IfApplicable"]
+        },
+        {
+          "node_id": "3.7_FloodRiskAndDrainage",
+          "description": "Assessment of Flood Risk and Proposed Drainage Strategy",
+          "node_type_tag": "FloodRiskAndDrainageAssessment",
+          "generic_material_considerations": ["is_the_site_within_a_flood_zone_if_so_has_a_flood_risk_assessment_fra_been_submitted_and_does_it_pass_the_sequential_and_exception_tests_if_necessary", "proposed_surface_water_drainage_strategy_use_of_sud_s_sustainable_drainage_systems_management_of_run_off_rates_and_volumes", "proposed_foul_drainage_connection_to_mains_sewer_or_alternative_arrangements", "impact_on_groundwater_or_watercourses"],
+          "specific_policy_focus_ids": ["NPPF_Chapter14_MeetingTheChallengeOfClimateChangeFloodingAndCoastalChange", "LocalPlan_FloodRiskAndDrainagePolicies", "LeadLocalFloodAuthority_LLFA_Guidance"],
+          "thematic_policy_descriptors": ["managing flood risk and ensuring sustainable drainage"],
+          "key_evidence_document_types": ["FloodRiskAssessment_IfInFloodZoneOrOver1ha", "DrainageStrategyAndCalculations", "LLFAConsultationResponse", "WaterCompanyConsultationResponse_ForFoulDrainage"]
+        },
+        {
+          "node_id": "3.8_OtherConsiderations",
+          "description": "Assessment of Other Relevant Matters (e.g., Contamination, Noise, Air Quality, Archaeology, Affordable Housing for Minor Schemes)",
+          "node_type_tag": "OtherConsiderations",
+          "generic_material_considerations": ["potential_for_land_contamination_and_need_for_investigation_or_remediation", "impact_of_existing_noise_sources_on_future_occupiers_and_need_for_mitigation_e_g_road_traffic_rail_industrial_noise", "impact_of_development_on_air_quality_especially_if_in_an_aqma_air_quality_management_area", "potential_impact_on_archaeological_remains_need_for_investigation_or_preservation", "affordable_housing_contribution_if_site_meets_local_policy_thresholds_for_minor_schemes_viability_considerations"],
+          "specific_policy_focus_ids": ["LocalPlan_ContaminatedLandPolicies", "LocalPlan_NoisePolicies", "LocalPlan_AirQualityPolicies", "LocalPlan_ArchaeologyPolicies", "LocalPlan_AffordableHousingPoliciesAndThresholds"],
+          "thematic_policy_descriptors": ["addressing specific site constraints or policy requirements"],
+          "key_evidence_document_types": ["Phase1ContaminatedLandAssessment_IfRiskIdentified", "NoiseImpactAssessment_IfNearSignificantSource", "AirQualityAssessment_IfInAQMAOrSignificantImpactExpected", "ArchaeologicalDeskBasedAssessmentOrFieldEvaluation_IfPotentialExists", "AffordableHousingStatementOrViabilityAppraisal_IfApplicable"]
+        }
+      ]
+    },
+    {
+      "node_id": "4.0_ConsultationResponses",
+      "description": "Summary of Consultation Responses on the Application",
+      "node_type_tag": "ConsultationSummaryBlock",
+      "generic_material_considerations": ["summary_of_responses_from_statutory_consultees_e_g_highways_authority_lead_local_flood_authority_environment_agency_if_relevant", "summary_of_responses_from_non_statutory_consultees_e_g_parish_council_police_architectural_liaison_civic_society", "summary_of_any_public_representations_received_neighbour_objections_or_support"],
+      "specific_policy_focus_ids": [],
+      "thematic_policy_descriptors": ["feedback from stakeholders on the detailed proposals"],
+      "depends_on_nodes": [],
+      "sub_sections": [
+        {"node_id": "4.1_StatutoryConsultees", "description": "Feedback from Statutory Bodies", "node_type_tag": "ConsulteeResponse", "thematic_policy_descriptors": ["technical advice on key aspects"]},
+        {"node_id": "4.2_NonStatutoryAndPublicResponses", "description": "Feedback from Other Consultees and Public", "node_type_tag": "ConsulteeResponse", "thematic_policy_descriptors": ["local concerns, community views, and specialist advice"]}
+      ]
+    },
+    {
+      "node_id": "5.0_PlanningBalanceConclusionAndRecommendation",
+      "description": "Officer's Overall Planning Balance, Conclusion, and Recommendation",
+      "node_type_tag": "PlanningBalanceAndConclusionBlock",
+      "generic_material_considerations": ["summary_of_assessment_against_all_relevant_planning_policies_and_material_considerations", "weighing_of_benefits_of_the_proposal_e_g_provision_of_new_housing_against_any_adverse_impacts_identified", "consideration_of_consultation_responses_and_any_proposed_mitigation_measures_or_conditions"],
+      "specific_policy_focus_ids": ["NPPF_PresumptionInFavourOfSustainableDevelopment"],
+      "thematic_policy_descriptors": ["overall judgement on the acceptability of the minor residential scheme"],
+      "depends_on_nodes": ["3.0_AssessmentOfProposedDevelopment", "4.0_ConsultationResponses"],
+      "sub_sections": [
+        {
+          "node_id": "5.1_OverallPlanningBalance",
+          "description": "Weighing of All Considerations for the Proposed Development",
+          "node_type_tag": "PlanningBalance",
+          "generic_material_considerations": ["does_the_proposal_represent_sustainable_development_in_accordance_with_the_nppf_and_local_plan", "are_there_any_adverse_impacts_that_would_significantly_and_demonstrably_outweigh_the_benefits_when_assessed_against_the_policies_in_the_framework_taken_as_a_whole", "can_any_identified_harm_be_adequately_mitigated_by_conditions_or_planning_obligations_s106_for_minor_schemes_usually_limited_or_via_cil"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["final assessment of merits and acceptability"],
+          "key_evidence_document_types": []
+        },
+        {
+          "node_id": "5.2_Recommendation",
+          "description": "Officer's Recommendation (Approve or Refuse Full Planning Permission)",
+          "node_type_tag": "FinalRecommendationBlock",
+          "generic_material_considerations": ["clear_recommendation_for_approval_or_refusal_of_full_planning_permission", "if_approval_suggested_conditions_covering_time_limits_approved_plans_materials_landscaping_parking_drainage_hours_of_construction_any_site_specific_mitigation_measures_etc", "identification_of_any_necessary_planning_obligations_s106_agreement_or_confirmation_of_cil_liability_if_applicable_for_minor_schemes", "if_refusal_clear_reasons_linked_to_conflict_with_planning_policies_or_unacceptable_adverse_impacts_that_cannot_be_mitigated"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["formulating recommendation for full planning permission"],
+          "key_evidence_document_types": []
+        }
+      ]
+    }
+  ]
+}

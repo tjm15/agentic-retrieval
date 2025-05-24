@@ -1,0 +1,142 @@
+{
+  "report_type_id": "ChangeOfUse",
+  "report_id_prefix": "CoU",
+  "description": "Default Report for Change of Use Applications",
+  "sections": [
+    {
+      "node_id": "1.0_SiteAndApplication",
+      "description": "Site Description, Proposed Change of Use & Planning History",
+      "node_type_tag": "IntroductionBlock",
+      "generic_material_considerations": ["site_context", "existing_use_details", "proposed_use_details", "planning_history_of_use"],
+      "specific_policy_focus_ids": ["LocalPlan_DevelopmentManagementPolicy", "NPPF_SupportingSustainableEconomicGrowth"],
+      "thematic_policy_descriptors": ["establishing context for change of use", "defining existing and proposed use classes"],
+      "depends_on_nodes": [],
+      "sub_sections": [
+        {
+          "node_id": "1.1_SiteLocationAndDescription",
+          "description": "Site Location, Existing Building/Land Characteristics, and Surrounding Area Uses",
+          "node_type_tag": "SiteDescription",
+          "generic_material_considerations": ["site_identification", "existing_building_condition_suitability", "area_character_land_use_mix", "accessibility_transport_links"],
+          "specific_policy_focus_ids": ["LocalPlan_SiteContextPolicy", "NPPF_ContextAnalysis"],
+          "thematic_policy_descriptors": ["site suitability for proposed use", "compatibility with surrounding land uses"],
+          "key_evidence_document_types": ["ApplicationForm", "SiteLocationPlan", "ExistingFloorPlans", "SitePhotos", "SupportingStatement_ExistingUseEvidence"]
+        },
+        {
+          "node_id": "1.2_ProposalInDetail",
+          "description": "The Proposed Change of Use (From Use Class X to Use Class Y, Operational Details)",
+          "node_type_tag": "ProposalSummary",
+          "generic_material_considerations": ["use_class_change_justification", "operational_characteristics_proposed_use", "hours_of_operation", "employment_generation_if_any", "ancillary_works_if_any"],
+          "specific_policy_focus_ids": ["LocalPlan_ChangeOfUsePolicy", "TownAndCountryPlanningUseClassesOrder"],
+          "thematic_policy_descriptors": ["assessing justification for change of use", "understanding operational impacts of new use"],
+          "key_evidence_document_types": ["PlanningStatement_ChangeOfUseJustification", "ProposedFloorPlans_IfLayoutChanges", "OperationalManagementPlan_IfApplicable"]
+        },
+        {
+          "node_id": "1.3_RelevantPlanningHistory",
+          "description": "Relevant Planning History of the Site (Previous Uses, Consents for Use Changes)",
+          "node_type_tag": "PlanningHistory",
+          "generic_material_considerations": ["history_of_uses_on_site", "previous_change_of_use_applications", "lawfulness_of_existing_use"],
+          "specific_policy_focus_ids": ["LocalPlan_PlanningHistoryPolicyWeight"],
+          "thematic_policy_descriptors": ["planning history related to land use", "assessing established use rights"],
+          "key_evidence_document_types": ["PreviousDecisionNotices_UseChanges", "CertificatesOfLawfulness_IfAny", "LocalAuthorityPlanningRecords"]
+        }
+      ]
+    },
+    {
+      "node_id": "2.0_ConsultationResponses",
+      "description": "Summary and Analysis of Consultation Responses",
+      "node_type_tag": "ConsultationSummaryBlock",
+      "generic_material_considerations": ["public_representations_on_use_change", "statutory_consultee_advice_on_impacts", "internal_consultee_feedback_e_g_environmental_health"],
+      "specific_policy_focus_ids": ["LocalPlan_ConsultationPolicy", "NPPF_CommunityEngagement"],
+      "thematic_policy_descriptors": ["consultation on change of use applications", "assessing impacts identified by consultees"],
+      "depends_on_nodes": ["1.0_SiteAndApplication/1.2_ProposalInDetail"],
+      "sub_sections": [
+        {"node_id": "2.1_PublicRepresentations", "description": "Summary of Public Comments (Support, Objections, Neutral) Regarding the Proposed Use", "node_type_tag": "PublicConsultation", "thematic_policy_descriptors": ["public perception of proposed use change", "community concerns regarding operational impacts"]},
+        {"node_id": "2.2_StatutoryConsultees", "description": "Feedback from Key Statutory Consultees (e.g., Environment Agency if relevant, Highways)", "node_type_tag": "StatutoryConsultation", "thematic_policy_descriptors": ["technical advice on suitability and impacts of new use"]},
+        {"node_id": "2.3_OtherResponses", "description": "Feedback from Other Consultees (e.g., Ward Councillors, Business Improvement Districts)", "node_type_tag": "OtherConsultation", "thematic_policy_descriptors": ["local stakeholder views on economic or community impacts"]}
+      ]
+    },
+    {
+      "node_id": "3.0_PlanningPolicyFramework",
+      "description": "Relevant Planning Policy Framework for Change of Use",
+      "node_type_tag": "PolicyFrameworkSummaryBlock",
+      "generic_material_considerations": ["local_plan_policies_on_specific_uses", "nppf_guidance_on_economic_social_environmental_roles_of_uses", "relevant_spds_for_use_types"],
+      "thematic_policy_descriptors": ["policy framework for assessing change of use applications", "balancing economic, social, and environmental considerations"],
+      "depends_on_nodes": [],
+      "sub_sections": [
+          {"node_id": "3.1_NationalPolicy", "description": "NPPF - Key Relevant Chapters/Paragraphs (e.g., Economic Growth, Town Centres, Rural Economy)", "node_type_tag": "NationalPolicy", "thematic_policy_descriptors": ["NPPF support for sustainable development through appropriate land uses"]},
+          {"node_id": "3.2_LocalPlan", "description": "Local Plan - Key Relevant Policies for Specific Use Classes, Town Centre Strategies, Employment Land Policies etc.", "node_type_tag": "LocalPolicy", "thematic_policy_descriptors": ["local plan policies guiding appropriate locations and types of uses"]},
+          {"node_id": "3.3_SPDsAndSPGs", "description": "Relevant Supplementary Planning Documents/Guidance (e.g., Town Centre Strategies, Hot Food Takeaway SPD)", "node_type_tag": "SupplementaryGuidance", "thematic_policy_descriptors": ["detailed guidance on specific use types or locations"]}
+      ]
+    },
+    {
+      "node_id": "4.0_AssessmentOfMaterialConsiderations",
+      "description": "Officer's Assessment of Material Planning Considerations for the Change of Use",
+      "node_type_tag": "MaterialConsiderationsBlock_Parent",
+      "is_dynamic_parent_node": true,
+      "dynamic_node_source_fields": ["generic_material_considerations"],
+      "dynamic_node_config": {
+        "PrincipleOfDevelopmentAndLandUsePolicy": {
+            "description_template": "Principle of the Proposed Change of Use in this Location (Compatibility with Land Use Policies)",
+            "generic_material_considerations": ["appropriateness_of_proposed_use_in_location", "loss_of_existing_use_impact", "contribution_to_vitality_viability_if_town_centre", "protection_of_employment_land_if_applicable", "support_for_rural_diversification_if_applicable"],
+            "specific_policy_focus_ids": ["LocalPlan_SpecificUsePolicies", "LocalPlan_TownCentrePolicies", "LocalPlan_EmploymentLandPolicies", "NPPF_TownCentres", "NPPF_RuralEconomy"],
+            "thematic_policy_descriptors": ["assessing land use policy compliance", "impact of losing existing use vs gaining new use"],
+            "key_evidence_document_types": ["PlanningStatement_PolicyJustification", "MarketEvidence_IfRequiredForLossOfUse"]
+        },
+        "ImpactOnAmenity": {
+            "description_template": "Impact on Amenity of Neighbouring Properties and Area (Noise, Odour, Hours of Operation, Disturbance)",
+            "generic_material_considerations": ["noise_impact_assessment", "odour_fumes_impact", "hours_of_operation_impact_on_neighbours", "light_pollution_impact", "general_disturbance_from_activities_patrons"],
+            "specific_policy_focus_ids": ["LocalPlan_AmenityPolicy", "NPPF_AmenityConsiderations", "EnvironmentalHealthGuidance"],
+            "thematic_policy_descriptors": ["protecting residential and business amenity from operational impacts of new use"],
+            "key_evidence_document_types": ["NoiseImpactAssessment", "OdourAssessment", "DetailsOfVentilationExtraction", "ManagementPlan_ToMitigateAmenityImpacts"]
+        },
+        "HighwaysParkingAndAccess": {
+            "description_template": "Impact on Highway Safety, Parking, Servicing and Accessibility",
+            "generic_material_considerations": ["traffic_generation_impact_of_new_use", "parking_demand_and_provision", "servicing_arrangements_for_new_use", "accessibility_by_sustainable_transport_modes", "impact_on_pedestrian_safety_environment"],
+            "specific_policy_focus_ids": ["LocalPlan_ParkingStandards", "LocalPlan_TransportPolicy", "ManualForStreets"],
+            "thematic_policy_descriptors": ["assessing transport impacts of change of use", "ensuring safe and adequate access and parking"],
+            "key_evidence_document_types": ["TransportStatementOrAssessment_IfRequired", "ParkingSurvey_IfApplicable", "ServicingManagementPlan"]
+        },
+        "EconomicConsiderations": {
+            "description_template": "Economic Considerations (Job Creation/Loss, Support for Local Economy, Vitality of Centres)",
+            "generic_material_considerations": ["job_creation_or_loss_from_use_change", "support_for_local_businesses_or_services", "impact_on_vitality_and_viability_of_town_centres_or_local_centres", "diversification_of_economy"],
+            "specific_policy_focus_ids": ["NPPF_BuildingAStrongCompetitiveEconomy", "LocalPlan_EconomicDevelopmentPolicies"],
+            "thematic_policy_descriptors": ["assessing economic benefits and disbenefits of use change"],
+            "key_evidence_document_types": ["EconomicStatement_IfProvided", "BusinessPlanSummary_IfRelevant"]
+        },
+        "SocialAndCommunityConsiderations": {
+            "description_template": "Social and Community Considerations (Provision/Loss of Community Facilities, Social Cohesion)",
+            "generic_material_considerations": ["loss_or_gain_of_community_facility", "impact_on_social_cohesion_or_local_services", "provision_of_needed_service_or_facility"],
+            "specific_policy_focus_ids": ["NPPF_PromotingHealthyAndSafeCommunities", "LocalPlan_CommunityFacilitiesPolicies"],
+            "thematic_policy_descriptors": ["assessing social and community impacts of use change"],
+            "key_evidence_document_types": ["CommunityImpactAssessment_IfProvided", "EvidenceOfNeed_ForProposedFacility"]
+        }
+      },
+      "thematic_policy_descriptors": ["material considerations for change of use applications", "balancing policy objectives for different land uses"],
+      "depends_on_nodes": ["1.0_SiteAndApplication/1.2_ProposalInDetail", "2.0_ConsultationResponses", "3.0_PlanningPolicyFramework"]
+    },
+    {
+      "node_id": "5.0_OtherRelevantMatters",
+      "description": "Other Relevant Matters (e.g., CIL, Conditions, Informatives, S106 if applicable)",
+      "node_type_tag": "OtherConsiderationsBlock",
+      "generic_material_considerations":["CIL_liability_for_new_use", "planning_conditions_for_operational_control", "informatives_for_applicant", "s106_obligations_if_impacts_require_mitigation_not_coverable_by_condition"],
+      "thematic_policy_descriptors": ["CIL implications of change of use", "drafting conditions to manage impacts of new use"],
+      "depends_on_nodes": ["4.0_AssessmentOfMaterialConsiderations"]
+    },
+    {
+      "node_id": "6.0_PlanningBalanceAndConclusion",
+      "description": "Overall Planning Balance and Officer's Conclusion",
+      "node_type_tag": "PlanningBalanceAndConclusionBlock",
+      "generic_material_considerations":["planning_balance_change_of_use", "overall_acceptability_of_proposed_use"],
+      "specific_policy_focus_ids": ["NPPF_Presumption", "LocalPlan_DecisionMakingPolicy"],
+      "thematic_policy_descriptors": ["weighing material considerations for change of use", "application of presumption in favour of sustainable development"],
+      "depends_on_nodes": ["4.0_AssessmentOfMaterialConsiderations", "5.0_OtherRelevantMatters"]
+    },
+    {
+      "node_id": "7.0_Recommendation",
+      "description": "Officer's Recommendation",
+      "node_type_tag": "FinalRecommendationBlock",
+      "thematic_policy_descriptors": ["formulating recommendation for change of use application", "justification based on policy and material considerations"],
+      "depends_on_nodes": ["6.0_PlanningBalanceAndConclusion"]
+    }
+  ]
+}

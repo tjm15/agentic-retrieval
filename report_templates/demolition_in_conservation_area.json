@@ -1,0 +1,127 @@
+{
+  "report_type_id": "DemolitionConservationArea",
+  "report_id_prefix": "DemoCA",
+  "description": "Default Report for Application for Consent to Demolish an Unlisted Building in a Conservation Area",
+  "sections": [
+    {
+      "node_id": "1.0_SiteAndProposal",
+      "description": "Site, Building Description, Proposed Demolition & Planning History",
+      "node_type_tag": "IntroductionBlock",
+      "generic_material_considerations": ["conservation_area_designation_character", "building_description_age_style_contribution", "scope_of_proposed_demolition_full_partial", "planning_history_previous_alterations_applications"],
+      "specific_policy_focus_ids": ["LocalPlan_ConservationAreaPolicy", "NPPF_Chapter16_ConservingAndEnhancingTheHistoricEnvironment", "ConservationAreaAppraisalAndManagementPlan"],
+      "thematic_policy_descriptors": ["context of demolition within a designated conservation area", "understanding the building's contribution to the area's significance"],
+      "depends_on_nodes": [],
+      "sub_sections": [
+        {
+          "node_id": "1.1_SiteAndBuildingDescription",
+          "description": "Location of Site within Conservation Area, Description of the Building to be Demolished (Age, Architectural Style, Materials, Condition, Contribution to Conservation Area)",
+          "node_type_tag": "SiteDescription",
+          "generic_material_considerations": ["site_identification_within_ca_boundary", "building_architectural_and_historic_interest_assessment", "building_condition_structural_survey_if_relevant", "contribution_of_building_to_ca_character_positive_neutral_negative", "relationship_to_neighbouring_buildings_and_streetscape"],
+          "specific_policy_focus_ids": ["LocalPlan_HeritageAssetPolicy", "ConservationAreaAppraisal_StatementOfSignificance"],
+          "thematic_policy_descriptors": ["assessing the significance of the unlisted building in the conservation area context", "evaluating building condition and its impact on viability"],
+          "key_evidence_document_types": ["ApplicationForm", "SiteLocationPlan_HighlightingBuilding", "ExistingPhotographsOfBuildingAndContext", "HeritageStatement_Or_StatementOfSignificance", "StructuralSurvey_IfDemolitionProposedOnSafetyGrounds", "ConservationAreaAppraisalMap"]
+        },
+        {
+          "node_id": "1.2_ProposedDemolitionDetails",
+          "description": "Extent of Demolition (Full or Partial), Reason for Demolition, and Details of any Proposed Replacement Structure or Future Use of the Site (if known)",
+          "node_type_tag": "ProposalSummary",
+          "generic_material_considerations": ["scope_of_demolition_total_or_facade_retention", "justification_for_demolition_structural_economic_redevelopment_plan", "details_of_making_good_the_site_post_demolition", "proposals_for_replacement_building_or_landscaping_if_linked_application_or_intent"],
+          "specific_policy_focus_ids": ["LocalPlan_DemolitionPolicyInCA", "NPPF_Para200_DemolitionInCA"],
+          "thematic_policy_descriptors": ["evaluating the case for demolition against heritage protection policies", "considering the future of the site post-demolition"],
+          "key_evidence_document_types": ["DemolitionStatement_Justification", "MethodStatementForDemolition_IfComplex", "PlansForReplacementScheme_IfAvailable", "SiteRestorationPlan_IfNoImmediateReplacement"]
+        },
+        {
+          "node_id": "1.3_RelevantPlanningHistory",
+          "description": "Relevant Planning History of the Site, Including Previous Applications for Alteration, Extension, or Demolition, and any Enforcement History.",
+          "node_type_tag": "PlanningHistory",
+          "generic_material_considerations": ["previous_refusals_for_demolition_or_alteration", "extant_permissions_affecting_the_building_or_site", "history_of_neglect_or_unauthorised_works_if_relevant"],
+          "specific_policy_focus_ids": ["LocalPlan_PlanningHistoryPolicyWeight"],
+          "thematic_policy_descriptors": ["planning history context for demolition proposals in CAs", "patterns of change and protection within the CA"],
+          "key_evidence_document_types": ["PreviousDecisionNotices", "LocalAuthorityPlanningRecords_SiteHistory", "EnforcementRecords_IfApplicable"]
+        }
+      ]
+    },
+    {
+      "node_id": "2.0_ConsultationResponses",
+      "description": "Summary and Analysis of Consultation Responses",
+      "node_type_tag": "ConsultationSummaryBlock",
+      "generic_material_considerations": ["historic_england_comments_if_consulted", "local_amenity_conservation_societies_views", "parish_town_council_comments", "public_representations_objections_support"],
+      "specific_policy_focus_ids": ["LocalPlan_ConsultationHeritagePolicy", "NPPF_CommunityEngagementHistoricEnvironment"],
+      "thematic_policy_descriptors": ["consultation on demolition in conservation areas", "gathering expert and local views on heritage impact"],
+      "depends_on_nodes": ["1.0_SiteAndProposal/1.2_ProposedDemolitionDetails"],
+      "sub_sections": [
+        {"node_id": "2.1_StatutoryAndSpecialistConsultees", "description": "Feedback from Historic England (if applicable), Council's Conservation Officer, Specialist Heritage Groups.", "node_type_tag": "StatutoryConsultation", "thematic_policy_descriptors": ["expert advice on heritage significance and impact of demolition"]},
+        {"node_id": "2.2_PublicAndOtherRepresentations", "description": "Summary of Comments from Public, Local Amenity Societies, Parish/Town Council.", "node_type_tag": "PublicConsultation", "thematic_policy_descriptors": ["assessing local community concerns and perspectives on loss of building and CA character"]}
+      ]
+    },
+    {
+      "node_id": "3.0_PlanningPolicyFramework",
+      "description": "Relevant Planning Policy Framework for Demolition in a Conservation Area",
+      "node_type_tag": "PolicyFrameworkSummaryBlock",
+      "generic_material_considerations": ["planning_listed_buildings_and_conservation_areas_act_1990_section72", "nppf_chapter_16_historic_environment_paras_on_ca_demolition", "local_plan_policies_on_conservation_areas_demolition_heritage_assets", "conservation_area_appraisal_and_management_plan_guidance"],
+      "thematic_policy_descriptors": ["legal and policy framework for controlling demolition in CAs", "presumption in favour of retaining buildings that contribute to CA significance"],
+      "depends_on_nodes": [],
+      "sub_sections": [
+          {"node_id": "3.1_NationalPolicyAndLegislation", "description": "Planning (Listed Buildings and Conservation Areas) Act 1990, NPPF - Chapter 16 (Conserving and Enhancing the Historic Environment).", "node_type_tag": "NationalPolicy", "thematic_policy_descriptors": ["statutory duty regarding CAs", "NPPF policy on sustaining and enhancing heritage assets"]},
+          {"node_id": "3.2_LocalPlan", "description": "Local Plan - Key Relevant Policies for Conservation Areas, Demolition Control, Protection of Non-Designated Heritage Assets.", "node_type_tag": "LocalPolicy", "thematic_policy_descriptors": ["local plan policies for managing change in CAs and criteria for assessing demolition proposals"]},
+          {"node_id": "3.3_ConservationAreaAppraisal", "description": "Relevant Sections of the Conservation Area Appraisal and Management Plan (Character, Significance, Vulnerabilities, Guidance on Demolition).", "node_type_tag": "SupplementaryGuidance", "thematic_policy_descriptors": ["specific guidance from CA appraisal on building contributions and presumption against demolition"]}
+      ]
+    },
+    {
+      "node_id": "4.0_AssessmentOfMaterialConsiderations",
+      "description": "Officer's Assessment of Material Planning Considerations for Demolition in a Conservation Area",
+      "node_type_tag": "MaterialConsiderationsBlock_Parent",
+      "is_dynamic_parent_node": true,
+      "dynamic_node_source_fields": ["generic_material_considerations"],
+      "dynamic_node_config": {
+        "ImpactOnConservationAreaSignificance": {
+            "description_template": "Impact of Demolition on the Character, Appearance and Significance of the Conservation Area",
+            "generic_material_considerations": ["contribution_of_the_building_to_ca_significance_positive_neutral_negative_loss_assessment", "impact_of_loss_on_streetscape_townscape_views_and_ca_character", "effect_on_setting_of_listed_buildings_or_other_key_buildings_in_ca", "erosion_of_historic_fabric_or_character_of_ca", "consideration_of_article_4_directions_if_any"],
+            "specific_policy_focus_ids": ["LocalPlan_CAImpactAssessmentPolicy", "NPPF_Para200_DemolitionInCA", "ConservationAreaAppraisal_KeyCharacteristics"],
+            "thematic_policy_descriptors": ["assessing harm to CA significance from demolition", "evaluating loss of building contribution against policy tests"],
+            "key_evidence_document_types": ["HeritageStatement_ImpactAssessment", "ConservationOfficerReport", "PhotographicSurveyOfBuildingAndContext", "StreetscapeAnalysis"]
+        },
+        "JustificationForDemolition": {
+            "description_template": "Assessment of the Justification Provided for Demolition (e.g., Structural Condition, Economic Viability, Redevelopment Plans)",
+            "generic_material_considerations": ["structural_condition_evidence_independent_survey_repair_costs_vs_value", "economic_viability_of_retention_or_conversion_marketing_evidence_if_relevant", "public_benefits_of_demolition_and_redevelopment_scheme_if_proposed_weighing_against_harm", "alternative_options_to_demolition_repair_refurbishment_conversion_explored", "safety_concerns_if_building_is_dangerous_structure"],
+            "specific_policy_focus_ids": ["LocalPlan_DemolitionJustificationPolicy", "NPPF_Para201_EnablingDevelopmentOrPublicBenefitTest", "HistoricEnglandGuidance_DemolitionInCA"],
+            "thematic_policy_descriptors": ["scrutinizing arguments for demolition", "assessing whether harm is outweighed by public benefits or lack of viable alternatives"],
+            "key_evidence_document_types": ["StructuralEngineersReport", "ViabilityAppraisal_IfEconomicCaseMade", "RedevelopmentProposalsAndBenefitsStatement", "MarketingEvidence_IfNotViableToRetain", "DangerousStructureNotice_IfApplicable"]
+        },
+        "ProposedReplacementOrSiteTreatment": {
+            "description_template": "Consideration of any Proposed Replacement Building/Scheme or Future Treatment of the Site Post-Demolition",
+            "generic_material_considerations": ["quality_of_design_of_replacement_scheme_and_its_impact_on_ca_if_detailed_proposals_submitted", "appropriateness_of_proposed_future_use_for_the_site_within_ca_context", "impact_of_vacant_site_or_interim_landscaping_on_ca_character_if_no_immediate_replacement", "conditions_to_ensure_satisfactory_site_clearance_and_making_good_or_approved_redevelopment_contract"],
+            "specific_policy_focus_ids": ["LocalPlan_ReplacementBuildingPolicyInCA", "NPPF_Para202_ReplacementBuildingsInCA"],
+            "thematic_policy_descriptors": ["evaluating the merits of any replacement scheme in mitigating harm from demolition", "ensuring the site does not detract from CA if left vacant"],
+            "key_evidence_document_types": ["ArchitecturalPlansOfReplacementScheme", "DesignAndAccessStatement_ForReplacement", "LandscapingPlanForVacantSite", "ContractForRedevelopment_IfRequiredByPolicy"]
+        }
+      },
+      "thematic_policy_descriptors": ["material considerations for demolition in a conservation area", "balancing heritage protection with other factors like structural safety or redevelopment benefits"],
+      "depends_on_nodes": ["1.0_SiteAndProposal/1.2_ProposedDemolitionDetails", "2.0_ConsultationResponses", "3.0_PlanningPolicyFramework"]
+    },
+    {
+      "node_id": "5.0_OtherRelevantMatters",
+      "description": "Other Relevant Matters (e.g., Conditions, Informatives, Potential for S106 if linked to redevelopment)",
+      "node_type_tag": "OtherConsiderationsBlock",
+      "generic_material_considerations":["planning_conditions_timing_of_demolition_site_restoration_archaeological_recording_replacement_scheme_implementation", "informatives_for_applicant_bat_surveys_party_wall_act", "s106_obligations_if_demolition_is_part_of_larger_redevelopment_with_public_benefits_or_mitigation"],
+      "thematic_policy_descriptors": ["use of conditions to control demolition and site restoration", "archaeological implications of demolition"],
+      "depends_on_nodes": ["4.0_AssessmentOfMaterialConsiderations"]
+    },
+    {
+      "node_id": "6.0_PlanningBalanceAndConclusion",
+      "description": "Overall Planning Balance and Officer's Conclusion on Demolition in Conservation Area",
+      "node_type_tag": "PlanningBalanceAndConclusionBlock",
+      "generic_material_considerations":["planning_balance_demolition_in_ca_weighing_harm_against_justification", "overall_acceptability_of_demolition_in_heritage_context"],
+      "specific_policy_focus_ids": ["NPPF_PresumptionAgainstDemolitionOfContributoryBuildings", "LocalPlan_DecisionMakingHeritagePolicy"],
+      "thematic_policy_descriptors": ["weighing harm to conservation area against justification for demolition", "application of heritage policies in decision making"],
+      "depends_on_nodes": ["4.0_AssessmentOfMaterialConsiderations", "5.0_OtherRelevantMatters"]
+    },
+    {
+      "node_id": "7.0_Recommendation",
+      "description": "Officer's Recommendation (Consent or Refusal for Demolition)",
+      "node_type_tag": "FinalRecommendationBlock",
+      "thematic_policy_descriptors": ["formulating recommendation for demolition consent in a CA", "justification based on heritage impact assessment and policy compliance"],
+      "depends_on_nodes": ["6.0_PlanningBalanceAndConclusion"]
+    }
+  ]
+}

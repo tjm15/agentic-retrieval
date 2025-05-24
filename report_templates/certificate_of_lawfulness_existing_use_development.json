@@ -1,0 +1,103 @@
+{
+  "report_type_id": "CertificateOfLawfulnessExistingUseDevelopment",
+  "report_id_prefix": "CLEUD",
+  "description": "Default Report for Certificate of Lawfulness for Existing Use or Development (CLEUD)",
+  "sections": [
+    {
+      "node_id": "1.0_ApplicationAndSubjectMatter",
+      "description": "Application Details, Subject of the Claim, and Site Description",
+      "node_type_tag": "IntroductionBlock",
+      "generic_material_considerations": ["applicant_claim_details", "description_of_existing_use_or_development_claimed_to_be_lawful", "site_location_and_boundaries_of_claim"],
+      "specific_policy_focus_ids": ["TownAndCountryPlanningAct1990_Section191", "TownAndCountryPlanningGeneralPermittedDevelopmentOrder_IfRelevant"],
+      "thematic_policy_descriptors": ["understanding the nature of the lawfulness claim", "legislative basis for CLEUDs"],
+      "depends_on_nodes": [],
+      "sub_sections": [
+        {
+          "node_id": "1.1_SiteDescriptionAndClaimDetails",
+          "description": "Description of the Site and Precise Nature of the Use/Development Claimed as Lawful",
+          "node_type_tag": "SiteDescription",
+          "generic_material_considerations": ["site_characteristics", "precise_extent_of_land_or_buildings_subject_to_claim", "detailed_description_of_the_use_operations_or_building_works"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["defining the scope of the CLEUD application", "clarifying the matter for determination"],
+          "key_evidence_document_types": ["ApplicationForm_CLEUD", "SiteLocationPlan_HighlightingClaimArea", "DetailedDescriptionOfUseOrDevelopment", "StatutoryDeclaration_Applicant"]
+        },
+        {
+          "node_id": "1.2_ApplicantsCaseAndEvidenceSubmitted",
+          "description": "Summary of Applicant's Justification for Lawfulness and Key Evidence Provided",
+          "node_type_tag": "ApplicantSubmissionSummary",
+          "generic_material_considerations": ["applicant_stated_grounds_for_lawfulness_e_g_time_immunity_permitted_development", "summary_of_evidence_provided_by_applicant_e_g_statutory_declarations_invoices_photos_utility_bills"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["understanding the basis of the applicant's claim", "initial review of submitted evidence"],
+          "key_evidence_document_types": ["ApplicantStatutoryDeclaration", "WitnessStatutoryDeclarations", "DatedPhotographs", "InvoicesReceiptsForWorksOrUse", "UtilityBills", "TenancyAgreementsAffidavits"]
+        },
+        {
+          "node_id": "1.3_RelevantPlanningHistory",
+          "description": "Relevant Planning History of the Site (Permissions, Refusals, Enforcement)",
+          "node_type_tag": "PlanningHistory",
+          "generic_material_considerations": ["previous_planning_permissions_or_refusals_for_the_use_development", "any_enforcement_history_notices_served_appeals", "previous_cleud_clopud_applications"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["contextual planning history relevant to the lawfulness claim"],
+          "key_evidence_document_types": ["PreviousDecisionNotices", "EnforcementNoticesAndAppeals", "HistoricalPlanningRecords"]
+        }
+      ]
+    },
+    {
+      "node_id": "2.0_ConsultationAndRepresentations",
+      "description": "Summary of Any Consultation Responses or Representations (Note: Limited scope for CLEUDs)",
+      "node_type_tag": "ConsultationSummaryBlock",
+      "generic_material_considerations": ["any_factual_information_provided_by_third_parties_relevant_to_evidence_base"],
+      "specific_policy_focus_ids": [],
+      "thematic_policy_descriptors": ["gathering factual evidence; planning merits are not relevant"],
+      "depends_on_nodes": ["1.0_ApplicationAndSubjectMatter"],
+      "sub_sections": [
+        {"node_id": "2.1_ThirdPartyRepresentations", "description": "Summary of Factual Information from Third Parties (if any)", "node_type_tag": "PublicConsultation", "thematic_policy_descriptors": ["assessing factual accuracy of claims based on any third party evidence"]}
+      ]
+    },
+    {
+      "node_id": "3.0_LegalAndPolicyFramework",
+      "description": "Relevant Legal Framework for Determining Lawfulness",
+      "node_type_tag": "PolicyFrameworkSummaryBlock", 
+      "generic_material_considerations": ["town_and_country_planning_act_1990_section_191_and_171b_time_limits", "relevant_case_law_on_lawfulness_evidence_burden_of_proof", "permitted_development_rights_if_claimed_under_gpdo"],
+      "thematic_policy_descriptors": ["legal tests for establishing lawfulness", "burden of proof and evidential requirements"],
+      "depends_on_nodes": [],
+      "sub_sections": [
+          {"node_id": "3.1_PrimaryLegislation", "description": "Town and Country Planning Act 1990 - Sections 191, 171B", "node_type_tag": "NationalLegislation", "thematic_policy_descriptors": ["statutory basis for CLEUDs and time limits for enforcement action"]},
+          {"node_id": "3.2_PermittedDevelopmentRights", "description": "Town and Country Planning (General Permitted Development) (England) Order 2015 (as amended) - If applicable", "node_type_tag": "NationalRegulation", "thematic_policy_descriptors": ["assessment against permitted development criteria if claimed"]},
+          {"node_id": "3.3_RelevantCaseLaw", "description": "Key Case Law Precedents on Burden of Proof, Quality of Evidence, Abandonment, etc.", "node_type_tag": "CaseLawReference", "thematic_policy_descriptors": ["judicial interpretation of lawfulness principles"]}
+      ]
+    },
+    {
+      "node_id": "4.0_AssessmentOfEvidenceAndLawfulness",
+      "description": "Officer's Assessment of the Evidence Against Legal Requirements for Lawfulness",
+      "node_type_tag": "MaterialConsiderationsBlock_Parent",
+      "is_dynamic_parent_node": false,
+      "generic_material_considerations": [
+        "sufficiency_and_quality_of_applicant_evidence_on_the_balance_of_probability",
+        "continuity_of_use_for_the_relevant_statutory_period_4_years_for_operational_development_or_change_to_single_dwelling_10_years_for_other_changes_of_use_or_breach_of_condition",
+        "whether_the_use_development_was_contrary_to_planning_control_at_the_time_it_commenced_or_was_carried_out",
+        "any_evidence_of_abandonment_concealment_or_deception",
+        "compliance_with_permitted_development_criteria_if_claimed"
+      ],
+      "specific_policy_focus_ids": ["PlanningPracticeGuidance_LawfulDevelopmentCertificates"],
+      "thematic_policy_descriptors": ["evaluating evidence against the balance of probabilities test", "application of statutory time limits and legal principles"],
+      "key_evidence_document_types": ["AllEvidenceSubmittedByApplicant", "Council'sOwnRecords_AerialPhotos_CouncilTax_ElectoralRoll", "SiteVisitNotes_OfficerObservation"],
+      "depends_on_nodes": ["1.0_ApplicationAndSubjectMatter", "2.0_ConsultationAndRepresentations", "3.0_LegalAndPolicyFramework"]
+    },
+    {
+      "node_id": "5.0_ConclusionOnLawfulness",
+      "description": "Officer's Conclusion on Whether the Claimed Use/Development is Lawful",
+      "node_type_tag": "PlanningBalanceAndConclusionBlock", 
+      "generic_material_considerations":["summary_of_findings_on_evidence", "whether_burden_of_proof_has_been_met_by_applicant", "clear_statement_on_lawfulness_or_not"],
+      "specific_policy_focus_ids": [],
+      "thematic_policy_descriptors": ["concluding whether the evidence demonstrates lawfulness on the balance of probabilities"],
+      "depends_on_nodes": ["4.0_AssessmentOfEvidenceAndLawfulness"]
+    },
+    {
+      "node_id": "6.0_Recommendation",
+      "description": "Officer's Recommendation (Grant or Refuse Certificate)",
+      "node_type_tag": "FinalRecommendationBlock",
+      "thematic_policy_descriptors": ["formulating recommendation for CLEUD application based solely on evidence and law"],
+      "depends_on_nodes": ["5.0_ConclusionOnLawfulness"]
+    }
+  ]
+}

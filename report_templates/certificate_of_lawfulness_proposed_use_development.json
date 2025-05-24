@@ -1,0 +1,91 @@
+{
+  "report_type_id": "CertificateOfLawfulnessProposedUseDevelopment",
+  "report_id_prefix": "CLP",
+  "description": "Default Report for Certificate of Lawfulness for Proposed Use or Development (CLP / CLOPUD)",
+  "sections": [
+    {
+      "node_id": "1.0_ApplicationAndProposal",
+      "description": "Application Details, Proposed Use/Development, and Site Description",
+      "node_type_tag": "IntroductionBlock",
+      "generic_material_considerations": ["applicant_proposal_details", "description_of_proposed_use_or_development_for_which_lawfulness_is_sought", "site_location_and_boundaries"],
+      "specific_policy_focus_ids": ["TownAndCountryPlanningAct1990_Section192", "TownAndCountryPlanningGeneralPermittedDevelopmentOrder_IfRelevant"],
+      "thematic_policy_descriptors": ["understanding the nature of the proposed use/development", "legislative basis for CLPs"],
+      "depends_on_nodes": [],
+      "sub_sections": [
+        {
+          "node_id": "1.1_SiteDescriptionAndProposalDetails",
+          "description": "Description of the Site and Precise Nature of the Proposed Use/Development",
+          "node_type_tag": "SiteDescription",
+          "generic_material_considerations": ["site_characteristics_and_constraints", "precise_details_of_proposed_works_or_use_dimensions_materials_operation", "any_existing_buildings_or_uses_on_site_relevant_to_proposal"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["defining the scope of the CLP application", "clarifying the proposal for determination"],
+          "key_evidence_document_types": ["ApplicationForm_CLP", "SiteLocationPlan", "ProposedDrawingsAndPlans_Detailed", "SupportingStatement_ExplainingBasisForLawfulness"]
+        },
+        {
+          "node_id": "1.2_ApplicantsCaseAndJustification",
+          "description": "Summary of Applicant's Justification for Why the Proposal Would Be Lawful",
+          "node_type_tag": "ApplicantSubmissionSummary",
+          "generic_material_considerations": ["applicant_stated_grounds_for_lawfulness_e_g_permitted_development_no_development_involved_existing_use_rights_allow_it", "reference_to_specific_gpdo_parts_classes_conditions_limitations"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["understanding the basis of the applicant's claim for proposed lawfulness"],
+          "key_evidence_document_types": ["ApplicantSupportingStatement", "LegalOpinion_IfProvided", "RelevantPlansMarkedUpAgainstGPDO"]
+        },
+        {
+          "node_id": "1.3_RelevantPlanningHistory",
+          "description": "Relevant Planning History of the Site (Permissions, Conditions, Enforcement, Previous LDCs)",
+          "node_type_tag": "PlanningHistory",
+          "generic_material_considerations": ["previous_planning_permissions_and_conditions_that_may_restrict_permitted_development_rights", "any_enforcement_history_or_article_4_directions_affecting_the_site", "previous_cleud_clopud_applications_on_site"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["contextual planning history relevant to assessing permitted development rights or existing lawful uses"],
+          "key_evidence_document_types": ["PreviousDecisionNotices", "CopiesOfRelevantConditions", "Article4DirectionMapsAndSchedules"]
+        }
+      ]
+    },
+    {
+      "node_id": "2.0_LegalAndPolicyFramework",
+      "description": "Relevant Legal Framework for Determining Proposed Lawfulness",
+      "node_type_tag": "PolicyFrameworkSummaryBlock",
+      "generic_material_considerations": ["town_and_country_planning_act_1990_section_192", "town_and_country_planning_general_permitted_development_order_relevant_parts_classes_conditions_exclusions", "interpretation_of_development_definition_in_section_55_of_tcpa1990", "relevant_case_law_on_interpretation_of_gpdo_and_material_changes_of_use"],
+      "thematic_policy_descriptors": ["legal tests for establishing proposed lawfulness", "interpretation of permitted development rights and what constitutes development"],
+      "depends_on_nodes": [],
+      "sub_sections": [
+          {"node_id": "2.1_PrimaryLegislation", "description": "Town and Country Planning Act 1990 - Sections 192, 55", "node_type_tag": "NationalLegislation", "thematic_policy_descriptors": ["statutory basis for CLPs", "definition of development"]},
+          {"node_id": "2.2_PermittedDevelopmentRights", "description": "Town and Country Planning (General Permitted Development) (England) Order 2015 (as amended) - Detailed Assessment of Relevant Parts/Classes", "node_type_tag": "NationalRegulation", "thematic_policy_descriptors": ["assessment against specific permitted development criteria, conditions, and limitations"]},
+          {"node_id": "2.3_RelevantCaseLaw", "description": "Key Case Law Precedents on Interpretation of GPDO, Materiality of Change, Ancillary Uses etc.", "node_type_tag": "CaseLawReference", "thematic_policy_descriptors": ["judicial interpretation of relevant planning law"]}
+      ]
+    },
+    {
+      "node_id": "3.0_AssessmentOfProposedLawfulness",
+      "description": "Officer's Assessment of the Proposal Against Legal and Policy Requirements",
+      "node_type_tag": "MaterialConsiderationsBlock_Parent", 
+      "is_dynamic_parent_node": false,
+      "generic_material_considerations": [
+        "whether_the_proposal_constitutes_development_requiring_planning_permission_section_55_test",
+        "if_development_whether_it_falls_within_the_scope_of_any_class_of_permitted_development_in_the_gpdo",
+        "compliance_with_all_relevant_conditions_limitations_and_exclusions_of_the_applicable_gpdo_class",
+        "whether_permitted_development_rights_have_been_removed_or_restricted_e_g_by_condition_article_4_direction",
+        "whether_the_proposal_would_breach_any_existing_planning_condition_or_limitation_on_a_previous_permission"
+      ],
+      "specific_policy_focus_ids": ["PlanningPracticeGuidance_LawfulDevelopmentCertificates", "PlanningPracticeGuidance_PermittedDevelopmentRights"],
+      "thematic_policy_descriptors": ["evaluating the proposal against statutory definitions and permitted development criteria", "application of legal principles to the specific facts of the proposal"],
+      "key_evidence_document_types": ["ProposedPlansAndElevations", "SupportingStatementFromApplicant", "CouncilPlanningHistoryRecords", "GPDOTextAndRelevantSchedules", "Article4DirectionDocumentation_IfApplicable"],
+      "depends_on_nodes": ["1.0_ApplicationAndProposal", "2.0_LegalAndPolicyFramework"]
+    },
+    {
+      "node_id": "4.0_ConclusionOnProposedLawfulness",
+      "description": "Officer's Conclusion on Whether the Proposed Use/Development Would Be Lawful",
+      "node_type_tag": "PlanningBalanceAndConclusionBlock", 
+      "generic_material_considerations":["summary_of_findings_against_legal_tests", "clear_statement_on_whether_proposal_would_be_lawful_if_implemented_as_described"],
+      "specific_policy_focus_ids": [],
+      "thematic_policy_descriptors": ["concluding whether the proposal meets the requirements for a CLP"],
+      "depends_on_nodes": ["3.0_AssessmentOfProposedLawfulness"]
+    },
+    {
+      "node_id": "5.0_Recommendation",
+      "description": "Officer's Recommendation (Grant or Refuse Certificate)",
+      "node_type_tag": "FinalRecommendationBlock",
+      "thematic_policy_descriptors": ["formulating recommendation for CLP application based solely on law and submitted proposal details"],
+      "depends_on_nodes": ["4.0_ConclusionOnProposedLawfulness"]
+    }
+  ]
+}

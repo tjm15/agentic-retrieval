@@ -1,0 +1,74 @@
+{
+  "report_type_id": "PriorApprovalLargerHomeExtension",
+  "report_id_prefix": "PALHE",
+  "description": "Default Report for Prior Approval for a Larger Home Extension",
+  "sections": [
+    {
+      "node_id": "1.0_SiteAndProposal",
+      "description": "Site Details, Proposed Extension, and Notification Process",
+      "node_type_tag": "IntroductionBlock",
+      "generic_material_considerations": ["site_location_dwelling_type", "proposed_extension_dimensions_location", "notification_process_details"],
+      "specific_policy_focus_ids": ["TownAndCountryPlanningGeneralPermittedDevelopmentOrder_Schedule2Part1ClassA"],
+      "thematic_policy_descriptors": ["understanding context for prior approval for larger home extension", "permitted development rights for larger home extensions"],
+      "depends_on_nodes": [],
+      "sub_sections": [
+        {
+          "node_id": "1.1_SiteAndDwellinghouseDescription",
+          "description": "Location and Type of Dwellinghouse, Curtilage Details",
+          "node_type_tag": "SiteDescription",
+          "generic_material_considerations": ["property_address_type_detached_semi_terraced", "description_of_existing_dwelling_and_its_curtilage", "any_site_constraints_article_2_3_land_conservation_area_etc"],
+          "specific_policy_focus_ids": ["GPDO_Schedule2_Part1_ClassA_ScopeAndLimitations"],
+          "thematic_policy_descriptors": ["confirming eligibility of the dwellinghouse for Class A rights", "identifying relevant site constraints under GPDO"],
+          "key_evidence_document_types": ["ApplicationForm_PriorApprovalLHE", "SiteLocationPlan", "Existing ElevationsAndFloorPlans", "PhotographsOfExistingDwellingAndRearElevation"]
+        },
+        {
+          "node_id": "1.2_ProposedLargerHomeExtension",
+          "description": "Details of the Proposed Single-Storey Rear Extension (Dimensions, Materials)",
+          "node_type_tag": "ProposalSummary",
+          "generic_material_considerations": ["extension_depth_beyond_original_rear_wall", "extension_height_eaves_and_ridge", "materials_to_match_existing_dwelling", "distance_to_boundaries"],
+          "specific_policy_focus_ids": ["GPDO_Schedule2_Part1_ClassA_Conditions_A1_A2_A3_A4"],
+          "thematic_policy_descriptors": ["assessing compliance with dimensional and other limitations of Class A for larger extensions"],
+          "key_evidence_document_types": ["ProposedElevationsAndFloorPlans_DetailedDimensions", "BlockPlan_ShowingExtensionRelativeToBoundariesAndOriginalDwelling"]
+        },
+        {
+          "node_id": "1.3_NotificationAndConsultationProcess",
+          "description": "Summary of Neighbour Notification and Any Objections Received",
+          "node_type_tag": "ConsultationSummaryBlock",
+          "generic_material_considerations": ["list_of_adjoining_premises_notified", "summary_of_objections_received_from_adjoining_neighbours", "deadline_for_objections_and_decision"],
+          "specific_policy_focus_ids": ["GPDO_Schedule2_Part1_ClassA_Condition_A4_PriorApprovalProcess"],
+          "thematic_policy_descriptors": ["reviewing results of the statutory neighbour consultation process"],
+          "key_evidence_document_types": ["CopiesOfNeighbourNotificationLetters", "CopiesOfAnyObjectionsReceived", "OfficerNotesOfSiteNotice_IfNotApplicable"]
+        }
+      ]
+    },
+    {
+      "node_id": "2.0_AssessmentAgainstGPDORequirements",
+      "description": "Assessment of Compliance with GPDO Schedule 2, Part 1, Class A",
+      "node_type_tag": "PolicyFrameworkSummaryBlock",
+      "generic_material_considerations": ["compliance_with_all_conditions_and_limitations_of_class_a", "whether_prior_approval_is_required_based_on_objections_received"],
+      "specific_policy_focus_ids": ["GPDO_Schedule2_Part1_ClassA_Conditions_A1_to_A4", "PlanningPracticeGuidance_PermittedDevelopmentRights_LargerHomeExtensions"],
+      "thematic_policy_descriptors": ["detailed check against all relevant GPDO criteria for larger home extensions"],
+      "depends_on_nodes": ["1.0_SiteAndProposal"],
+      "sub_sections": [
+        {"node_id": "2.1_ComplianceWithClassA_Limitations", "description": "Verification of Dimensions, Siting, Materials etc. against GPDO Class A limits (A.1)", "node_type_tag": "ComplianceCheck", "thematic_policy_descriptors": ["checking conformity with maximum depth, height, materials, and other general Class A rules"]},
+        {"node_id": "2.2_ConsiderationOfNeighbourObjections", "description": "Assessment of the Impact on the Amenity of Adjoining Premises (if objections received)", "node_type_tag": "ImpactAssessment", "thematic_policy_descriptors": ["evaluating the impact on amenity of adjoining premises, specifically relating to objections raised (the sole consideration for prior approval here)"]}
+      ]
+    },
+    {
+      "node_id": "3.0_ConclusionOnPriorApproval",
+      "description": "Officer's Conclusion on Whether Prior Approval is Required and Should Be Granted/Refused",
+      "node_type_tag": "PlanningBalanceAndConclusionBlock",
+      "generic_material_considerations":["summary_of_impact_on_adjoining_amenity_if_objections_received", "whether_proposal_meets_all_other_gpdo_class_a_requirements", "overall_determination_on_prior_approval"],
+      "specific_policy_focus_ids": ["GPDO_Schedule2_Part1_ClassA_Condition_A4g_h_i"],
+      "thematic_policy_descriptors": ["determining if prior approval is required and, if so, whether the impact on amenity of adjoining premises is acceptable"],
+      "depends_on_nodes": ["1.0_SiteAndProposal", "2.0_AssessmentAgainstGPDORequirements"]
+    },
+    {
+      "node_id": "4.0_Recommendation",
+      "description": "Officer's Recommendation (Prior Approval Granted / Prior Approval Refused / PD Not Applicable)",
+      "node_type_tag": "FinalRecommendationBlock",
+      "thematic_policy_descriptors": ["formulating recommendation based on GPDO requirements and neighbour consultation outcome"],
+      "depends_on_nodes": ["3.0_ConclusionOnPriorApproval"]
+    }
+  ]
+}

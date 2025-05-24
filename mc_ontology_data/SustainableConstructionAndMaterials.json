@@ -1,0 +1,47 @@
+{
+  "id": "SustainableConstructionAndMaterials",
+  "display_name_template": "Sustainable Construction and Materials for {app_name}",
+  "description_long": "Assessment of the sustainability of construction processes and materials used, including responsible sourcing, waste minimization during construction, use of recycled/reused materials, and application of circular economy principles.",
+  "primary_tags": ["sustainable_materials", "construction_waste", "circular_economy", "responsible_sourcing", "NPPF_Ch14", "NPPF_Ch15"],
+  "relevant_policy_themes": ["LocalPlan_SustainableConstruction", "LocalPlan_WasteManagement", "BRE_EnvironmentalAssessmentMethods"],
+  "key_evidence_docs": ["SustainabilityStatement_MaterialsChapter", "SiteWasteManagementPlan_SWMP", "MaterialsManagementPlan", "BREEAM_MatAssessment_IfApplicable"],
+  "trigger_keywords_for_llm_scan": ["sustainable materials", "responsible sourcing", "recycled content", "construction waste", "circular economy", "timber", "concrete", "steel", "SWMP", "BREEAM Mat"],
+  "sub_questions": [
+    "What measures are proposed to minimize waste during the construction process (e.g., off-site manufacturing, material optimization)?",
+    "What targets are set for the diversion of construction waste from landfill (e.g., percentage recycled/reused)?",
+    "Are sustainably or responsibly sourced materials being specified (e.g., FSC/PEFC timber, BES 6001 certified products)?",
+    "Is there a commitment to using materials with high recycled content or reused materials?",
+    "How are circular economy principles being applied to material selection and end-of-life considerations?",
+    "What is the environmental impact of the primary construction materials chosen (e.g., embodied carbon, resource depletion)?",
+    "Are there any specific commitments regarding local sourcing of materials?"
+  ],
+  "data_schema_hint": {
+    "construction_waste_diversion_from_landfill_target_percentage": "float",
+    "use_of_responsibly_sourced_materials_commitment": "text_block_e.g._FSC_timber_BES_6001_for_X_percent_of_materials_by_value",
+    "recycled_or_reused_content_target_percentage_by_value_or_weight": "float",
+    "circular_economy_statement_summary": "text_block",
+    "site_waste_management_plan_swmp_key_actions": "list_of_strings"
+  },
+  "typical_positive_impacts": [
+    "High levels of construction waste diverted from landfill.",
+    "Significant use of responsibly sourced, recycled, or reused materials.",
+    "Demonstrable application of circular economy principles.",
+    "Reduced environmental impact from material choices.",
+    "Achieves high ratings in material sections of environmental assessments (e.g., BREEAM)."
+  ],
+  "typical_negative_impacts": [
+    "Low rates of construction waste recycling.",
+    "Heavy reliance on virgin materials with high environmental impact.",
+    "Little or no consideration of responsible sourcing or circular economy.",
+    "Failure to implement an effective Site Waste Management Plan."
+  ],
+  "common_mitigation_measures": [
+    "Development and implementation of a robust Site Waste Management Plan (SWMP).",
+    "Setting targets for waste reduction and recycling.",
+    "Specification of materials with recognized responsible sourcing certifications.",
+    "Designing for deconstruction and material reuse at end-of-life.",
+    "Use of off-site construction methods to reduce waste and improve quality.",
+    "Supplier engagement to encourage sustainable material options and take-back schemes."
+  ],
+  "potential_agent_hint": "ClimateActionAgent"
+}

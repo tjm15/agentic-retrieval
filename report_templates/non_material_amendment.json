@@ -1,0 +1,149 @@
+{
+  "report_type_id": "NonMaterialAmendment",
+  "report_id_prefix": "NMA",
+  "description": "Default Report for Application for a Non-Material Amendment (Section 96A)",
+  "sections": [
+    {
+      "node_id": "1.0_ApplicationAndProposal",
+      "description": "Application Details, Proposed Amendment, and Site Context",
+      "node_type_tag": "IntroductionBlock",
+      "generic_material_considerations": ["applicant_details", "description_of_the_original_planning_permission", "details_of_the_proposed_non_material_amendment", "site_location_and_current_state"],
+      "specific_policy_focus_ids": ["TownAndCountryPlanningAct1990_Section96A"],
+      "thematic_policy_descriptors": ["understanding the scope of the NMA application", "identifying the parent permission"],
+      "depends_on_nodes": [],
+      "sub_sections": [
+        {
+          "node_id": "1.1_SiteDescriptionAndContext",
+          "description": "Brief Description of the Site and its Surroundings",
+          "node_type_tag": "SiteDescription",
+          "generic_material_considerations": ["site_characteristics", "relationship_to_surrounding_area"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["contextual understanding"],
+          "key_evidence_document_types": ["SiteLocationPlan", "OriginalPlanningPermissionDecisionNotice"]
+        },
+        {
+          "node_id": "1.2_DetailsOfTheOriginalPermission",
+          "description": "Identification of the Parent Planning Permission",
+          "node_type_tag": "LegalContext",
+          "generic_material_considerations": ["original_planning_permission_reference_number_and_date_of_grant", "brief_description_of_the_approved_development"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["establishing the baseline for assessment"],
+          "key_evidence_document_types": ["OriginalPlanningPermissionDecisionNotice", "ApprovedPlansFromOriginalPermission"]
+        },
+        {
+          "node_id": "1.3_ProposedNonMaterialAmendment",
+          "description": "Detailed Explanation of the Proposed Change(s)",
+          "node_type_tag": "ProposalDescription",
+          "generic_material_considerations": ["clear_description_of_each_proposed_amendment", "comparison_with_the_originally_approved_plans_or_details", "any_revised_plans_or_documents_showing_the_amendment"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["clarity of the proposed minor amendment"],
+          "key_evidence_document_types": ["CoveringLetterOrStatementExplainingTheAmendment", "RevisedPlansClearlyHighlightingChanges"]
+        },
+        {
+          "node_id": "1.4_RelevantPlanningHistory",
+          "description": "Summary of Relevant Planning History, Including the Original Permission",
+          "node_type_tag": "PlanningHistory",
+          "generic_material_considerations": ["details_of_the_parent_permission", "any_previous_NMA_or_S73_applications"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["understanding the history of amendments"],
+          "key_evidence_document_types": ["PlanningHistorySearchRecords"]
+        }
+      ]
+    },
+    {
+      "node_id": "2.0_AssessmentOfNonMateriality",
+      "description": "Officer's Assessment of Whether the Proposed Amendment is Non-Material",
+      "node_type_tag": "MaterialConsiderationsBlock_Parent",
+      "depends_on_nodes": ["1.0_ApplicationAndProposal"],
+      "sub_sections": [
+        {
+          "node_id": "2.1_ScaleAndNatureOfTheAmendment",
+          "description": "Consideration of the Scale and Nature of the Proposed Change(s)",
+          "node_type_tag": "ImpactAssessment",
+          "generic_material_considerations": ["is_the_amendment_minor_in_scale_and_degree", "does_it_alter_the_fundamental_nature_or_scope_of_the_approved_development", "does_it_introduce_new_elements_not_originally_considered"],
+          "specific_policy_focus_ids": ["PlanningPracticeGuidance_FlexibleOptionsForPlanningPermissions_NonMaterialAmendments"],
+          "thematic_policy_descriptors": ["evaluating the magnitude of the change"],
+          "key_evidence_document_types": ["ComparisonOfApprovedAndProposedPlans"]
+        },
+        {
+          "node_id": "2.2_ImpactOnExternalAppearanceAndAmenity",
+          "description": "Assessment of Any Impact on External Appearance or Neighbouring Amenity",
+          "node_type_tag": "ImpactAssessment",
+          "generic_material_considerations": ["would_the_amendment_result_in_any_perceptible_change_to_the_external_appearance_of_the_development", "would_the_amendment_have_any_adverse_impact_on_neighbouring_properties_e_g_loss_of_light_privacy_increased_overlooking_noise", "are_the_impacts_so_minor_as_to_be_considered_non_material"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["assessing external and neighbour impacts"],
+          "key_evidence_document_types": ["SiteVisitObservations_IfNecessary", "ProposedPlansAndElevations"]
+        },
+        {
+          "node_id": "2.3_ConsistencyWithOriginalPermissionAndConditions",
+          "description": "Whether the Amendment is Consistent with the Terms of the Original Permission and its Conditions",
+          "node_type_tag": "ComplianceAssessment",
+          "generic_material_considerations": ["does_the_amendment_conflict_with_any_conditions_attached_to_the_original_permission", "does_the_amendment_undermine_the_reasons_for_granting_the_original_permission", "would_the_amendment_require_reconsideration_of_any_aspect_of_the_original_assessment_e_g_highways_ecology_if_the_change_affects_these"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["ensuring the amendment does not contradict the parent permission"],
+          "key_evidence_document_types": ["OriginalPlanningPermissionDecisionNoticeAndConditions"]
+        },
+        {
+          "node_id": "2.4_NoConflictWithPolicy",
+          "description": "Whether the Amendment Would Cause the Development to Conflict with Planning Policy",
+          "node_type_tag": "PolicyComplianceAssessment",
+          "generic_material_considerations": ["would_the_amendment_if_approved_make_the_development_contrary_to_relevant_national_or_local_planning_policies_that_it_previously_complied_with"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["checking for new policy conflicts"],
+          "key_evidence_document_types": []
+        },
+        {
+          "node_id": "2.5_NoImpactOnStatutoryConsulteeRequirements",
+          "description": "Whether the Amendment Would Impact Matters of Interest to Statutory Consultees",
+          "node_type_tag": "ConsultationConsideration",
+          "generic_material_considerations": ["would_the_amendment_affect_matters_that_would_typically_require_re_consultation_with_statutory_bodies_e_g_highways_environment_agency_historic_england", "if_so_the_amendment_is_likely_material"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["considering if re-consultation would be needed for a new application"],
+          "key_evidence_document_types": []
+        }
+      ]
+    },
+    {
+      "node_id": "3.0_ConsultationAndNotification",
+      "description": "Consideration of Any Consultation or Notification Undertaken or Required",
+      "node_type_tag": "ConsultationSummaryBlock",
+      "generic_material_considerations": ["while_formal_consultation_is_not_required_for_nmas_lpas_may_choose_to_notify_interested_parties_or_consultees_if_they_consider_it_appropriate", "summary_of_any_responses_received_if_notification_was_undertaken"],
+      "specific_policy_focus_ids": [],
+      "thematic_policy_descriptors": ["process of notification, if any"],
+      "depends_on_nodes": [],
+      "sub_sections": [
+        {"node_id": "3.1_NotificationProcess", "description": "Details of Any Notification Undertaken", "node_type_tag": "ProcessReview", "thematic_policy_descriptors": ["transparency of process"]},
+        {"node_id": "3.2_SummaryOfResponses", "description": "Summary of Any Comments Received", "node_type_tag": "ConsulteeResponse", "thematic_policy_descriptors": ["feedback if sought"]}
+      ]
+    },
+    {
+      "node_id": "4.0_ConclusionAndDecision",
+      "description": "Officer's Overall Conclusion and Decision on the NMA Application",
+      "node_type_tag": "PlanningBalanceAndConclusionBlock",
+      "generic_material_considerations": ["summary_of_assessment_against_non_materiality_criteria", "overall_judgement_on_whether_the_amendment_is_genuinely_non_material"],
+      "specific_policy_focus_ids": [],
+      "thematic_policy_descriptors": ["final determination of non-materiality"],
+      "depends_on_nodes": ["2.0_AssessmentOfNonMateriality"],
+      "sub_sections": [
+        {
+          "node_id": "4.1_DeterminationOfMateriality",
+          "description": "Final Judgement on Whether the Amendment is Non-Material",
+          "node_type_tag": "PlanningBalance",
+          "generic_material_considerations": ["based_on_the_assessment_is_the_amendment_non_material_in_the_context_of_the_original_permission_and_its_likely_impacts", "if_material_the_application_should_be_refused_and_applicant_advised_to_submit_a_s73_application_or_new_full_application"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["critical decision point"],
+          "key_evidence_document_types": []
+        },
+        {
+          "node_id": "4.2_Decision",
+          "description": "Officer's Decision (Approve or Refuse NMA)",
+          "node_type_tag": "FinalRecommendationBlock",
+          "generic_material_considerations": ["clear_decision_to_approve_or_refuse_the_nma", "if_approved_the_original_planning_permission_is_amended_accordingly_no_new_permission_is_issued", "if_refused_clear_reasons_why_the_amendment_is_considered_material"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["issuing the NMA decision"],
+          "key_evidence_document_types": []
+        }
+      ]
+    }
+  ]
+}

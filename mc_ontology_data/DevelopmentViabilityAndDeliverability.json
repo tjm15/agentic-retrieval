@@ -1,0 +1,47 @@
+{
+  "id": "DevelopmentViabilityAndDeliverability",
+  "display_name_template": "Development Viability and Deliverability for {app_name}",
+  "description_long": "Assessment of the financial viability of the proposed development, particularly in relation to its ability to meet policy requirements such as affordable housing provision, S106 contributions, and other infrastructure needs. Consideration of overall project deliverability.",
+  "primary_tags": ["viability", "deliverability", "affordable_housing_viability", "s106_viability", "NPPF_Ch4", "NPPF_Ch5"],
+  "relevant_policy_themes": ["LocalPlan_ViabilityAssessment", "LocalPlan_AffordableHousingPolicy", "DeveloperContributionsSPD", "RICSGuidanceOnViability"],
+  "key_evidence_docs": ["FinancialViabilityAssessment_FVA", "AffordableHousingStatement_ViabilitySection", "S106HeadsOfTerms_DraftOrAgreed", "BuildCostEstimates", "SalesValueProjections"],
+  "trigger_keywords_for_llm_scan": ["viability", "financial viability", "FVA", "affordable housing", "S106", "developer contributions", "deliverability", "market conditions", "build costs"],
+  "sub_questions": [
+    "Has a Financial Viability Assessment (FVA) been submitted?",
+    "What are the key assumptions within the FVA (e.g., Gross Development Value, build costs, land value, developer profit)?",
+    "Does the FVA demonstrate that the scheme can viably provide the policy-compliant level of affordable housing and other S106 contributions?",
+    "If the scheme proposes less than policy-compliant contributions, is this robustly justified by the FVA?",
+    "Have the FVA inputs and methodology been independently reviewed or scrutinized by the local planning authority?",
+    "Are there any abnormal costs or site-specific constraints affecting viability?",
+    "What mechanisms are proposed to review viability later if market conditions change (e.g., review clauses in S106)?",
+    "Are there any concerns about the overall deliverability of the project (e.g., funding, land ownership, phasing)?"
+  ],
+  "data_schema_hint": {
+    "fva_submitted_and_independent_review_status": "text_block",
+    "proposed_affordable_housing_percentage_vs_policy": "text_block_e.g._15_percent_proposed_vs_35_percent_policy_target",
+    "key_fva_outputs_gdv_total_costs_residual_land_value_developer_profit_percentage": "text_block_with_figures",
+    "justification_for_reduced_policy_contributions_if_any": "text_block",
+    "viability_review_mechanisms_proposed": "list_of_strings_e.g._early_stage_review_late_stage_review_cascade_mechanism"
+  },
+  "typical_positive_impacts": [
+    "Scheme is demonstrably viable and can deliver all policy requirements.",
+    "Robust FVA submitted and accepted by the local planning authority.",
+    "Clear path to delivery with funding and land assembly secured.",
+    "Inclusion of appropriate viability review mechanisms to capture future uplift."
+  ],
+  "typical_negative_impacts": [
+    "Scheme viability challenges the delivery of essential affordable housing or infrastructure.",
+    "Unrealistic or unsubstantiated assumptions in the FVA.",
+    "Disputes over viability leading to lengthy negotiations or appeals.",
+    "Risk that the development may stall or not be delivered as approved due to viability issues."
+  ],
+  "common_mitigation_measures": [
+    "Open-book discussions and independent review of FVA.",
+    "Phased S106 payments or contributions.",
+    "Inclusion of viability review mechanisms in the S106 agreement.",
+    "Value engineering or design changes to improve scheme economics (without compromising quality).",
+    "Seeking grant funding or public subsidy to bridge viability gaps (less common for private schemes).",
+    "Realistic assessment of land value expectations."
+  ],
+  "potential_agent_hint": "SocioEconomicAndCommunityAgent"
+}

@@ -1,0 +1,46 @@
+{
+  "id": "AgriculturalLandQualityAndSoils",
+  "display_name_template": "Agricultural Land Quality and Soil Resources for {app_name}",
+  "description_long": "Assessment of the impact of development on agricultural land, particularly the loss of Best and Most Versatile (BMV) agricultural land (Grades 1, 2, and 3a). Consideration of soil resources, including their handling, storage, and reuse.",
+  "primary_tags": ["agricultural_land", "BMV_land", "soil_resources", "NPPF_Ch15"],
+  "relevant_policy_themes": ["LocalPlan_RuralEconomy", "LocalPlan_ProtectingAgriculturalLand", "DefraGuidanceOnSoilHandling"],
+  "key_evidence_docs": ["AgriculturalLandClassificationReport", "SoilSurveyReport", "SoilManagementPlan"],
+  "trigger_keywords_for_llm_scan": ["agricultural land", "BMV land", "best and most versatile", "soil", "farmland", "Grade 1", "Grade 2", "Grade 3a", "ALC"],
+  "sub_questions": [
+    "What is the Agricultural Land Classification (ALC) of the site?",
+    "Will the development result in the loss of Best and Most Versatile (BMV) agricultural land? If so, how much?",
+    "Is there a sequential approach to site selection to avoid BMV land?",
+    "What are the economic and food production implications of losing this agricultural land?",
+    "Are there any overriding needs for the development that justify the loss of BMV land?",
+    "How will soil resources (topsoil, subsoil) be stripped, stored, and reused on-site or beneficially off-site?",
+    "Are there any specific soil contamination issues that affect agricultural use or soil handling?"
+  ],
+  "data_schema_hint": {
+    "alc_grade_of_site": "text_e.g._Grade_3a_Grade_3b_Non_agricultural",
+    "area_of_bmv_land_lost_hectares": "float",
+    "justification_for_loss_of_bmv_land": "text_block",
+    "soil_resource_plan_summary": "text_block_detailing_stripping_storage_and_reuse_strategy",
+    "consultation_with_natural_england_summary_if_bmv_loss": "text_block"
+  },
+  "typical_positive_impacts": [
+    "Development avoids loss of BMV agricultural land.",
+    "Effective soil management plan ensuring reuse of valuable soil resources.",
+    "Development located on previously developed land or land of lower agricultural quality.",
+    "Enhancement of soil quality in some parts of the site through restoration."
+  ],
+  "typical_negative_impacts": [
+    "Significant loss of Best and Most Versatile agricultural land.",
+    "Failure to justify the need for development on BMV land.",
+    "Poor soil handling practices leading to degradation or loss of soil resources.",
+    "Irreversible damage to soil structure and fertility."
+  ],
+  "common_mitigation_measures": [
+    "Site selection to prioritize previously developed land or land of lower agricultural quality.",
+    "Minimizing the footprint of development on BMV land.",
+    "Implementation of a detailed Soil Management Plan in line with Defra guidance.",
+    "Careful stripping, stockpiling, and reinstatement of topsoil and subsoil.",
+    "Measures to improve soil quality on retained or restored areas.",
+    "Consideration of off-site compensation for BMV land loss (rarely accepted)."
+  ],
+  "potential_agent_hint": "EnvironmentalImpactsAgent"
+}

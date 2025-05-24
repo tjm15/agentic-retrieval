@@ -1,0 +1,48 @@
+{
+  "id": "AirQuality",
+  "display_name_template": "Air Quality Impact for {app_name}",
+  "description_long": "Assessment of the development's impact on local air quality, including consideration of Air Quality Management Areas (AQMAs). Evaluation of mitigation measures to reduce air pollution from traffic generation or operational emissions. Assessment of the impact of existing poor air quality on future occupants.",
+  "primary_tags": ["air_quality", "AQMA", "pollution", "emissions", "NPPF_Ch15"],
+  "relevant_policy_themes": ["LocalPlan_AirQuality", "AirQualityStrategy", "DefraGuidance"],
+  "key_evidence_docs": ["AirQualityAssessment_AQA", "ConstructionEnvironmentalManagementPlan_CEMP_AirQuality", "TravelPlan_AirQualityAspects"],
+  "trigger_keywords_for_llm_scan": ["air quality", "AQMA", "emissions", "NO2", "PM10", "PM2.5", "pollution", "dust", "odour", "air quality neutral"],
+  "sub_questions": [
+    "Is the site within or near an Air Quality Management Area (AQMA)?",
+    "What are the existing baseline air quality conditions?",
+    "What are the predicted air quality impacts from construction activities (e.g., dust)?",
+    "What are the predicted air quality impacts from operational traffic and energy use (e.g., NO2, PM2.5)?",
+    "Will the development expose future users to unacceptable levels of air pollution?",
+    "What mitigation measures are proposed to minimize air quality impacts (e.g., dust suppression, EV charging, low NOx boilers)?",
+    "Is the development 'air quality neutral' or does it meet relevant local air quality targets?"
+  ],
+  "data_schema_hint": {
+    "aqma_status_and_pollutants": "text_block_if_in_or_near_aqma_list_relevant_pollutants",
+    "baseline_air_quality_summary": "text_block_summarising_existing_levels_of_key_pollutants",
+    "construction_dust_risk_assessment_outcome": "text_e.g._Low_Medium_High_Risk_with_mitigation",
+    "operational_impact_on_pollutant_concentrations": "text_block_summarising_change_in_no2_pm2.5_at_sensitive_receptors",
+    "air_quality_mitigation_measures_committed": "list_of_strings",
+    "air_quality_neutral_assessment_outcome": "text_e.g._Pass_Fail_NotApplicable"
+  },
+  "typical_positive_impacts": [
+    "Development designed to be air quality neutral or positive.",
+    "Effective mitigation measures for construction and operational emissions.",
+    "Incorporation of features that promote cleaner air (e.g., extensive green infrastructure, promotion of active travel).",
+    "No significant adverse impact on sensitive receptors or AQMAs."
+  ],
+  "typical_negative_impacts": [
+    "Exacerbation of existing air quality problems within an AQMA.",
+    "Significant increase in pollutant concentrations at sensitive receptors.",
+    "Exposure of new residents/users to harmful levels of air pollution.",
+    "Inadequate assessment or mitigation of air quality impacts.",
+    "Failure to achieve air quality neutral standards where required."
+  ],
+  "common_mitigation_measures": [
+    "Dust management plan during construction (e.g., damping down, wheel washing, screening).",
+    "Provision of Electric Vehicle (EV) charging infrastructure.",
+    "Specification of low NOx boilers or connection to district heating.",
+    "Implementation of a robust Travel Plan to reduce car trips.",
+    "Design and layout to maximize dispersion and minimize exposure (e.g., building orientation, setbacks from roads).",
+    "Financial contributions to local air quality improvement schemes."
+  ],
+  "potential_agent_hint": "EnvironmentalImpactsAgent"
+}

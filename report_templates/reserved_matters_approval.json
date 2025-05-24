@@ -1,0 +1,183 @@
+{
+  "report_type_id": "ReservedMattersApproval",
+  "report_id_prefix": "RMA",
+  "description": "Default Report for Approval of Reserved Matters following Outline Planning Permission",
+  "sections": [
+    {
+      "node_id": "1.0_ApplicationAndProposal",
+      "description": "Application Details, Reserved Matters, and Site Context",
+      "node_type_tag": "IntroductionBlock",
+      "generic_material_considerations": ["applicant_details", "description_of_reserved_matters_being_applied_for_layout_scale_appearance_access_landscaping", "reference_to_parent_outline_planning_permission", "site_location_and_current_state"],
+      "specific_policy_focus_ids": ["TownAndCountryPlanningAct1990_Section92", "RelevantConditionsOnOutlinePermission"],
+      "thematic_policy_descriptors": ["understanding the scope of reserved matters", "linkage to outline permission"],
+      "depends_on_nodes": [],
+      "sub_sections": [
+        {
+          "node_id": "1.1_SiteDescriptionAndContext",
+          "description": "Description of the Site and its Surroundings, Referencing Outline Permission",
+          "node_type_tag": "SiteDescription",
+          "generic_material_considerations": ["site_characteristics_constraints_opportunities_as_established_at_outline_stage", "relationship_to_surrounding_area_and_any_changes_since_outline_approval"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["contextual understanding for reserved matters details"],
+          "key_evidence_document_types": ["SiteLocationPlan", "OutlinePermissionDecisionNoticeAndPlans", "DesignAndAccessStatement_IfUpdatedOrRequiredByOutlineCondition"]
+        },
+        {
+          "node_id": "1.2_DetailsOfReservedMatters",
+          "description": "Detailed Submission for Each Reserved Matter (Layout, Scale, Appearance, Access, Landscaping)",
+          "node_type_tag": "ProposalDescription",
+          "generic_material_considerations": ["proposed_site_layout_and_building_disposition", "scale_of_buildings_height_massing", "external_appearance_materials_architectural_detailing", "vehicular_and_pedestrian_access_arrangements_internal_and_external_links", "landscaping_proposals_hard_and_soft_boundary_treatments_open_space"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["assessing the specifics of each reserved matter"],
+          "key_evidence_document_types": ["DetailedLayoutPlans", "ProposedElevationsAndFloorPlans", "MaterialsSchedule", "AccessDrawingsAndSpecifications", "LandscapingMasterplanAndDetails", "ArboriculturalImpactAssessment_IfTreesAffected"]
+        },
+        {
+          "node_id": "1.3_RelevantPlanningHistoryAndOutlineConditions",
+          "description": "Summary of Outline Permission and Any Conditions Relevant to Reserved Matters",
+          "node_type_tag": "PlanningHistory",
+          "generic_material_considerations": ["outline_permission_reference_and_date", "list_of_reserved_matters_as_defined_in_outline_permission", "specific_conditions_on_outline_permission_that_must_be_discharged_or_complied_with_via_reserved_matters_submission"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["ensuring compliance with the terms of the outline permission"],
+          "key_evidence_document_types": ["OutlinePlanningPermissionDecisionNotice", "ApprovedOutlinePlansOrParameters", "AnyPreSubmissionCorrespondenceRegardingReservedMatters"]
+        }
+      ]
+    },
+    {
+      "node_id": "2.0_PolicyConsiderations",
+      "description": "Relevant National and Local Planning Policies for Reserved Matters",
+      "node_type_tag": "PolicyFrameworkSummaryBlock",
+      "generic_material_considerations": ["national_planning_policy_framework_nppf_relevant_sections_on_design_amenity_sustainability_etc", "local_plan_policies_relevant_to_the_site_and_type_of_development_design_codes_masterplans_supplementary_planning_documents"],
+      "specific_policy_focus_ids": ["NPPF_Chapter12_AchievingWellDesignedPlaces", "LocalPlan_DesignPolicies", "LocalPlan_SiteSpecificAllocationsOrMasterplans"],
+      "thematic_policy_descriptors": ["policy context for detailed design and technical aspects"],
+      "depends_on_nodes": [],
+      "sub_sections": [
+        {"node_id": "2.1_NationalPolicy", "description": "NPPF Guidance on Design Quality, Amenity, Sustainability", "node_type_tag": "NationalPolicy", "thematic_policy_descriptors": ["overarching design principles"]},
+        {"node_id": "2.2_LocalPolicy", "description": "Local Plan Policies, SPDs, Design Guides, Conservation Area Appraisals (if applicable)", "node_type_tag": "LocalPolicy", "thematic_policy_descriptors": ["specific local design requirements and character considerations"]},
+        {"node_id": "2.3_OutlinePermissionPrinciples", "description": "Design Principles or Parameters Established at Outline Stage", "node_type_tag": "PreviousApprovalConsideration", "thematic_policy_descriptors": ["adherence to agreed outline parameters"]}
+      ]
+    },
+    {
+      "node_id": "3.0_AssessmentOfReservedMatters",
+      "description": "Officer's Assessment of the Submitted Details Against Policy and Outline Permission",
+      "node_type_tag": "MaterialConsiderationsBlock_Parent",
+      "is_dynamic_parent_node": true,
+      "dynamic_node_template": {
+        "node_id_template": "3.X_AssessmentOf{MatterName}",
+        "description_template": "Assessment of {MatterName}",
+        "node_type_tag": "MaterialConsideration",
+        "generic_material_considerations_template": ["conformity_of_{matter_name}_with_outline_permission_parameters_and_conditions", "compliance_of_{matter_name}_with_relevant_national_and_local_design_policies", "impact_of_{matter_name}_on_character_and_amenity_of_the_area", "technical_acceptability_of_{matter_name}_details"],
+        "specific_policy_focus_ids_template": [],
+        "thematic_policy_descriptors_template": ["detailed evaluation of {matter_name}"],
+        "key_evidence_document_types_template": ["Relevant{MatterName}PlansAndDocuments"]
+      },
+      "dynamic_node_iteration_source_field": "sections.0.sub_sections.1.generic_material_considerations", 
+      "depends_on_nodes": ["1.0_ApplicationAndProposal", "2.0_PolicyConsiderations"],
+      "sub_sections": [
+        {
+          "node_id": "3.1_AssessmentAgainstOutlinePermission",
+          "description": "Conformity with Principles, Parameters and Conditions of Outline Permission",
+          "node_type_tag": "ComplianceAssessment",
+          "generic_material_considerations": ["whether_the_submitted_details_are_within_the_scope_of_the_outline_permission", "compliance_with_any_specific_design_parameters_or_limitations_set_by_the_outline_permission_e_g_maximum_height_density_access_points", "satisfactory_addressal_of_any_conditions_requiring_approval_of_details_as_part_of_reserved_matters"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["ensuring the reserved matters submission is a true reflection of the outline consent"],
+          "key_evidence_document_types": ["OutlinePermissionDecisionNotice", "ApprovedOutlineParameterPlans", "SubmittedReservedMattersPlans"]
+        },
+        {
+          "node_id": "3.2_AssessmentOfLayout",
+          "description": "Evaluation of Site Layout, Urban Design, Relationship Between Buildings and Spaces",
+          "node_type_tag": "DesignAssessment",
+          "generic_material_considerations": ["functionality_and_coherence_of_the_layout", "creation_of_a_sense_of_place_legibility_permeability", "relationship_to_public_realm_and_existing_site_features", "density_and_form_of_development_in_relation_to_context", "provision_of_private_and_public_amenity_space"],
+          "specific_policy_focus_ids": ["NPPF_WellDesignedPlaces", "LocalPlan_DesignPolicies", "UrbanDesignGuidanceSPD"],
+          "thematic_policy_descriptors": ["quality of spatial arrangement and urban design"],
+          "key_evidence_document_types": ["ProposedSiteLayoutPlans", "BlockPlans", "ContextAnalysisFromDAS"]
+        },
+        {
+          "node_id": "3.3_AssessmentOfScale",
+          "description": "Evaluation of Building Scale, Height, Massing, and Proportions",
+          "node_type_tag": "DesignAssessment",
+          "generic_material_considerations": ["appropriateness_of_building_heights_and_massing_in_relation_to_surroundings_and_character_of_the_area", "impact_on_skyline_and_key_views", "relationship_between_different_parts_of_the_development_in_terms_of_scale"],
+          "specific_policy_focus_ids": ["NPPF_WellDesignedPlaces", "LocalPlan_DesignPolicies", "TallBuildingsPolicy_IfApplicable"],
+          "thematic_policy_descriptors": ["appropriateness of building size and form"],
+          "key_evidence_document_types": ["ProposedElevations", "SectionsShowingHeightAndMassing", "VisualImpactAssessmentOrCGIs_IfProvided"]
+        },
+        {
+          "node_id": "3.4_AssessmentOfAppearance",
+          "description": "Evaluation of External Appearance, Materials, Architectural Style and Detailing",
+          "node_type_tag": "DesignAssessment",
+          "generic_material_considerations": ["quality_and_appropriateness_of_proposed_materials_and_finishes", "architectural_language_and_detailing_in_relation_to_local_character_and_design_objectives", "visual_interest_and_coherence_of_the_development_s_appearance", "sustainability_of_materials_and_construction_methods"],
+          "specific_policy_focus_ids": ["NPPF_WellDesignedPlaces", "LocalPlan_DesignPolicies", "MaterialsGuideSPD_IfApplicable"],
+          "thematic_policy_descriptors": ["aesthetic quality and material choices"],
+          "key_evidence_document_types": ["ProposedElevations", "MaterialSamplesOrSchedule", "ArchitecturalDetailDrawings"]
+        },
+        {
+          "node_id": "3.5_AssessmentOfAccess",
+          "description": "Evaluation of Access Arrangements for All Modes (Vehicular, Pedestrian, Cycle)",
+          "node_type_tag": "AccessAndTransportAssessment",
+          "generic_material_considerations": ["safety_and_suitability_of_vehicular_access_points_junction_design_visibility_splays", "internal_road_layout_parking_provision_servicing_arrangements", "pedestrian_and_cycle_routes_connectivity_safety_and_accessibility_for_all_users", "integration_with_public_transport_networks"],
+          "specific_policy_focus_ids": ["NPPF_PromotingSustainableTransport", "LocalPlan_TransportPolicies", "ManualForStreetsGuidance"],
+          "thematic_policy_descriptors": ["safe and convenient access for all users"],
+          "key_evidence_document_types": ["ProposedAccessDrawings", "SweptPathAnalysis", "ParkingLayoutPlans", "CycleStorageDetails", "TransportStatementOrAssessment_IfRequiredByOutline"]
+        },
+        {
+          "node_id": "3.6_AssessmentOfLandscaping",
+          "description": "Evaluation of Hard and Soft Landscaping Proposals, Boundary Treatments, Open Space",
+          "node_type_tag": "LandscapeAssessment",
+          "generic_material_considerations": ["quality_and_appropriateness_of_soft_landscaping_species_planting_schedules_maintenance", "design_and_materials_for_hard_landscaping_paving_street_furniture", "effectiveness_of_boundary_treatments_for_privacy_security_and_visual_amenity", "provision_and_quality_of_public_and_private_open_spaces_play_areas", "integration_with_existing_green_infrastructure_and_biodiversity_enhancements"],
+          "specific_policy_focus_ids": ["NPPF_AchievingWellDesignedPlaces", "LocalPlan_GreenInfrastructurePolicies", "LocalPlan_BiodiversityPolicies"],
+          "thematic_policy_descriptors": ["contribution to green infrastructure and visual amenity"],
+          "key_evidence_document_types": ["LandscapingMasterplan", "DetailedPlantingPlansAndSchedules", "HardLandscapeDetails", "BoundaryTreatmentDetails", "EcologicalMitigationOrEnhancementPlans_IfRelevant"]
+        },
+        {
+          "node_id": "3.7_OtherRelevantConsiderations",
+          "description": "Consideration of Any Other Matters Arising from Submitted Details (e.g., Sustainability, Drainage, Ecology specific to details)",
+          "node_type_tag": "OtherConsiderations",
+          "generic_material_considerations": ["sustainability_features_integrated_into_the_detailed_design_e_g_energy_efficiency_water_management", "detailed_drainage_strategy_and_sud_features", "protection_or_enhancement_of_ecological_features_based_on_detailed_layout_and_landscaping"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["addressing specific technical details not covered elsewhere"],
+          "key_evidence_document_types": ["SustainabilityStatement_IfUpdated", "DetailedDrainagePlans", "EcologicalReportsOrMethodStatements_IfUpdated"]
+        }
+      ]
+    },
+    {
+      "node_id": "4.0_ConsultationResponses",
+      "description": "Summary of Consultation Responses on Reserved Matters Submission",
+      "node_type_tag": "ConsultationSummaryBlock",
+      "generic_material_considerations": ["summary_of_responses_from_statutory_consultees_e_g_highways_authority_environment_agency_lead_local_flood_authority", "summary_of_responses_from_non_statutory_consultees_e_g_parish_council_civic_society_design_review_panel", "summary_of_any_public_representations_received_on_the_reserved_matters"],
+      "specific_policy_focus_ids": [],
+      "thematic_policy_descriptors": ["feedback from stakeholders on the detailed proposals"],
+      "depends_on_nodes": [],
+      "sub_sections": [
+        {"node_id": "4.1_StatutoryConsultees", "description": "Feedback from Statutory Bodies", "node_type_tag": "ConsulteeResponse", "thematic_policy_descriptors": ["technical advice from statutory bodies"]},
+        {"node_id": "4.2_NonStatutoryAndPublicResponses", "description": "Feedback from Other Consultees and Public", "node_type_tag": "ConsulteeResponse", "thematic_policy_descriptors": ["local concerns and design input"]}
+      ]
+    },
+    {
+      "node_id": "5.0_ConclusionAndRecommendation",
+      "description": "Officer's Overall Conclusion and Recommendation on the Reserved Matters Application",
+      "node_type_tag": "PlanningBalanceAndConclusionBlock",
+      "generic_material_considerations": ["summary_of_assessment_of_each_reserved_matter", "overall_compliance_with_outline_permission_and_planning_policies", "consideration_of_consultation_responses"],
+      "specific_policy_focus_ids": [],
+      "thematic_policy_descriptors": ["overall judgement on the acceptability of the reserved matters"],
+      "depends_on_nodes": ["3.0_AssessmentOfReservedMatters", "4.0_ConsultationResponses"],
+      "sub_sections": [
+        {
+          "node_id": "5.1_OverallPlanningBalance",
+          "description": "Weighing of All Considerations for Reserved Matters",
+          "node_type_tag": "PlanningBalance",
+          "generic_material_considerations": ["whether_the_proposal_represents_a_high_quality_development_in_accordance_with_the_outline_permission_and_relevant_policies", "whether_any_adverse_impacts_arising_from_the_details_can_be_mitigated"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["final assessment of merits"],
+          "key_evidence_document_types": []
+        },
+        {
+          "node_id": "5.2_Recommendation",
+          "description": "Officer's Recommendation (Approve or Refuse Reserved Matters)",
+          "node_type_tag": "FinalRecommendationBlock",
+          "generic_material_considerations": ["clear_recommendation_for_approval_or_refusal", "if_approval_suggested_conditions_specific_to_the_reserved_matters_details_or_to_ensure_implementation_as_approved", "if_refusal_clear_reasons_linked_to_non_compliance_with_outline_permission_or_policies"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["formulating recommendation for reserved matters application"],
+          "key_evidence_document_types": []
+        }
+      ]
+    }
+  ]
+}

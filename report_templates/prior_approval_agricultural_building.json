@@ -1,0 +1,87 @@
+{
+  "report_type_id": "PriorApprovalAgriculturalBuilding",
+  "report_id_prefix": "PAAg",
+  "description": "Default Report for Prior Approval for a Proposed Agricultural Building",
+  "sections": [
+    {
+      "node_id": "1.0_SiteAndProposal",
+      "description": "Site Details, Proposed Agricultural Building, and Justification",
+      "node_type_tag": "IntroductionBlock",
+      "generic_material_considerations": ["agricultural_unit_details_size_nature", "proposed_building_size_design_purpose", "justification_for_agricultural_need"],
+      "specific_policy_focus_ids": ["TownAndCountryPlanningGeneralPermittedDevelopmentOrder_Schedule2Part6ClassA"],
+      "thematic_policy_descriptors": ["understanding context for prior approval for agricultural building", "permitted development rights for agricultural development"],
+      "depends_on_nodes": [],
+      "sub_sections": [
+        {
+          "node_id": "1.1_SiteAndAgriculturalUnitDescription",
+          "description": "Location and Size of Agricultural Unit, Existing Buildings, Landscape Character",
+          "node_type_tag": "SiteDescription",
+          "generic_material_considerations": ["agricultural_holding_number_if_any", "description_of_the_agricultural_unit_and_its_operations", "details_of_existing_buildings_on_the_unit", "landscape_character_and_any_designations_e_g_aonb"],
+          "specific_policy_focus_ids": ["GPDO_Schedule2_Part6_ClassA_ScopeAndLimitations"],
+          "thematic_policy_descriptors": ["confirming eligibility of the agricultural unit and nature of operations", "identifying relevant site context and landscape sensitivity"],
+          "key_evidence_document_types": ["ApplicationForm_PriorApprovalAgricultural", "SiteLocationPlan_ShowingUnitBoundaryAndBuildingLocation", "BlockPlan_ShowingExistingAndProposedBuildings", "AgriculturalJustificationStatement"]
+        },
+        {
+          "node_id": "1.2_ProposedAgriculturalBuilding",
+          "description": "Details of the Proposed Building (Dimensions, Design, Materials, Siting, Purpose)",
+          "node_type_tag": "ProposalSummary",
+          "generic_material_considerations": ["building_footprint_and_volume", "height_to_eaves_and_ridge", "design_and_external_appearance_materials_colours", "siting_in_relation_to_other_buildings_landscape_features_roads", "specific_agricultural_purpose_e_g_livestock_housing_crop_storage_machinery"],
+          "specific_policy_focus_ids": ["GPDO_Schedule2_Part6_ClassA_Conditions_A1_A2"],
+          "thematic_policy_descriptors": ["assessing compliance with dimensional and siting limitations of GPDO Class A (Part 6)", "understanding the functional agricultural need"],
+          "key_evidence_document_types": ["ProposedElevationsAndFloorPlans_DetailedDimensions", "MaterialsScheduleAndColourSpecification", "SitePlan_ShowingSitingAndAccess"]
+        },
+        {
+          "node_id": "1.3_ApplicantJustification",
+          "description": "Summary of Applicant's Justification for the Building (Reasonably Necessary for Agriculture)",
+          "node_type_tag": "ApplicantSubmissionSummary",
+          "generic_material_considerations": ["explanation_of_why_building_is_reasonably_necessary_for_agriculture_on_the_unit", "details_of_agricultural_operations_requiring_the_building", "consideration_of_alternative_locations_or_designs"],
+          "specific_policy_focus_ids": ["GPDO_Schedule2_Part6_ClassA_Condition_A2a_ReasonablyNecessary"],
+          "thematic_policy_descriptors": ["evaluating the agricultural justification provided by the applicant"],
+          "key_evidence_document_types": ["AgriculturalJustificationStatement", "FarmBusinessPlanSummary_IfProvided", "EvidenceOfAgriculturalActivity_HerdNumbersCroppingAreas"]
+        }
+      ]
+    },
+    {
+      "node_id": "2.0_ConsultationResponses",
+      "description": "Summary and Analysis of Any Consultation Responses Received",
+      "node_type_tag": "ConsultationSummaryBlock",
+      "generic_material_considerations": ["parish_council_comments", "highway_authority_comments_if_relevant_to_access", "environment_agency_comments_if_near_watercourse_or_flood_risk_area", "natural_england_comments_if_designated_sites_affected"],
+      "specific_policy_focus_ids": ["GPDO_Schedule2_Part6_ClassA_Condition_A2d_Consultation"],
+      "thematic_policy_descriptors": ["reviewing feedback from relevant consultees on siting, design and appearance"],
+      "depends_on_nodes": ["1.0_SiteAndProposal"],
+      "sub_sections": [
+        {"node_id": "2.1_ConsulteeResponsesSummary", "description": "Summary of Feedback from Parish Council, Technical Consultees etc.", "node_type_tag": "StatutoryConsultation", "thematic_policy_descriptors": ["assessment of specific impacts raised by consultees"]}
+      ]
+    },
+    {
+      "node_id": "3.0_AssessmentAgainstGPDORequirements",
+      "description": "Assessment of Siting, Design, and External Appearance Against GPDO Schedule 2, Part 6, Class A",
+      "node_type_tag": "PolicyFrameworkSummaryBlock",
+      "generic_material_considerations": ["assessment_of_siting_impact_on_landscape_amenity_practicality", "assessment_of_design_appropriateness_for_agricultural_use_and_rural_character", "assessment_of_external_appearance_materials_colour_visual_impact"],
+      "specific_policy_focus_ids": ["GPDO_Schedule2_Part6_ClassA_Condition_A2d_MattersForPriorApproval", "PlanningPracticeGuidance_PermittedDevelopmentRights_AgriculturalDevelopment"],
+      "thematic_policy_descriptors": ["evaluating the proposal against the specific prior approval matters: siting, design, and external appearance"],
+      "depends_on_nodes": ["1.0_SiteAndProposal", "2.0_ConsultationResponses"],
+      "sub_sections": [
+        {"node_id": "3.1_AssessmentOfSiting", "description": "Evaluation of the proposed siting of the building.", "node_type_tag": "ImpactAssessment", "thematic_policy_descriptors": ["impact of siting on landscape, nearby sensitive receptors, and operational efficiency"]},
+        {"node_id": "3.2_AssessmentOfDesign", "description": "Evaluation of the proposed design of the building.", "node_type_tag": "ImpactAssessment", "thematic_policy_descriptors": ["appropriateness of design for agricultural function and rural context, scale, form, roof pitch"]},
+        {"node_id": "3.3_AssessmentOfExternalAppearance", "description": "Evaluation of the proposed external materials and colours.", "node_type_tag": "ImpactAssessment", "thematic_policy_descriptors": ["visual impact of materials and colours, efforts to minimise contrast with surroundings"]}
+      ]
+    },
+    {
+      "node_id": "4.0_ConclusionOnPriorApproval",
+      "description": "Officer's Conclusion on Whether Prior Approval Should Be Granted or Refused",
+      "node_type_tag": "PlanningBalanceAndConclusionBlock",
+      "generic_material_considerations":["summary_of_assessment_on_siting_design_appearance", "whether_the_proposal_is_acceptable_in_relation_to_these_matters", "overall_determination_on_prior_approval"],
+      "specific_policy_focus_ids": ["GPDO_Schedule2_Part6_ClassA_Condition_A2e_f_g"],
+      "thematic_policy_descriptors": ["determining if the proposal is acceptable with regard to its siting, design, and external appearance"],
+      "depends_on_nodes": ["3.0_AssessmentAgainstGPDORequirements"]
+    },
+    {
+      "node_id": "5.0_Recommendation",
+      "description": "Officer's Recommendation (Prior Approval Granted / Prior Approval Refused / PD Not Applicable)",
+      "node_type_tag": "FinalRecommendationBlock",
+      "thematic_policy_descriptors": ["formulating recommendation based on GPDO requirements for agricultural buildings"],
+      "depends_on_nodes": ["4.0_ConclusionOnPriorApproval"]
+    }
+  ]
+}

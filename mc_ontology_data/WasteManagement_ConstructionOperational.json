@@ -1,0 +1,48 @@
+{
+  "id": "WasteManagement_ConstructionOperational",
+  "display_name_template": "Waste Management (Construction and Operational) for {app_name}",
+  "description_long": "Assessment of strategies for the minimisation, storage, collection, and disposal of waste during both construction and operational phases of the development. Promotion of the waste hierarchy (reduce, reuse, recycle).",
+  "primary_tags": ["waste_management", "recycling", "construction_waste", "operational_waste", "NPPF_Ch15"],
+  "relevant_policy_themes": ["LocalPlan_WasteManagement", "NationalWasteManagementPlanForEngland"],
+  "key_evidence_docs": ["SiteWasteManagementPlan_SWMP_Construction", "OperationalWasteManagementStrategy", "SustainabilityStatement_WasteChapter"],
+  "trigger_keywords_for_llm_scan": ["waste", "recycling", "landfill diversion", "SWMP", "operational waste", "construction waste", "waste hierarchy", "refuse storage"],
+  "sub_questions": [
+    "What is the strategy for managing waste during the construction phase, including targets for diversion from landfill (Site Waste Management Plan)?",
+    "How will different waste streams be segregated on-site during construction for reuse or recycling?",
+    "What provisions are made for the storage and collection of operational waste (municipal solid waste, recyclables, food waste, bulky waste) from the completed development?",
+    "Are the operational waste storage facilities adequately sized, located, and designed for ease of use and collection vehicle access?",
+    "How does the proposal encourage waste reduction and recycling by future occupants/users?",
+    "Are there any proposals for on-site waste treatment or energy recovery (e.g., composting, anaerobic digestion - less common for general planning)?",
+    "Does the scheme comply with local authority requirements for waste collection?"
+  ],
+  "data_schema_hint": {
+    "construction_waste_diversion_target_and_actual_if_available": "text_block_percentage_and_tonnage",
+    "operational_waste_storage_capacity_per_dwelling_or_per_100sqm_commercial": "text_block_litres_or_number_of_bins",
+    "recycling_and_food_waste_collection_provisions_summary": "text_block",
+    "access_for_refuse_vehicles_confirmation": "boolean_with_commentary_or_tracking_diagram_ref",
+    "compliance_with_local_authority_waste_strategy_statement": "text_block"
+  },
+  "typical_positive_impacts": [
+    "High rates of construction waste diverted from landfill.",
+    "Adequate, well-designed, and accessible operational waste storage promoting recycling.",
+    "Compliance with local authority waste collection requirements.",
+    "Innovative approaches to waste reduction or reuse.",
+    "Clear strategy for managing different waste streams."
+  ],
+  "typical_negative_impacts": [
+    "Low rates of construction waste recycling and high landfill rates.",
+    "Inadequate or poorly designed operational waste storage leading to amenity issues (visual, odour, pests).",
+    "Insufficient space for waste segregation and recycling.",
+    "Difficult access for waste collection vehicles.",
+    "Failure to comply with local authority waste collection standards."
+  ],
+  "common_mitigation_measures": [
+    "Implementation of a comprehensive Site Waste Management Plan (SWMP) for construction.",
+    "Off-site prefabrication to reduce construction waste.",
+    "Careful design of communal waste storage areas with sufficient capacity and clear labelling for different streams.",
+    "Ensuring convenient access for users to recycling facilities.",
+    "Designing collection points to accommodate local authority vehicle specifications.",
+    "Providing information to future occupants on waste reduction and recycling services."
+  ],
+  "potential_agent_hint": "ClimateActionAgent"
+}

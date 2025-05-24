@@ -1,0 +1,51 @@
+{
+  "id": "EcologyAndBiodiversity",
+  "display_name_template": "Ecology and Biodiversity for {app_name}",
+  "description_long": "Assessment of ecological impacts, including on designated sites (e.g., SSSIs, SACs, SPAs), priority habitats, and legally protected species (e.g., bats, newts, badgers). Evaluation of mitigation, compensation, enhancement measures, and achievement of Biodiversity Net Gain (BNG).",
+  "primary_tags": ["ecology", "biodiversity", "protected_species", "designated_sites", "BNG", "NPPF_Ch15"],
+  "relevant_policy_themes": ["LocalPlan_Ecology", "LocalPlan_BiodiversityNetGain", "HabitatsRegulations", "WildlifeAndCountrysideAct"],
+  "key_evidence_docs": ["PreliminaryEcologicalAppraisal_PEA", "EcologicalImpactAssessment_EcIA", "ProtectedSpeciesSurveys", "BiodiversityNetGainAssessment", "HabitatsRegulationsAssessment_HRA_ScreeningOrAA", "LandscapeAndEcologicalManagementPlan_LEMP"],
+  "trigger_keywords_for_llm_scan": ["ecology", "ecological", "biodiversity", "protected species", "bats", "newts", "badgers", "reptiles", "birds", "habitats", "SSSI", "SAC", "SPA", "BNG", "net gain", "EcIA", "PEA"],
+  "sub_questions": [
+    "Are there any statutory or non-statutory designated ecological sites on or near the development site that could be affected?",
+    "What priority habitats are present on or near the site?",
+    "Have appropriate protected species surveys been conducted, and what were the findings?",
+    "How will the development impact designated sites, priority habitats, and protected species?",
+    "What mitigation, compensation, and enhancement measures are proposed to address ecological impacts?",
+    "Has a Biodiversity Net Gain (BNG) assessment been submitted, and does it demonstrate the required level of net gain?",
+    "Is a Habitats Regulations Assessment (HRA) required, and what are its conclusions?",
+    "What are the long-term ecological management and monitoring arrangements (e.g., via a LEMP)?"
+  ],
+  "data_schema_hint": {
+    "designated_sites_impact_assessment": "text_block_summarising_impacts_on_any_nearby_SSSI_SAC_SPA_etc",
+    "protected_species_survey_results_summary": "text_block_for_each_key_species_group",
+    "biodiversity_net_gain_achieved_percentage": "float_e.g._10.5_percent",
+    "bng_metric_calculation_reference": "text_e.g._Defra_Metric_3.1",
+    "hra_outcome_summary": "text_e.g._No_Likely_Significant_Effects_or_Adverse_Effect_on_Integrity_Mitigated",
+    "key_ecological_mitigation_measures": "list_of_strings"
+  },
+  "typical_positive_impacts": [
+    "Achieves or exceeds mandatory Biodiversity Net Gain targets.",
+    "Creates, enhances, or restores priority habitats.",
+    "Provides new habitat features for protected or priority species.",
+    "Secures long-term positive management for biodiversity.",
+    "Avoids adverse impacts on designated ecological sites."
+  ],
+  "typical_negative_impacts": [
+    "Net loss of biodiversity or failure to achieve required BNG.",
+    "Harm to protected species or their habitats without adequate mitigation or licensing.",
+    "Adverse impacts on the integrity of designated ecological sites.",
+    "Insufficient ecological surveys leading to unassessed impacts.",
+    "Poorly designed or unviable mitigation/compensation measures."
+  ],
+  "common_mitigation_measures": [
+    "Avoidance of sensitive ecological features through design changes.",
+    "Timing of works to avoid sensitive periods (e.g., bird nesting season).",
+    "Translocation of protected species under license.",
+    "Creation of new habitats or enhancement of existing ones on-site or off-site.",
+    "Installation of features like bat boxes, bird boxes, green roofs/walls.",
+    "Implementation of a detailed Landscape and Ecological Management Plan (LEMP).",
+    "Financial contributions for off-site strategic habitat creation or enhancement."
+  ],
+  "potential_agent_hint": "EnvironmentalImpactsAgent"
+}

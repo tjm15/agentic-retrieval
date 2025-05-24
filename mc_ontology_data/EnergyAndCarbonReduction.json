@@ -1,0 +1,50 @@
+{
+  "id": "EnergyAndCarbonReduction",
+  "display_name_template": "Energy Efficiency and Carbon Reduction for {app_name}",
+  "description_long": "Assessment of the development's energy performance, including energy efficiency measures, incorporation of renewable and low-carbon energy generation, and reduction of operational and embodied carbon emissions.",
+  "primary_tags": ["energy_efficiency", "carbon_reduction", "renewable_energy", "net_zero", "NPPF_Ch14"],
+  "relevant_policy_themes": ["LocalPlan_EnergyPolicy", "LocalPlan_ClimateChange", "BuildingRegulations_PartL", "FutureHomesStandard"],
+  "key_evidence_docs": ["EnergyStatement", "SustainabilityStatement_EnergyChapter", "CarbonReductionStrategy", "OverheatingRiskAssessment"],
+  "trigger_keywords_for_llm_scan": ["energy", "carbon", "CO2", "renewable", "solar PV", "heat pump", "energy efficiency", "Part L", "net zero carbon", "embodied carbon", "operational carbon"],
+  "sub_questions": [
+    "How does the development's design and fabric contribute to energy efficiency (e.g., insulation, air tightness, passive solar gain)?",
+    "What percentage improvement over Building Regulations Part L (energy efficiency) is targeted/achieved for operational energy?",
+    "What renewable or low-carbon energy technologies are proposed (e.g., solar PV, heat pumps, connection to district heat network)?",
+    "What is the estimated reduction in operational carbon emissions due to on-site measures?",
+    "Has embodied carbon been assessed, and what measures are proposed to reduce it?",
+    "Is the development aiming for 'net zero carbon' operational energy, and if so, how?",
+    "How is the risk of overheating addressed in the design, particularly in light of climate change?"
+  ],
+  "data_schema_hint": {
+    "energy_efficiency_standard_target": "text_e.g._X_percent_improvement_over_Part_L_2021",
+    "renewable_energy_generation_capacity_kwp_or_kwh_per_annum": "text_block",
+    "operational_co2_reduction_percentage_on_site": "float",
+    "embodied_carbon_assessment_summary_kgco2e_per_m2": "text_block_if_available",
+    "net_zero_carbon_strategy_summary": "text_block_if_applicable",
+    "overheating_assessment_outcome_and_mitigation": "text_block"
+  },
+  "typical_positive_impacts": [
+    "Significantly exceeds Building Regulations energy efficiency requirements.",
+    "Substantial on-site renewable energy generation.",
+    "Achieves or makes strong progress towards net zero operational carbon.",
+    "Demonstrates consideration and reduction of embodied carbon.",
+    "Robust measures to mitigate overheating risk."
+  ],
+  "typical_negative_impacts": [
+    "Barely meets minimum energy efficiency standards.",
+    "Minimal or no on-site renewable energy provision where feasible.",
+    "High operational carbon emissions.",
+    "No consideration of embodied carbon.",
+    "Increased risk of overheating for future occupants."
+  ],
+  "common_mitigation_measures": [
+    "Enhanced fabric insulation and air tightness standards.",
+    "Installation of solar photovoltaic (PV) panels.",
+    "Use of air source or ground source heat pumps.",
+    "Connection to an existing or proposed district heating network.",
+    "Passive design measures (e.g., orientation, solar shading, natural ventilation).",
+    "Specification of materials with lower embodied carbon.",
+    "Offsetting residual carbon emissions (where permissible by policy)."
+  ],
+  "potential_agent_hint": "ClimateActionAgent"
+}

@@ -1,0 +1,49 @@
+{
+  "id": "UtilitiesInfrastructureCapacity",
+  "display_name_template": "Utilities Infrastructure Capacity for {app_name}",
+  "description_long": "Assessment of the existing capacity and proposed connections to essential utilities: water supply, foul and surface water drainage (beyond flood risk aspects), electricity, gas, and telecommunications. Evaluation of the impact of the development on existing infrastructure and requirements for upgrades or diversions.",
+  "primary_tags": ["utilities", "infrastructure_capacity", "water_supply", "sewerage", "electricity", "gas", "telecoms"],
+  "relevant_policy_themes": ["LocalPlan_InfrastructureDelivery", "UtilityProviderGuidance"],
+  "key_evidence_docs": ["UtilitiesStatement", "FoulSewageAndUtilitiesAssessment", "CorrespondenceWithUtilityProviders", "InfrastructureDeliveryPlan"],
+  "trigger_keywords_for_llm_scan": ["utilities", "water supply", "foul drainage", "sewerage capacity", "electricity supply", "gas supply", "telecoms", "broadband", "infrastructure", "connections"],
+  "sub_questions": [
+    "What are the existing utility provisions at the site (water, foul sewer, electricity, gas, telecoms)?",
+    "What are the anticipated demands of the proposed development for each utility?",
+    "Have capacity assessments been undertaken by the relevant utility providers, and what are their conclusions?",
+    "Are any upgrades or reinforcements to the existing utility networks required to serve the development?",
+    "Are any diversions of existing utility apparatus required, and how will these be managed?",
+    "What provisions are made for future-proofing utility connections (e.g., ducting for fibre optic broadband)?",
+    "How will connections be made to the existing networks, and are the necessary easements in place?"
+  ],
+  "data_schema_hint": {
+    "water_supply_capacity_confirmation": "text_block_from_water_company_or_assessment",
+    "foul_sewerage_capacity_confirmation": "text_block_from_sewerage_undertaker_or_assessment",
+    "electricity_supply_capacity_confirmation_kva": "text_block_from_dno_or_assessment_with_load_estimate",
+    "gas_supply_capacity_confirmation_kwh_or_m3": "text_block_from_gas_transporter_or_assessment",
+    "telecoms_broadband_provision_strategy": "text_block_e.g._fibre_to_the_premises_fttp_commitment",
+    "summary_of_required_utility_upgrades_or_diversions": "list_of_strings"
+  },
+  "typical_positive_impacts": [
+    "Confirmation of adequate existing utility capacity or agreed upgrade plans.",
+    "Timely provision of all necessary utility connections.",
+    "Future-proofed utility infrastructure (e.g., high-speed broadband).",
+    "No adverse impact on existing utility users.",
+    "Coordination with utility providers to ensure efficient delivery."
+  ],
+  "typical_negative_impacts": [
+    "Insufficient existing utility capacity leading to delays or inability to serve the development.",
+    "Adverse impacts on existing utility users (e.g., low water pressure, power outages).",
+    "High costs or long lead times for necessary utility upgrades or diversions.",
+    "Failure to provide modern telecommunications infrastructure.",
+    "Disputes over easements or connection points."
+  ],
+  "common_mitigation_measures": [
+    "Early consultation with all relevant utility providers.",
+    "Developer contributions or direct funding for necessary network upgrades.",
+    "Phasing of development to align with utility infrastructure delivery.",
+    "Careful planning of on-site utility routes and connection points.",
+    "Provision of necessary easements for utility apparatus.",
+    "Installation of multi-utility trenches or common ducting."
+  ],
+  "potential_agent_hint": "TechnicalInfrastructureAgent"
+}

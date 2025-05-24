@@ -1,0 +1,42 @@
+{
+  "id": "PublicSafetyAndCrimePrevention",
+  "display_name_template": "Public Safety and Crime Prevention for {app_name}",
+  "description_long": "Assessment of how the design and layout of the development contribute to public safety, reduce the fear of crime, and prevent criminal activity (e.g., principles of Secured by Design).",
+  "primary_tags": ["public_safety", "crime_prevention", "secured_by_design"],
+  "relevant_policy_themes": ["LocalPlan_SafetyAndSecurity", "SecuredByDesignGuidance"],
+  "key_evidence_docs": ["DAS_SafetySecurityChapter", "SecuredByDesignStatement"],
+  "trigger_keywords_for_llm_scan": ["safety", "security", "crime", "secured by design", "anti-social behaviour", "lighting", "surveillance"],
+  "sub_questions": [
+    "How does the proposal incorporate Secured by Design principles?",
+    "What measures are proposed to enhance natural surveillance and create a sense of ownership?",
+    "How does the lighting strategy contribute to safety and security?",
+    "Are there any specific crime risks associated with the site or development type, and how are they addressed?",
+    "How does the layout promote safe pedestrian and vehicular movement?"
+  ],
+  "data_schema_hint": {
+    "secured_by_design_accreditation_target": "text_e.g._Gold_Silver_Bronze_or_Not_Applicable",
+    "crime_prevention_design_features": "list_of_strings",
+    "lighting_strategy_summary": "text_block",
+    "boundary_treatment_details": "text_block"
+  },
+  "typical_positive_impacts": [
+    "Achieves Secured by Design accreditation.",
+    "Creates a safe and secure environment for residents and users.",
+    "Reduces opportunities for crime and anti-social behaviour.",
+    "Enhances natural surveillance and defensible space."
+  ],
+  "typical_negative_impacts": [
+    "Poor design leading to increased crime risk or fear of crime.",
+    "Inadequate lighting or boundary treatments.",
+    "Failure to consider Secured by Design principles.",
+    "Creation of isolated or poorly overlooked areas."
+  ],
+  "common_mitigation_measures": [
+    "Revisions to layout to improve natural surveillance.",
+    "Upgraded lighting scheme.",
+    "Improved boundary treatments and access control.",
+    "Consultation with Designing Out Crime Officers.",
+    "Incorporation of specific Secured by Design recommendations."
+  ],
+  "potential_agent_hint": "SocioEconomicAndCommunityAgent"
+}

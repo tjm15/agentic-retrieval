@@ -1,0 +1,45 @@
+{
+  "id": "PlanningPolicyComplianceAndBalance",
+  "display_name_template": "Overall Planning Policy Compliance and The Planning Balance for {app_name}",
+  "description_long": "A meta-assessment considering the development's overall compliance with relevant national, regional, and local planning policies. Evaluation of how the various material considerations weigh in the 'planning balance', leading to a recommendation, especially where policies conflict or where adverse impacts need to be weighed against benefits.",
+  "primary_tags": ["planning_balance", "policy_compliance", "material_considerations_summary", "NPPF_presumption"],
+  "relevant_policy_themes": ["NationalPlanningPolicyFramework_NPPF", "LocalPlan_AllPolicies", "DevelopmentPlan"],
+  "key_evidence_docs": ["PlanningStatement_ConclusionChapter", "OfficerReportToCommittee_RecommendationSection"],
+  "trigger_keywords_for_llm_scan": ["planning balance", "policy compliance", "material considerations", "NPPF", "development plan", "presumption in favour", "weighing exercise"],
+  "sub_questions": [
+    "Which key national and local planning policies are most relevant to this proposal?",
+    "To what extent does the proposal comply with these key policies?",
+    "Are there any significant policy conflicts raised by the proposal?",
+    "What are the main adverse impacts of the development, and what weight should be attached to them?",
+    "What are the main benefits of the development, and what weight should be attached to them?",
+    "Does the NPPF's presumption in favour of sustainable development apply, and how?",
+    "Overall, considering all material considerations and policy requirements, where does the planning balance lie (i.e., approve or refuse)?"
+  ],
+  "data_schema_hint": {
+    "summary_of_key_policy_compliance_areas": "list_of_strings_with_compliance_status_e.g._Policy_H1_Compliant_Policy_T2_Partially_Compliant",
+    "summary_of_identified_adverse_impacts_and_their_weight": "text_block",
+    "summary_of_identified_benefits_and_their_weight": "text_block",
+    "application_of_nppf_presumption_paragraph_11": "text_block_explaining_whether_relevant_policies_are_out_of_date_or_if_adverse_impacts_significantly_outweigh_benefits",
+    "overall_planning_balance_conclusion_and_recommendation": "text_block"
+  },
+  "typical_positive_impacts": [
+    "Proposal is broadly compliant with the development plan and national policy.",
+    "Identified benefits clearly outweigh any adverse impacts.",
+    "Strong case made for approval based on the planning balance.",
+    "Contributes to achieving sustainable development."
+  ],
+  "typical_negative_impacts": [
+    "Significant conflicts with key development plan policies.",
+    "Adverse impacts significantly and demonstrably outweigh the benefits.",
+    "Planning balance points towards refusal.",
+    "Proposal does not represent sustainable development."
+  ],
+  "common_mitigation_measures": [
+    "Revisions to the scheme to improve policy compliance.",
+    "Additional mitigation measures to reduce the weight of identified harms.",
+    "Enhanced benefits or public goods offered by the scheme to tip the balance.",
+    "Robust legal agreements (e.g., S106) to secure mitigation and benefits.",
+    "Clear justification for departing from policy where material considerations support this (rare)."
+  ],
+  "potential_agent_hint": "StrategicCoordinationAgent"
+}

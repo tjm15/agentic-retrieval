@@ -1,0 +1,50 @@
+{
+  "id": "ClimateChangeResilienceAndAdaptation",
+  "display_name_template": "Climate Change Resilience and Adaptation for {app_name}",
+  "description_long": "Assessment of how the development is designed to be resilient to the impacts of climate change, such as increased temperatures (overheating), extreme weather events, water scarcity, and changes in ground conditions. Evaluation of adaptation measures.",
+  "primary_tags": ["climate_adaptation", "resilience", "overheating", "extreme_weather", "NPPF_Ch14"],
+  "relevant_policy_themes": ["LocalPlan_ClimateChangeAdaptation", "UKClimateProjections_UKCP", "OverheatingGuidance_CIBSE_TM59"],
+  "key_evidence_docs": ["ClimateChangeAdaptationStrategy", "OverheatingRiskAssessment_DynamicThermalModelling", "SustainabilityStatement_AdaptationChapter", "FloodRiskAssessment_ClimateChangeAllowances"],
+  "trigger_keywords_for_llm_scan": ["climate change adaptation", "resilience", "overheating", "thermal comfort", "extreme weather", "UKCP18", "future climate", "green infrastructure for cooling"],
+  "sub_questions": [
+    "How have future climate projections (e.g., UKCP18) been considered in the design of the development?",
+    "What specific risks associated with climate change have been identified for the site and development type (e.g., overheating, increased flood risk, water scarcity, subsidence)?",
+    "What passive design measures are incorporated to mitigate overheating risk in buildings (e.g., orientation, shading, natural ventilation, thermal mass)?",
+    "Are active cooling measures proposed, and if so, are they energy-efficient and justified?",
+    "How does the landscaping and green infrastructure strategy contribute to climate resilience (e.g., urban cooling, water management)?",
+    "Are materials and construction methods chosen to be durable and resilient to future climate conditions?",
+    "How does the development plan for potential disruptions to services (e.g., power, water) due to extreme weather?"
+  ],
+  "data_schema_hint": {
+    "overheating_risk_assessment_methodology_and_outcome": "text_block_e.g._CIBSE_TM59_Pass_Fail_with_mitigation_details",
+    "passive_cooling_measures_incorporated": "list_of_strings",
+    "green_infrastructure_for_climate_adaptation_summary": "text_block_e.g._urban_greening_factor_tree_canopy_cover_for_shading",
+    "water_resilience_measures_beyond_standard_efficiency": "list_of_strings_e.g._drought_tolerant_landscaping_large_rainwater_storage",
+    "resilience_to_extreme_weather_events_summary": "text_block"
+  },
+  "typical_positive_impacts": [
+    "Demonstrates robust consideration of future climate risks.",
+    "Passes overheating assessments through effective passive design.",
+    "Incorporates significant green infrastructure for cooling and water management.",
+    "Uses durable materials and construction resilient to future climate.",
+    "Enhances the overall resilience of the local area."
+  ],
+  "typical_negative_impacts": [
+    "High risk of overheating in new buildings.",
+    "Failure to consider or adequately address future climate change impacts.",
+    "Increased vulnerability to extreme weather events.",
+    "Poor material choices leading to premature degradation in future climates.",
+    "Increased demand on resources (e.g., water, energy for cooling) under future climate scenarios."
+  ],
+  "common_mitigation_measures": [
+    "Optimized building orientation and layout.",
+    "External solar shading devices (e.g., shutters, louvres, brise-soleil).",
+    "Enhanced natural ventilation strategies (e.g., cross-ventilation, night-time cooling).",
+    "Increased thermal mass in building construction.",
+    "Use of reflective or cool roofing materials.",
+    "Extensive tree planting and green infrastructure for shade and evaporative cooling.",
+    "Specification of drought-tolerant planting.",
+    "Flood resilient design (covered in FloodRiskAndDrainage)."
+  ],
+  "potential_agent_hint": "EnvironmentalImpactsAgent"
+}

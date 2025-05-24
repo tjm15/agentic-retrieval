@@ -1,0 +1,46 @@
+{
+  "id": "NeighbourAmenity",
+  "display_name_template": "Impact on Neighbouring Amenity for {app_name}",
+  "description_long": "Assessment of the impact of the proposed development on the amenity of neighbouring residential properties and other sensitive uses, considering daylight/sunlight, overshadowing, privacy, outlook, noise, and disturbance.",
+  "primary_tags": ["neighbour_amenity", "residential_impact", "daylight_sunlight", "privacy_overlooking", "NPPF_Ch12"],
+  "relevant_policy_themes": ["LocalPlan_AmenityProtection", "LocalPlan_ResidentialDesignGuide", "BRE_Guidelines_SiteLayoutPlanning"],
+  "key_evidence_docs": ["DaylightSunlightAssessment", "NoiseImpactAssessment", "PlanningStatement_AmenityChapter", "ConstructionManagementPlan_NoiseDustVibration"],
+  "trigger_keywords_for_llm_scan": ["neighbour amenity", "daylight", "sunlight", "overshadowing", "privacy", "overlooking", "noise", "outlook", "loss of light"],
+  "sub_questions": [
+    "Has a Daylight and Sunlight assessment been submitted, and what are its conclusions regarding impacts on neighbouring properties (e.g., VSC, APSH)?",
+    "Are there any significant overshadowing impacts on neighbouring gardens or amenity spaces?",
+    "How does the proposal address potential overlooking and loss of privacy to neighbours?",
+    "What is the likely noise impact during construction and operation, and what mitigation is proposed?",
+    "Will the development result in an unacceptable sense of enclosure or loss of outlook for neighbours?",
+    "Are there any other potential amenity impacts, such as light spill, dust, or fumes?"
+  ],
+  "data_schema_hint": {
+    "daylight_sunlight_assessment_summary": "text_block_summarising_compliance_with_bre_targets_for_key_receptors",
+    "vsc_results_for_critical_windows": "list_of_objects_window_ref_and_vsc_percentage",
+    "apsh_results_for_critical_windows_and_spaces": "list_of_objects_ref_and_apsh_percentage",
+    "privacy_mitigation_measures": "list_of_strings_e.g_screen_planting_obscure_glazing_setbacks",
+    "noise_impact_assessment_summary": "text_block_detailing_predicted_noise_levels_and_mitigation",
+    "construction_noise_mitigation_summary": "text_block_from_cmp"
+  },
+  "typical_positive_impacts": [
+    "Minimal or no adverse impact on neighbouring amenity.",
+    "Sensitive design that respects the context and protects neighbour privacy and light.",
+    "Effective mitigation measures for any potential noise or disturbance."
+  ],
+  "typical_negative_impacts": [
+    "Significant loss of daylight or sunlight to neighbouring properties below BRE guidelines.",
+    "Unacceptable overlooking or loss of privacy.",
+    "Harmful noise levels during construction or operation.",
+    "Creation of an oppressive sense of enclosure for neighbours.",
+    "Failure to adequately mitigate amenity impacts."
+  ],
+  "common_mitigation_measures": [
+    "Re-siting or re-design of building elements to reduce massing or improve separation distances.",
+    "Use of obscure glazing, screens, or fins to prevent overlooking.",
+    "Strategic landscaping to provide screening.",
+    "Acoustic barriers or insulation to mitigate noise.",
+    "Restrictions on construction hours and methods (via CMP).",
+    "Detailed daylight/sunlight modelling to inform design adjustments."
+  ],
+  "potential_agent_hint": "EnvironmentalImpactsAgent"
+}

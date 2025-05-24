@@ -1,0 +1,48 @@
+{
+  "id": "LandContaminationAndRemediation",
+  "display_name_template": "Land Contamination and Remediation for {app_name}",
+  "description_long": "Assessment of potential land contamination from previous or existing site uses. Evaluation of site investigation, risk assessment, and remediation strategies to ensure the land is suitable for the proposed use and does not pose a risk to human health or the environment.",
+  "primary_tags": ["land_contamination", "remediation", "brownfield", "NPPF_Ch15"],
+  "relevant_policy_themes": ["LocalPlan_ContaminatedLand", "EnvironmentAgency_CLR11"],
+  "key_evidence_docs": ["Phase1DeskStudy_Contamination", "Phase2IntrusiveSiteInvestigationReport", "RemediationStrategy", "VerificationReport_Contamination"],
+  "trigger_keywords_for_llm_scan": ["contamination", "contaminated land", "remediation", "brownfield", "Phase 1", "Phase 2", "ground investigation", "pollutants", "asbestos", "hydrocarbons"],
+  "sub_questions": [
+    "What were the previous uses of the site, and do they indicate a potential for contamination?",
+    "Has a Phase 1 Desk Study been undertaken, and what are its conclusions regarding potential contaminant linkages?",
+    "Is a Phase 2 Intrusive Site Investigation required/completed, and what contaminants were found (if any) at what concentrations?",
+    "What are the potential risks to human health (future users, neighbours, construction workers) and the environment (e.g., controlled waters, ecosystems)?",
+    "Is a Remediation Strategy required, and what methods are proposed?",
+    "How will the remediation be validated (Verification Report)?",
+    "Are there any risks associated with ground gases (e.g., radon, methane, CO2)?"
+  ],
+  "data_schema_hint": {
+    "previous_site_uses_of_concern": "list_of_strings",
+    "phase1_desk_study_recommendations": "text_block",
+    "phase2_investigation_summary_of_findings": "text_block_listing_key_contaminants_and_exceedances",
+    "remediation_strategy_overview": "text_block_describing_proposed_methods_e.g._excavation_cover_system_treatment",
+    "verification_plan_summary": "text_block"
+  },
+  "typical_positive_impacts": [
+    "Successful remediation of contaminated land, making it suitable for use.",
+    "Removal or mitigation of risks to human health and the environment.",
+    "Bringing brownfield land back into beneficial use.",
+    "Compliance with regulatory requirements for contaminated land."
+  ],
+  "typical_negative_impacts": [
+    "Failure to identify or adequately assess land contamination.",
+    "Inadequate remediation leading to ongoing risks.",
+    "Exposure of construction workers or future users to harmful contaminants.",
+    "Contamination of controlled waters or spread of pollutants off-site.",
+    "Delays and unexpected costs due to discovery of unforeseen contamination."
+  ],
+  "common_mitigation_measures": [
+    "Thorough site investigation (phased approach).",
+    "Development of a robust Remediation Strategy agreed with the local authority/Environment Agency.",
+    "Excavation and off-site disposal of contaminated soils (dig and dump).",
+    "On-site treatment of contaminated soils (e.g., bioremediation, soil washing).",
+    "Installation of a cover system (clean cap) to break contaminant linkages.",
+    "Installation of gas protection measures in buildings.",
+    "Long-term monitoring and management where contaminants are left in situ."
+  ],
+  "potential_agent_hint": "EnvironmentalImpactsAgent"
+}

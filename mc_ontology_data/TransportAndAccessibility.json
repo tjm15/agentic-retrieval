@@ -1,0 +1,59 @@
+{
+  "id": "TransportAndAccessibility",
+  "display_name_template": "Transport Impact, Highway Safety, Accessibility, Parking, Servicing, and Sustainable Travel for {app_name}",
+  "description_long": "Assessment of the transport implications of the development, including trip generation, impact on the highway network capacity and safety, provision for sustainable transport modes (walking, cycling, public transport), car and cycle parking provision against standards, and arrangements for servicing and deliveries.",
+  "primary_tags": ["transport_assessment", "sustainable_travel_modes", "highway_impact", "parking_provision", "accessibility_ptal", "NPPF_Ch9"],
+  "relevant_policy_themes": ["LondonPlan_T_Series", "LocalPlan_TransportPolicies", "LocalPlan_ParkingStandards", "LocalPlan_CyclePolicies", "HealthyStreetsApproach"],
+  "key_evidence_docs": ["TransportAssessment", "TravelPlan", "DeliveryAndServicingPlan", "ParkingStrategyOrStatement", "ConstructionLogisticsPlan", "PTAL_Assessment"],
+  "trigger_keywords_for_llm_scan": ["transport", "traffic", "highway", "access", "parking", "cycling", "pedestrian", "public transport", "PTAL", "trip generation", "road safety", "servicing", "delivery", "travel plan"],
+  "sub_questions": [
+    "What are the anticipated trip generation figures for the development across all modes?",
+    "What is the existing capacity of the local highway network and key junctions, and can it accommodate the additional traffic?",
+    "Are there any highway safety concerns arising from the development or existing conditions that need addressing?",
+    "How does the scheme promote sustainable travel modes (walking, cycling, public transport)?",
+    "What is the site's Public Transport Accessibility Level (PTAL)?",
+    "Is the proposed car parking provision compliant with local standards and justified?",
+    "Is the proposed cycle parking provision compliant with local standards and conveniently located?",
+    "Are the arrangements for servicing, deliveries, and refuse collection safe and practical?",
+    "What measures are included in the Travel Plan to encourage sustainable travel choices?",
+    "How does the development impact pedestrian and cyclist routes and safety?"
+  ],
+  "data_schema_hint": {
+      "trip_generation_data": {"am_peak_vehicle_trips": "integer", "pm_peak_vehicle_trips": "integer", "daily_vehicle_trips": "integer", "person_trips_by_mode_summary": "dict_mode_to_trips_percentage_and_number"},
+      "highway_impact_analysis": {"junction_capacity_assessment_results_for_key_junctions": "text_block_with_roc_vos_data", "road_safety_audit_findings_and_responses": "text_block", "cumulative_impact_assessment_if_relevant": "text_block"},
+      "sustainable_transport_strategy": {"pedestrian_infrastructure_improvements": "text_block", "cycle_infrastructure_provisions_and_connections": "text_block", "public_transport_accessibility_enhancements_or_contributions": "text_block", "ptal_score_and_implications": "string_with_narrative"},
+      "car_parking_assessment": {"proposed_car_parking_spaces_total": "integer", "car_parking_standard_policy": "string", "justification_for_proposed_level_including_ev_charging": "text_block"},
+      "cycle_parking_assessment": {"proposed_cycle_parking_spaces_long_stay": "integer", "proposed_cycle_parking_spaces_short_stay": "integer", "cycle_parking_standard_policy": "string", "location_and_design_of_cycle_storage": "text_block"},
+      "servicing_and_delivery_plan_summary": {"access_routes_for_service_vehicles": "text_block_with_diagram_ref", "swept_path_analysis_confirmation": "boolean_with_commentary", "loading_bay_provision_and_management": "text_block", "refuse_collection_strategy": "text_block"},
+      "travel_plan_summary": {"key_measures_and_targets": "list_of_strings", "monitoring_and_review_plan": "text_block"},
+      "construction_traffic_management_plan_summary_if_available": "text_block"
+  },
+  "typical_positive_impacts": [
+    "Improved pedestrian and cycle connectivity and facilities.",
+    "Enhanced public transport accessibility through contributions or new services.",
+    "Reduced reliance on private car travel due to good PTAL and Travel Plan measures.",
+    "Appropriate parking provision that meets needs without encouraging excessive car use.",
+    "Safe and efficient servicing and delivery arrangements.",
+    "Minimal impact on highway capacity and safety."
+  ],
+  "typical_negative_impacts": [
+    "Significant increase in traffic congestion on local roads and junctions.",
+    "Adverse impacts on highway safety for vehicles, cyclists, or pedestrians.",
+    "Inadequate provision for sustainable transport modes.",
+    "Over-provision or under-provision of car parking, contrary to policy.",
+    "Poorly designed or insufficient cycle parking.",
+    "Unsafe or disruptive servicing and delivery arrangements.",
+    "Severance of existing pedestrian/cycle routes."
+  ],
+  "common_mitigation_measures": [
+    "Highway improvements (e.g., junction upgrades, traffic signal optimisation).",
+    "Implementation of a robust Travel Plan with clear targets and monitoring.",
+    "Financial contributions towards public transport improvements or sustainable travel initiatives.",
+    "Improved pedestrian and cycle routes and facilities on and off-site.",
+    "Revised parking provision to align with policy and site accessibility.",
+    "Phasing of development linked to transport infrastructure delivery.",
+    "Construction Logistics Plan to manage construction traffic impacts.",
+    "Road Safety Audits and implementation of recommended safety measures."
+  ],
+  "potential_agent_hint": "TransportAndInfrastructureAgent"
+}

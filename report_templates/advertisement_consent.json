@@ -1,0 +1,111 @@
+{
+  "report_type_id": "AdvertisementConsent",
+  "report_id_prefix": "Adv",
+  "description": "Default Report for Advertisement Consent Applications",
+  "sections": [
+    {
+      "node_id": "1.0_SiteAndProposal",
+      "description": "Site Context, Advertisement Details & Relevant History",
+      "node_type_tag": "IntroductionBlock",
+      "generic_material_considerations": ["site_location_context", "advertisement_type_size_materials_illumination", "planning_history_advertisements"],
+      "specific_policy_focus_ids": ["TownAndCountryPlanningControlOfAdvertisementsRegulations", "NPPF_Chapter12_AchievingWellDesignedPlaces", "LocalPlan_AdvertisementPolicy"],
+      "thematic_policy_descriptors": ["understanding context for advertisement display", "legislative framework for advertisement consent"],
+      "depends_on_nodes": [],
+      "sub_sections": [
+        {
+          "node_id": "1.1_SiteLocationAndContext",
+          "description": "Location of Proposed Advertisement and Character of Surrounding Area",
+          "node_type_tag": "SiteDescription",
+          "generic_material_considerations": ["area_character_urban_rural_commercial_residential", "visibility_of_site", "presence_of_other_advertisements", "proximity_to_listed_buildings_conservation_areas_sensitive_receptors"],
+          "specific_policy_focus_ids": ["LocalPlan_SiteContextPolicy", "LocalPlan_AdvertisementDesignGuidance"],
+          "thematic_policy_descriptors": ["assessing site suitability for advertisements", "understanding visual context and sensitivity"],
+          "key_evidence_document_types": ["ApplicationForm_Advertisement", "SiteLocationPlan_ShowingAdvertisementPosition", "PhotographsOfSiteAndSurroundings", "ElevationDrawing_ShowingBuildingWithAdvertisement"]
+        },
+        {
+          "node_id": "1.2_ProposedAdvertisementInDetail",
+          "description": "Details of the Proposed Advertisement(s) (Type, Dimensions, Materials, Illumination, Content)",
+          "node_type_tag": "ProposalSummary",
+          "generic_material_considerations": ["advertisement_type_fascia_projecting_hoarding_flag", "dimensions_height_width_depth_area", "materials_construction_finish", "illumination_type_intensity_hours", "content_nature_static_digital"],
+          "specific_policy_focus_ids": ["ControlOfAdvertisementsRegulations_Schedule2And3", "LocalPlan_AdvertisementDesignCriteria"],
+          "thematic_policy_descriptors": ["detailed understanding of the proposed advertisement", "assessing compliance with specific advertisement regulations"],
+          "key_evidence_document_types": ["DetailedAdvertisementDrawings_DimensionsMaterials", "IlluminationDetails_LuxLevels", "VisualisationsOrPhotomontages"]
+        },
+        {
+          "node_id": "1.3_RelevantPlanningHistory",
+          "description": "Relevant Advertisement Consent History for the Site or Building",
+          "node_type_tag": "PlanningHistory",
+          "generic_material_considerations": ["previous_advertisement_consents_refusals", "history_of_unauthorised_advertisements", "extant_consents_for_advertisements"],
+          "specific_policy_focus_ids": ["LocalPlan_PlanningHistoryPolicyWeight"],
+          "thematic_policy_descriptors": ["history of advertisement display at the location", "consistency in decision making"],
+          "key_evidence_document_types": ["PreviousAdvertisementConsentDecisionNotices"]
+        }
+      ]
+    },
+    {
+      "node_id": "2.0_ConsultationResponses",
+      "description": "Summary and Analysis of Consultation Responses",
+      "node_type_tag": "ConsultationSummaryBlock",
+      "generic_material_considerations": ["highway_authority_comments_public_safety", "conservation_officer_comments_if_heritage_asset_affected", "public_representations_amenity_safety"],
+      "specific_policy_focus_ids": ["LocalPlan_ConsultationPolicy", "ControlOfAdvertisementsRegulations_ConsultationRequirements"],
+      "thematic_policy_descriptors": ["consultation on advertisement applications", "expert advice on safety and amenity impacts"],
+      "depends_on_nodes": ["1.0_SiteAndProposal/1.2_ProposedAdvertisementInDetail"],
+      "sub_sections": [
+        {"node_id": "2.1_StatutoryAndTechnicalConsultees", "description": "Feedback from Highway Authority, Conservation Officer etc.", "node_type_tag": "StatutoryConsultation", "thematic_policy_descriptors": ["assessment of public safety and heritage impacts by specialists"]},
+        {"node_id": "2.2_PublicRepresentations", "description": "Summary of Public Comments (Support, Objections, Neutral)", "node_type_tag": "PublicConsultation", "thematic_policy_descriptors": ["public perception of advertisement impact on amenity"]}
+      ]
+    },
+    {
+      "node_id": "3.0_PlanningPolicyFramework",
+      "description": "Relevant Planning Policy Framework for Advertisement Consent",
+      "node_type_tag": "PolicyFrameworkSummaryBlock",
+      "generic_material_considerations": ["advertisement_regulations_key_principles", "nppf_design_amenity_public_safety", "local_plan_advertisement_policies_area_specific_guidance"],
+      "thematic_policy_descriptors": ["policy framework for assessing advertisement applications", "balancing commercial needs with public interest"],
+      "depends_on_nodes": [],
+      "sub_sections": [
+          {"node_id": "3.1_NationalPolicyAndRegulations", "description": "Town and Country Planning (Control of Advertisements) (England) Regulations 2007, NPPF", "node_type_tag": "NationalPolicy", "thematic_policy_descriptors": ["statutory basis for advertisement control", "national policy on design and public safety"]},
+          {"node_id": "3.2_LocalPlan", "description": "Local Plan - Key Relevant Policies for Advertisements, Design, Conservation Areas", "node_type_tag": "LocalPolicy", "thematic_policy_descriptors": ["local plan policies guiding appropriate scale, type and location of advertisements"]},
+          {"node_id": "3.3_SPDsAndSPGs", "description": "Relevant Supplementary Planning Documents/Guidance (e.g., Shopfront and Advertisement Design Guide)", "node_type_tag": "SupplementaryGuidance", "thematic_policy_descriptors": ["detailed design guidance for advertisements"]}
+      ]
+    },
+    {
+      "node_id": "4.0_AssessmentOfMaterialConsiderations",
+      "description": "Officer's Assessment of Material Planning Considerations (Amenity and Public Safety)",
+      "node_type_tag": "MaterialConsiderationsBlock_Parent",
+      "is_dynamic_parent_node": false,
+      "generic_material_considerations": [
+        "impact_on_amenity_visual_clutter_character_of_area",
+        "impact_on_public_safety_driver_distraction_pedestrian_hazard_obstruction",
+        "impact_on_heritage_assets_if_applicable_setting_of_listed_building_character_of_conservation_area",
+        "appropriateness_of_scale_design_materials_illumination_in_context"
+      ],
+      "specific_policy_focus_ids": ["ControlOfAdvertisementsRegulations_StandardConditions", "NPPF_Para130_Design", "LocalPlan_AmenityPolicy", "LocalPlan_HighwaySafetyPolicy"],
+      "thematic_policy_descriptors": ["assessing impact on amenity and public safety", "application of advertisement regulations"],
+      "key_evidence_document_types": ["SiteVisitNotes", "PhotographsOfProposedAdvertisementLocation", "HighwayAuthorityConsultationResponse", "ConservationOfficerConsultationResponse_IfApplicable"],
+      "depends_on_nodes": ["1.0_SiteAndProposal", "2.0_ConsultationResponses", "3.0_PlanningPolicyFramework"]
+    },
+    {
+      "node_id": "5.0_OtherRelevantMatters",
+      "description": "Other Relevant Matters (e.g., Conditions, Duration of Consent)",
+      "node_type_tag": "OtherConsiderationsBlock",
+      "generic_material_considerations":["advertisement_consent_conditions_standard_specific", "duration_of_consent_standard_5_years", "relationship_to_any_concurrent_planning_application_for_building_works"],
+      "thematic_policy_descriptors": ["drafting appropriate advertisement consent conditions", "determining duration of consent"],
+      "depends_on_nodes": ["4.0_AssessmentOfMaterialConsiderations"]
+    },
+    {
+      "node_id": "6.0_PlanningBalanceAndConclusion",
+      "description": "Overall Planning Balance and Officer's Conclusion",
+      "node_type_tag": "PlanningBalanceAndConclusionBlock",
+      "generic_material_considerations":["balancing_need_for_advertisement_with_amenity_and_public_safety", "overall_acceptability_of_the_advertisement_proposal"],
+      "specific_policy_focus_ids": ["ControlOfAdvertisementsRegulations_DecisionMakingCriteria"],
+      "thematic_policy_descriptors": ["weighing material considerations for advertisement consent", "concluding on acceptability under regulations"],
+      "depends_on_nodes": ["4.0_AssessmentOfMaterialConsiderations", "5.0_OtherRelevantMatters"]
+    },
+    {
+      "node_id": "7.0_Recommendation",
+      "description": "Officer's Recommendation",
+      "node_type_tag": "FinalRecommendationBlock",
+      "thematic_policy_descriptors": ["formulating recommendation for advertisement consent application", "justification based on amenity, public safety and relevant policies"],
+      "depends_on_nodes": ["6.0_PlanningBalanceAndConclusion"]
+    }
+  ]
+}

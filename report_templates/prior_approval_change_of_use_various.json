@@ -1,0 +1,127 @@
+{
+  "report_type_id": "PriorApprovalChangeOfUseVarious",
+  "report_id_prefix": "PACoU",
+  "description": "Default Report for Prior Approval for Various Changes of Use (Adaptable Template)",
+  "sections": [
+    {
+      "node_id": "1.0_SiteAndProposal",
+      "description": "Site Details, Existing and Proposed Uses, and Basis of Prior Approval",
+      "node_type_tag": "IntroductionBlock",
+      "generic_material_considerations": ["site_location_and_context", "existing_lawful_use_of_building_land", "proposed_new_use_under_gpdo_class", "specific_gpdo_class_being_applied_under"],
+      "specific_policy_focus_ids": ["TownAndCountryPlanningGeneralPermittedDevelopmentOrder_RelevantSchedule2Part3OrOther"],
+      "thematic_policy_descriptors": ["understanding context for prior approval for change of use", "identifying the specific permitted development right being claimed"],
+      "depends_on_nodes": [],
+      "sub_sections": [
+        {
+          "node_id": "1.1_SiteDescriptionAndExistingUse",
+          "description": "Location, Current Use of the Building/Land, and Surrounding Area Character",
+          "node_type_tag": "SiteDescription",
+          "generic_material_considerations": ["property_address_and_description", "evidence_of_current_lawful_use_class_and_duration_if_relevant", "character_of_surrounding_area_e_g_commercial_residential_mixed", "any_site_constraints_e_g_conservation_area_flood_zone_listed_building_curtilage"],
+          "specific_policy_focus_ids": ["RelevantGPDO_Class_EligibilityCriteria"],
+          "thematic_policy_descriptors": ["confirming eligibility of the existing use and site for the specific PD right"],
+          "key_evidence_document_types": ["ApplicationForm_PriorApprovalChangeOfUse", "SiteLocationPlan", "EvidenceOfExistingLawfulUse_e_g_business_rates_tenancy_agreements_photos", "FloorPlans_ExistingAndProposedLayouts_IfChangesOccur"]
+        },
+        {
+          "node_id": "1.2_ProposedChangeOfUse",
+          "description": "Details of the Proposed New Use and Any Associated Operational Details or Minor Works",
+          "node_type_tag": "ProposalSummary",
+          "generic_material_considerations": ["specific_new_use_class_proposed", "description_of_how_the_new_use_will_operate_hours_activities", "details_of_any_minor_physical_works_associated_with_the_change_of_use_internal_external", "floor_area_involved_in_the_change_of_use_if_relevant_to_limits"],
+          "specific_policy_focus_ids": ["RelevantGPDO_Class_ScopeAndLimitations"],
+          "thematic_policy_descriptors": ["understanding the nature and extent of the proposed new use and associated works"],
+          "key_evidence_document_types": ["ProposedFloorPlans_IfLayoutChanges", "SupportingStatement_DetailingProposedUseAndOperations", "ScheduleOfWorks_IfAnyExternalChangesProposed"]
+        },
+        {
+          "node_id": "1.3_GPDOClassAndPriorApprovalMatters",
+          "description": "Identification of Specific GPDO Class and Matters for Prior Approval",
+          "node_type_tag": "PolicyReference",
+          "generic_material_considerations": ["clear_statement_of_the_gpdo_schedule_part_and_class_being_used", "listing_of_the_specific_matters_for_which_prior_approval_is_required_under_that_class_e_g_transport_noise_contamination_flooding_impacts_on_services_design_etc"],
+          "specific_policy_focus_ids": ["RelevantGPDO_Class_PriorApprovalConditions"],
+          "thematic_policy_descriptors": ["defining the exact regulatory framework and assessment criteria for the application"],
+          "key_evidence_document_types": ["ApplicantStatementReferencingGPDOClass"]
+        }
+      ]
+    },
+    {
+      "node_id": "2.0_ConsultationResponses",
+      "description": "Summary and Analysis of Consultation Responses on Prior Approval Matters",
+      "node_type_tag": "ConsultationSummaryBlock",
+      "generic_material_considerations": ["responses_from_statutory_consultees_relevant_to_prior_approval_matters_e_g_highway_authority_environment_agency_environmental_health", "comments_from_parish_council_or_neighbours_if_consultation_required_or_undertaken"],
+      "specific_policy_focus_ids": ["RelevantGPDO_Class_ConsultationRequirements"],
+      "thematic_policy_descriptors": ["reviewing expert and local feedback on the specified prior approval considerations"],
+      "depends_on_nodes": ["1.0_SiteAndProposal"],
+      "sub_sections": [
+        {"node_id": "2.1_StatutoryConsulteeResponses", "description": "Summary of Feedback from Technical Consultees on Specific Prior Approval Matters", "node_type_tag": "StatutoryConsultation", "thematic_policy_descriptors": ["technical assessment of impacts related to transport, noise, flooding, contamination etc."]},
+        {"node_id": "2.2_OtherRepresentations", "description": "Summary of Other Comments Received (if applicable)", "node_type_tag": "PublicConsultation", "thematic_policy_descriptors": ["local views on the potential impacts of the change of use"]}
+      ]
+    },
+    {
+      "node_id": "3.0_AssessmentAgainstPriorApprovalMatters",
+      "description": "Officer's Assessment of the Proposal Against the Specified Prior Approval Matters for the Relevant GPDO Class",
+      "node_type_tag": "MaterialConsiderationsBlock_Parent",
+      "is_dynamic_parent_node": true, 
+      "dynamic_node_source_fields": ["generic_material_considerations_from_gpdo_class"], 
+      "dynamic_node_config": {
+        "TransportAndHighwaysImpacts": {
+            "description_template": "Assessment of Transport and Highways Impacts",
+            "generic_material_considerations": ["impact_on_highway_safety_traffic_generation", "adequacy_of_parking_and_servicing", "accessibility_by_sustainable_transport"],
+            "specific_policy_focus_ids": ["RelevantGPDO_PriorApprovalMatter_Transport", "NPPF_PromotingSustainableTransport"],
+            "thematic_policy_descriptors": ["evaluating whether transport impacts are acceptable or can be mitigated"],
+            "key_evidence_document_types": ["TransportStatement_IfRequiredOrProvided", "HighwayAuthorityConsultationResponse", "ParkingBeatSurveys_IfRelevant"]
+        },
+        "NoiseImpacts": {
+            "description_template": "Assessment of Noise Impacts on Amenity",
+            "generic_material_considerations": ["potential_for_noise_disturbance_from_the_proposed_use_hours_activities_plant", "impact_on_noise_sensitive_receptors_e_g_residential"],
+            "specific_policy_focus_ids": ["RelevantGPDO_PriorApprovalMatter_Noise", "NPPF_EnsuringEffectiveUseOfLand_Amenity"],
+            "thematic_policy_descriptors": ["evaluating whether noise impacts are acceptable or can be mitigated"],
+            "key_evidence_document_types": ["NoiseImpactAssessment_IfRequiredOrProvided", "EnvironmentalHealthConsultationResponse", "DetailsOfNoiseMitigationMeasures"]
+        },
+        "ContaminationRisks": {
+            "description_template": "Assessment of Contamination Risks",
+            "generic_material_considerations": ["potential_for_land_contamination_to_affect_the_proposed_use_or_be_mobilised", "suitability_of_the_site_for_the_proposed_use_given_potential_contamination"],
+            "specific_policy_focus_ids": ["RelevantGPDO_PriorApprovalMatter_Contamination", "NPPF_DealingWithLandAffectedByContamination"],
+            "thematic_policy_descriptors": ["evaluating whether contamination risks are acceptable or can be remediated"],
+            "key_evidence_document_types": ["Phase1ContaminationReport_IfRequiredOrProvided", "EnvironmentalHealthConsultationResponse"]
+        },
+        "FloodingRisks": {
+            "description_template": "Assessment of Flooding Risks",
+            "generic_material_considerations": ["whether_the_site_is_in_a_flood_risk_area_flood_zone_1_2_3", "vulnerability_of_the_proposed_use_to_flooding", "impact_of_the_development_on_flood_risk_elsewhere"],
+            "specific_policy_focus_ids": ["RelevantGPDO_PriorApprovalMatter_Flooding", "NPPF_MeetingTheChallengeOfClimateChangeFlooding"],
+            "thematic_policy_descriptors": ["evaluating whether flood risks are acceptable or can be mitigated"],
+            "key_evidence_document_types": ["FloodRiskAssessment_IfRequiredOrProvided", "EnvironmentAgencyConsultationResponse"]
+        },
+        "ImpactsOnServicesOrCharacter": {
+            "description_template": "Assessment of Impacts on Local Services or Character of Area (e.g. loss of retail, impact on shopping frontage)",
+            "generic_material_considerations": ["impact_on_the_sustainability_of_local_services_or_retail_provision", "impact_on_the_character_or_function_of_a_shopping_area_or_town_centre"],
+            "specific_policy_focus_ids": ["RelevantGPDO_PriorApprovalMatter_ImpactOnServicesOrCharacter", "NPPF_EnsuringTheVitalityOfTownCentres"],
+            "thematic_policy_descriptors": ["evaluating impacts on local amenity, services, or economic character"],
+            "key_evidence_document_types": ["RetailImpactAssessment_IfRelevant", "EvidenceOfMarketingForExistingUse_IfRelevant"]
+        },
+        "DesignAndExternalAppearance": {
+            "description_template": "Assessment of Design and External Appearance (If applicable to the GPDO class, e.g. for some works with change of use)",
+            "generic_material_considerations": ["impact_of_any_external_changes_on_the_building_and_street_scene", "appropriateness_of_materials_and_design_in_context"],
+            "specific_policy_focus_ids": ["RelevantGPDO_PriorApprovalMatter_Design", "NPPF_AchievingWellDesignedPlaces"],
+            "thematic_policy_descriptors": ["evaluating the visual impact of any associated operational development"],
+            "key_evidence_document_types": ["ProposedElevationsAndMaterialDetails", "DesignStatement_IfProvided"]
+        }
+      },
+      "thematic_policy_descriptors": ["evaluating the proposal against the specific prior approval matters defined in the relevant GPDO class"],
+      "depends_on_nodes": ["1.0_SiteAndProposal", "2.0_ConsultationResponses"]
+    },
+    {
+      "node_id": "4.0_ConclusionOnPriorApproval",
+      "description": "Officer's Conclusion on Whether Prior Approval Should Be Granted or Refused Based on Assessed Matters",
+      "node_type_tag": "PlanningBalanceAndConclusionBlock",
+      "generic_material_considerations":["summary_of_assessment_against_each_relevant_prior_approval_matter", "whether_the_proposal_is_acceptable_or_if_impacts_can_be_mitigated_by_conditions", "overall_determination_on_prior_approval_for_the_specified_matters"],
+      "specific_policy_focus_ids": ["RelevantGPDO_Class_DecisionCriteria"],
+      "thematic_policy_descriptors": ["determining if the proposal is acceptable having regard to the specified prior approval matters"],
+      "depends_on_nodes": ["3.0_AssessmentAgainstPriorApprovalMatters"]
+    },
+    {
+      "node_id": "5.0_Recommendation",
+      "description": "Officer's Recommendation (Prior Approval Granted / Prior Approval Refused / PD Not Applicable)",
+      "node_type_tag": "FinalRecommendationBlock",
+      "thematic_policy_descriptors": ["formulating recommendation based on GPDO requirements for the specific change of use"],
+      "depends_on_nodes": ["4.0_ConclusionOnPriorApproval"]
+    }
+  ]
+}

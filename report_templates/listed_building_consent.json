@@ -1,0 +1,114 @@
+{
+  "report_type_id": "ListedBuildingConsent",
+  "report_id_prefix": "LBC",
+  "description": "Default Report for Listed Building Consent Applications",
+  "sections": [
+    {
+      "node_id": "1.0_SiteAndSignificance",
+      "description": "The Listed Building, Its Significance, Proposed Works & Relevant History",
+      "node_type_tag": "IntroductionHeritageBlock",
+      "generic_material_considerations": ["listed_building_identification_grade", "statement_of_significance_summary", "proposed_works_summary_lbc", "planning_history_lbc_related"],
+      "specific_policy_focus_ids": ["PlanningListedBuildingsAndConservationAreasAct1990", "NPPF_Chapter16_ConservingAndEnhancingTheHistoricEnvironment", "LocalPlan_HeritagePolicy"],
+      "thematic_policy_descriptors": ["understanding the special architectural or historic interest of the listed building", "legislative framework for listed building consent"],
+      "depends_on_nodes": [],
+      "sub_sections": [
+        {
+          "node_id": "1.1_TheListedBuildingAndItsSetting",
+          "description": "Description of the Listed Building, its Grade, Key Features, and Setting",
+          "node_type_tag": "HeritageAssetDescription",
+          "generic_material_considerations": ["list_description_details", "architectural_style_period", "materials_construction_methods_historic", "key_elements_contributing_to_significance", "setting_of_listed_building_contribution_to_significance"],
+          "specific_policy_focus_ids": ["HistoricEngland_ListingGuidance", "LocalPlan_DetailedHeritagePolicies"],
+          "thematic_policy_descriptors": ["detailed assessment of the listed building's fabric and features", "understanding the contribution of setting to heritage significance"],
+          "key_evidence_document_types": ["ApplicationForm_LBC", "SiteLocationPlan_ShowingExtentOfListing", "HeritageStatement_Or_StatementOfSignificance", "HistoricPhotographsAndPlans", "ExistingConditionSurvey"]
+        },
+        {
+          "node_id": "1.2_ProposedWorksInDetail",
+          "description": "Detailed Description of Proposed Works Requiring Listed Building Consent (Alterations, Extensions, Demolition)",
+          "node_type_tag": "ProposedWorksHeritageSummary",
+          "generic_material_considerations": ["nature_of_works_alteration_extension_demolition", "extent_of_intervention_to_historic_fabric", "materials_methods_for_proposed_works", "justification_for_works_necessity_benefits"],
+          "specific_policy_focus_ids": ["NPPF_Para199_202_HarmToSignificance", "HistoricEngland_MakingChangesToHeritageAssets"],
+          "thematic_policy_descriptors": ["detailed understanding of proposed interventions", "assessing the potential for harm to historic fabric"],
+          "key_evidence_document_types": ["ProposedPlansAndElevations_DetailedLBC", "HeritageImpactAssessment", "ScheduleOfWorks_LBC", "MethodStatement_ForSensitiveWorks", "StructuralSurvey_IfRelevant"]
+        },
+        {
+          "node_id": "1.3_RelevantPlanningAndLBCHistory",
+          "description": "Relevant Planning and Listed Building Consent History of the Asset",
+          "node_type_tag": "PlanningHistoryHeritage",
+          "generic_material_considerations": ["previous_lbcs_granted_refused", "history_of_alterations_authorised_unauthorised", "relationship_with_any_concurrent_planning_application"],
+          "specific_policy_focus_ids": ["LocalPlan_HeritagePolicyWeight"],
+          "thematic_policy_descriptors": ["history of interventions to the listed building", "cumulative impact of changes"],
+          "key_evidence_document_types": ["PreviousLBCDecisionNotices", "HistoricBuildingRecording_FromPreviousWorks"]
+        }
+      ]
+    },
+    {
+      "node_id": "2.0_ConsultationResponsesLBC",
+      "description": "Summary and Analysis of Consultation Responses (Statutory and Non-Statutory)",
+      "node_type_tag": "ConsultationSummaryHeritageBlock",
+      "generic_material_considerations": ["historic_england_comments_statutory", "national_amenity_societies_comments_if_consulted", "local_conservation_officer_advice", "parish_council_or_local_heritage_group_views"],
+      "specific_policy_focus_ids": ["PlanningListedBuildingsAndConservationAreasAct1990_ConsultationRequirements", "NPPF_ConsultationOnHeritageAssets"],
+      "thematic_policy_descriptors": ["statutory consultation requirements for LBC", "expert heritage advice and local stakeholder views"],
+      "depends_on_nodes": ["1.0_SiteAndSignificance/1.2_ProposedWorksInDetail"],
+      "sub_sections": [
+        {"node_id": "2.1_StatutoryConsulteesLBC", "description": "Feedback from Historic England and National Amenity Societies", "node_type_tag": "StatutoryConsultationHeritage", "thematic_policy_descriptors": ["assessment of harm or benefit by national heritage bodies"]},
+        {"node_id": "2.2_InternalAndLocalConsulteesLBC", "description": "Advice from Internal Conservation Officer, Local Societies, Parish Council", "node_type_tag": "LocalConsultationHeritage", "thematic_policy_descriptors": ["local expert advice and community perspectives on heritage impact"]}
+      ]
+    },
+    {
+      "node_id": "3.0_PlanningPolicyFrameworkLBC",
+      "description": "Relevant Legislative and Planning Policy Framework for Listed Building Consent",
+      "node_type_tag": "PolicyFrameworkHeritageBlock",
+      "generic_material_considerations": ["primary_legislation_plbcaa1990", "nppf_chapter_16_key_paragraphs", "local_plan_heritage_policies_lbc", "relevant_spds_heritage_design_conservation_area_appraisals"],
+      "thematic_policy_descriptors": ["legislative duty regarding listed buildings", "policy framework for preserving and enhancing heritage assets"],
+      "depends_on_nodes": [],
+      "sub_sections": [
+          {"node_id": "3.1_PrimaryLegislation", "description": "Planning (Listed Buildings and Conservation Areas) Act 1990 - Key Duties and Considerations", "node_type_tag": "LegislationHeritage", "thematic_policy_descriptors": ["statutory duty to have special regard to desirability of preserving the building or its setting or any features of special architectural or historic interest"]},
+          {"node_id": "3.2_NationalPolicyLBC", "description": "NPPF Chapter 16 - Conserving and Enhancing the Historic Environment", "node_type_tag": "NationalPolicyHeritage", "thematic_policy_descriptors": ["NPPF policy on assessing applications affecting heritage assets, harm, and public benefits"]},
+          {"node_id": "3.3_LocalPlanLBC", "description": "Local Plan - Specific Policies Relating to Listed Buildings, Conservation Areas, and Heritage Assets", "node_type_tag": "LocalPolicyHeritage", "thematic_policy_descriptors": ["local plan policies for the protection and enhancement of designated heritage assets"]},
+          {"node_id": "3.4_SPDsAndSPGsLBC", "description": "Relevant Supplementary Planning Documents/Guidance (e.g., Design Guide for Historic Buildings, Conservation Area Management Plans)", "node_type_tag": "SupplementaryGuidanceHeritage", "thematic_policy_descriptors": ["detailed guidance on works to listed buildings and within conservation areas"]}
+      ]
+    },
+    {
+      "node_id": "4.0_AssessmentOfImpactOnSignificance",
+      "description": "Officer's Assessment of the Impact of Proposed Works on the Special Architectural or Historic Interest of the Listed Building",
+      "node_type_tag": "HeritageImpactAssessmentBlock",
+      "is_dynamic_parent_node": false, 
+      "generic_material_considerations": [
+        "impact_on_historic_fabric_direct_indirect", 
+        "impact_on_special_architectural_interest_design_materials_craftsmanship", 
+        "impact_on_special_historic_interest_association_evidential_value_aesthetic_communal",
+        "level_of_harm_substantial_less_than_substantial_no_harm",
+        "justification_for_harm_public_benefits_if_any",
+        "opportunities_for_enhancement_or_better_revelation_of_significance"
+      ],
+      "specific_policy_focus_ids": ["NPPF_Paras199_208", "HistoricEngland_ConservationPrinciples"],
+      "thematic_policy_descriptors": ["assessing impact on heritage significance", "application of tests for harm and public benefit", "seeking preservation or enhancement"],
+      "key_evidence_document_types": ["HeritageImpactAssessment", "StatementOfSignificance", "ScheduleOfWorks_LBC", "ProposedPlansAndElevations_DetailedLBC", "HistoricEnglandGuidanceNotes"],
+      "depends_on_nodes": ["1.0_SiteAndSignificance", "2.0_ConsultationResponsesLBC", "3.0_PlanningPolicyFrameworkLBC"]
+    },
+    {
+      "node_id": "5.0_OtherRelevantMattersLBC",
+      "description": "Other Relevant Matters (e.g., Conditions, Enabling Development, Concurrent Applications)",
+      "node_type_tag": "OtherConsiderationsHeritageBlock",
+      "generic_material_considerations":["lbc_conditions_materials_methods_recording", "enabling_development_justification_if_harm_is_outweighed_by_securing_future_of_asset", "relationship_to_planning_permission_application_if_any", "archaeological_implications_if_ground_works_involved"],
+      "thematic_policy_descriptors": ["drafting appropriate LBC conditions", "consideration of enabling development arguments", "coordination with other consents"],
+      "depends_on_nodes": ["4.0_AssessmentOfImpactOnSignificance"]
+    },
+    {
+      "node_id": "6.0_HeritageBalanceAndConclusionLBC",
+      "description": "Overall Heritage Balance, Consideration of Public Benefits, and Officer's Conclusion",
+      "node_type_tag": "HeritageBalanceAndConclusionBlock",
+      "generic_material_considerations":["weighing_harm_against_public_benefits_nppf_test", "statutory_presumption_in_favour_of_preservation", "overall_acceptability_of_works_to_listed_building"],
+      "specific_policy_focus_ids": ["NPPF_Para200_202_SubstantialHarmOrLoss", "NPPF_Para201_202_LessThanSubstantialHarm", "PlanningListedBuildingsAndConservationAreasAct1990_Section16or66"],
+      "thematic_policy_descriptors": ["applying the heritage balance test from NPPF", "concluding on whether special interest is preserved or enhanced"],
+      "depends_on_nodes": ["4.0_AssessmentOfImpactOnSignificance", "5.0_OtherRelevantMattersLBC"]
+    },
+    {
+      "node_id": "7.0_RecommendationLBC",
+      "description": "Officer's Recommendation for Listed Building Consent",
+      "node_type_tag": "FinalRecommendationHeritageBlock",
+      "thematic_policy_descriptors": ["formulating recommendation for LBC application", "clear justification based on heritage legislation, policy and assessment of impact on significance"],
+      "depends_on_nodes": ["6.0_HeritageBalanceAndConclusionLBC"]
+    }
+  ]
+}

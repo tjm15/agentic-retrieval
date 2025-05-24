@@ -1,0 +1,145 @@
+{
+  "report_type_id": "HazardousSubstancesConsent",
+  "report_id_prefix": "HSC",
+  "description": "Default Report for Application for Hazardous Substances Consent",
+  "sections": [
+    {
+      "node_id": "1.0_ApplicationAndProposal",
+      "description": "Application Details, Proposed Substances, and Site Context",
+      "node_type_tag": "IntroductionBlock",
+      "generic_material_considerations": ["applicant_details_operator_of_the_site", "site_location_and_description_including_area_of_land_to_which_application_relates", "list_of_hazardous_substances_for_which_consent_is_sought_or_to_be_varied_including_their_cas_number_and_un_number_if_applicable", "quantity_of_each_substance_proposed_to_be_present_maximum_likely_to_be_present_at_any_one_time", "manner_in_which_substances_are_to_be_kept_and_used_e_g_storage_tanks_pipelines_process_vessels"],
+      "specific_policy_focus_ids": ["PlanningHazardousSubstancesAct1990", "PlanningHazardousSubstancesRegulations2015", "COMAHRegulations2015_ControlOfMajorAccidentHazards"],
+      "thematic_policy_descriptors": ["understanding the scope of hazardous substances consent application", "identifying substances and quantities"],
+      "depends_on_nodes": [],
+      "sub_sections": [
+        {
+          "node_id": "1.1_SiteDescriptionAndSurroundingArea",
+          "description": "Detailed Description of the Site, its Operations, and the Characteristics of the Surrounding Area",
+          "node_type_tag": "SiteDescription",
+          "generic_material_considerations": ["current_and_proposed_use_of_the_site", "layout_of_the_site_showing_location_of_storage_process_areas_and_boundaries", "proximity_to_residential_areas_schools_hospitals_major_transport_routes_environmentally_sensitive_areas_and_other_vulnerable_land_uses", "topography_and_any_other_relevant_physical_characteristics_of_the_site_and_surroundings"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["contextual understanding for risk assessment"],
+          "key_evidence_document_types": ["SiteLocationPlan", "DetailedSiteLayoutPlan", "SubstanceLocationPlan", "LandUseMapOfSurroundingArea"]
+        },
+        {
+          "node_id": "1.2_DetailsOfHazardousSubstancesAndQuantities",
+          "description": "Specific Information on Each Hazardous Substance and Proposed Quantities",
+          "node_type_tag": "SubstanceDetails",
+          "generic_material_considerations": ["name_of_substance_s", "cas_number_s", "classification_under_clp_regulation_classification_labelling_and_packaging", "proposed_maximum_quantity_in_tonnes_or_other_appropriate_unit", "existing_consented_quantities_if_any_for_variation_applications", "method_of_storage_and_containment_e_g_bulk_storage_drums_cylinders_pipelines", "nature_of_activity_involving_the_substance_e_g_storage_processing_use_as_fuel"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["precise identification of hazards and scale"],
+          "key_evidence_document_types": ["SubstanceInventoryList", "SafetyDataSheets_MSDS_ForSubstances_IfAppropriate"]
+        },
+        {
+          "node_id": "1.3_RelevantPlanningHistoryAndExistingConsents",
+          "description": "Summary of Relevant Planning History and Any Existing Hazardous Substances Consents for the Site",
+          "node_type_tag": "PlanningHistory",
+          "generic_material_considerations": ["details_of_any_existing_hazardous_substances_consents_including_substances_and_quantities_covered", "any_relevant_planning_permissions_for_the_site_or_operations", "history_of_enforcement_action_or_incidents_if_any_and_relevant"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["understanding existing permissions and site operational history"],
+          "key_evidence_document_types": ["ExistingHazardousSubstancesConsentDocuments", "PlanningHistorySearchRecords"]
+        }
+      ]
+    },
+    {
+      "node_id": "2.0_StatutoryConsultationAndPolicy",
+      "description": "Consultation with Health and Safety Executive (HSE) and Other Bodies, and Relevant Policy",
+      "node_type_tag": "PolicyFrameworkSummaryBlock",
+      "generic_material_considerations": ["requirement_for_consultation_with_hse_and_environment_agency_natural_england_fire_and_rescue_service_as_appropriate", "nppf_guidance_on_planning_for_hazardous_substances", "local_plan_policies_relating_to_hazardous_installations_and_public_safety", "hse_land_use_planning_methodology_padhi"],
+      "specific_policy_focus_ids": ["NPPF_ParagraphsOnHazardousSubstances", "LocalPlan_HazardousSubstancesPolicies", "HSE_LUPSiteSpecificAdvice"],
+      "thematic_policy_descriptors": ["regulatory framework and expert advice on risk"],
+      "depends_on_nodes": [],
+      "sub_sections": [
+        {"node_id": "2.1_HSEConsultationResponse", "description": "Advice from the Health and Safety Executive (HSE) on Risks to Surrounding Population/Environment", "node_type_tag": "StatutoryConsulteeResponse_HSE", "thematic_policy_descriptors": ["critical expert advice on off-site risks"]},
+        {"node_id": "2.2_OtherStatutoryConsulteeResponses", "description": "Advice from Environment Agency, Natural England, Fire Service etc.", "node_type_tag": "StatutoryConsulteeResponse", "thematic_policy_descriptors": ["environmental protection and emergency response considerations"]},
+        {"node_id": "2.3_NationalAndLocalPolicy", "description": "NPPF and Local Plan Policies on Hazardous Substances", "node_type_tag": "PolicyReview", "thematic_policy_descriptors": ["policy guidance on managing development involving hazardous substances"]}
+      ]
+    },
+    {
+      "node_id": "3.0_AssessmentOfRisksAndMitigation",
+      "description": "Officer's Assessment of the Risks Posed by the Presence of Hazardous Substances and Proposed Mitigation",
+      "node_type_tag": "MaterialConsiderationsBlock_Parent",
+      "depends_on_nodes": ["1.0_ApplicationAndProposal", "2.0_StatutoryConsultationAndPolicy"],
+      "sub_sections": [
+        {
+          "node_id": "3.1_RiskToPeopleAndPropertyInTheVicinity",
+          "description": "Assessment of Potential Harm to Human Health and Safety in Surrounding Areas (Based Primarily on HSE Advice)",
+          "node_type_tag": "RiskAssessment",
+          "generic_material_considerations": ["hse_assessment_of_the_risks_of_a_major_accident_occurring_and_its_potential_consequences_for_people_in_the_surrounding_area", "identification_of_hse_consultation_zones_inner_middle_outer_and_implications_for_development_in_those_zones", "consideration_of_the_nature_of_surrounding_land_uses_e_g_density_of_population_presence_of_vulnerable_groups", "adequacy_of_on_site_safety_measures_to_prevent_or_mitigate_off_site_consequences_note_hsc_focuses_on_land_use_planning_not_on_site_safety_which_is_hse_s_regulatory_role_under_comah_etc"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["evaluating off-site safety implications"],
+          "key_evidence_document_types": ["HSEConsultationResponseLetterAndRiskAssessmentOutput", "SiteSafetyCaseOrCOMAHReportSummary_IfAvailableAndRelevantToLandUsePlanning"]
+        },
+        {
+          "node_id": "3.2_RiskToTheEnvironment",
+          "description": "Assessment of Potential Harm to the Environment (Based on EA/NE Advice and Applicant Info)",
+          "node_type_tag": "EnvironmentalRiskAssessment",
+          "generic_material_considerations": ["potential_for_contamination_of_land_water_or_air_in_the_event_of_an_incident", "impact_on_designated_environmental_sites_e_g_sss_is_european_sites_or_protected_species", "adequacy_of_containment_measures_bunding_spill_control_emergency_procedures_to_prevent_environmental_damage"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["evaluating potential environmental consequences"],
+          "key_evidence_document_types": ["EnvironmentAgencyConsultationResponse", "NaturalEnglandConsultationResponse", "EnvironmentalStatementOrRiskAssessment_IfProvided"]
+        },
+        {
+          "node_id": "3.3_CompatibilityWithExistingAndProposedDevelopmentInTheArea",
+          "description": "Consideration of the Compatibility of the Hazardous Installation with Existing and Allocated Land Uses",
+          "node_type_tag": "LandUseCompatibilityAssessment",
+          "generic_material_considerations": ["whether_the_presence_of_the_hazardous_substances_would_unduly_constrain_or_sterilise_other_land_allocated_for_development_in_the_local_plan", "impact_on_existing_sensitive_land_uses_in_the_vicinity", "cumulative_impact_if_there_are_other_hazardous_installations_nearby"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["assessing land use planning implications for the wider area"],
+          "key_evidence_document_types": ["LocalPlanAndProposalsMap"]
+        },
+        {
+          "node_id": "3.4_NeedForTheDevelopmentAndAlternativesConsidered",
+          "description": "Consideration of the Justification for the Presence of the Substances at this Location (If Relevant)",
+          "node_type_tag": "JustificationAssessment",
+          "generic_material_considerations": ["economic_or_operational_need_for_the_hazardous_substances_at_the_site", "whether_alternative_locations_or_less_hazardous_substances_could_be_used_note_this_is_less_of_a_focus_for_hsc_than_for_full_planning_permission_but_may_be_relevant_in_some_cases"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["understanding the rationale for the proposal, if contested"],
+          "key_evidence_document_types": ["ApplicantSupportingStatementOnNeed_IfProvided"]
+        }
+      ]
+    },
+    {
+      "node_id": "4.0_OtherMaterialConsiderations",
+      "description": "Consideration of Other Relevant Matters",
+      "node_type_tag": "OtherConsiderationsBlock",
+      "generic_material_considerations": ["public_representations_received_on_the_application", "emergency_planning_arrangements_and_liaison_with_emergency_services", "security_arrangements_for_the_site_to_prevent_unauthorised_access_or_malicious_acts"],
+      "specific_policy_focus_ids": [],
+      "thematic_policy_descriptors": ["addressing additional relevant factors"],
+      "depends_on_nodes": [],
+      "sub_sections": [
+        {"node_id": "4.1_PublicRepresentations", "description": "Summary of Public Comments", "node_type_tag": "PublicResponse", "thematic_policy_descriptors": ["community concerns regarding safety and environment"]},
+        {"node_id": "4.2_EmergencyPlanningAndSecurity", "description": "Emergency Response and Site Security Measures", "node_type_tag": "SafetyAndSecurityReview", "thematic_policy_descriptors": ["preparedness for incidents and site integrity"]}
+      ]
+    },
+    {
+      "node_id": "5.0_ConclusionAndRecommendation",
+      "description": "Officer's Overall Conclusion and Recommendation on Hazardous Substances Consent",
+      "node_type_tag": "PlanningBalanceAndConclusionBlock",
+      "generic_material_considerations": ["summary_of_assessment_of_risks_to_people_and_the_environment_primarily_based_on_hse_and_other_statutory_consultee_advice", "overall_acceptability_of_the_proposal_in_land_use_planning_terms", "consideration_of_any_conditions_that_may_be_necessary_if_consent_is_granted"],
+      "specific_policy_focus_ids": [],
+      "thematic_policy_descriptors": ["overall judgement on whether consent should be granted"],
+      "depends_on_nodes": ["3.0_AssessmentOfRisksAndMitigation", "2.0_StatutoryConsultationAndPolicy", "4.0_OtherMaterialConsiderations"],
+      "sub_sections": [
+        {
+          "node_id": "5.1_OverallPlanningBalanceOnRisk",
+          "description": "Weighing of Risks and Benefits in Land Use Planning Terms",
+          "node_type_tag": "PlanningBalance",
+          "generic_material_considerations": ["whether_the_risks_to_people_and_the_environment_are_acceptable_taking_full_account_of_hse_advice_and_that_of_other_statutory_bodies", "whether_the_development_is_compatible_with_surrounding_land_uses_and_local_plan_policies", "the_weight_to_be_given_to_hse_advice_hse_advises_against_granting_consent_or_advises_that_certain_areas_should_be_restricted_for_development_this_is_a_strong_material_consideration"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["final assessment of land use planning acceptability based on risk"],
+          "key_evidence_document_types": []
+        },
+        {
+          "node_id": "5.2_Recommendation",
+          "description": "Officer's Recommendation (Grant Consent, Grant Consent with Conditions, or Refuse Consent)",
+          "node_type_tag": "FinalRecommendationBlock",
+          "generic_material_considerations": ["clear_recommendation_grant_consent_grant_with_conditions_or_refuse_consent", "if_granting_consent_conditions_may_relate_to_quantities_of_substances_storage_methods_duration_of_consent_measures_to_mitigate_risk_off_site_notification_procedures", "if_refusing_consent_clear_reasons_based_on_unacceptable_risk_to_people_or_the_environment_or_conflict_with_land_use_planning_policies_heavily_informed_by_hse_advice"],
+          "specific_policy_focus_ids": [],
+          "thematic_policy_descriptors": ["formulating recommendation for hazardous substances consent application"],
+          "key_evidence_document_types": []
+        }
+      ]
+    }
+  ]
+}
