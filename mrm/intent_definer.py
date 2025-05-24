@@ -14,14 +14,21 @@ from typing import Dict, List, Optional, Any
 # Assuming these are correctly imported relative to this file's location
 from core_types import ReasoningNode, Intent, ProvenanceLog
 from knowledge_base.policy_manager import PolicyManager
-from config import MRM_MODEL_NAME, INTENT_DEFINER_GEN_CONFIG
+from config import MRM_MODEL_NAME, INTENT_DEFINER_GEN_CONFIG, CACHE_ENABLED
+from cache.gemini_cache import GeminiResponseCache
 
 class IntentDefiner:
     def __init__(self, policy_manager: PolicyManager, api_key: str):
         self.policy_manager = policy_manager
         # Initialize Gemini client with timeout configuration
         self.client = genai.Client(api_key=api_key)
+        
+        # Initialize cache if enabled
+        self.cache = GeminiResponseCache() if CACHE_ENABLED else None
+        
         print(f"INFO: Enhanced IntentDefiner initialized with semantic policy search capability.")
+        if CACHE_ENABLED:
+            print(f"INFO: IntentDefiner caching enabled")
 
     def _perform_thematic_policy_search(self, node: ReasoningNode, application_display_name: str, 
                                       node_provenance: ProvenanceLog) -> List[Dict[str, Any]]:
@@ -191,26 +198,61 @@ Output ONLY the JSON specification:"""
             max_retries = 2
             timeout_seconds = 300  # 5 minute timeout per attempt - Gemini can be slow
             
-            for attempt in range(max_retries):
-                try:
-                    print(f"DEBUG: API attempt {attempt + 1}/{max_retries} (allowing up to {timeout_seconds}s per attempt)...")
-                    # Use typing.cast to satisfy type checker
-                    api_config = cast(GenerateContentConfigDict, dict(INTENT_DEFINER_GEN_CONFIG))
-                    response = self.client.models.generate_content(
-                        model=MRM_MODEL_NAME,
-                        contents=[intent_spec_prompt],
-                        config=api_config
-                    )
-                    print(f"DEBUG: Received response from Gemini API for node {node.node_id}")
-                    break
-                    
-                except Exception as api_error:
-                    print(f"WARN: API attempt {attempt + 1} failed: {type(api_error).__name__} - {str(api_error)[:200]}")
-                    if attempt == max_retries - 1:
-                        print(f"ERROR: All {max_retries} API attempts failed for node {node.node_id}")
-                        raise api_error
-                    print(f"Retrying in 10 seconds...")
-                    time.sleep(10)  # Wait longer before retry
+            # Try cache first if enabled
+            if self.cache:
+                # Convert config to dictionary format for cache compatibility
+                config_dict = dict(INTENT_DEFINER_GEN_CONFIG)
+                cached_response = self.cache.get(intent_spec_prompt, config_dict, MRM_MODEL_NAME)
+                if cached_response:
+                    print(f"DEBUG: Using cached response for node {node.node_id}")
+                    response = cached_response
+                else:
+                    print(f"DEBUG: No cache hit, making API call for node {node.node_id}")
+                    # Make API call with retries
+                    for attempt in range(max_retries):
+                        try:
+                            print(f"DEBUG: API attempt {attempt + 1}/{max_retries} (allowing up to {timeout_seconds}s per attempt)...")
+                            # Use typing.cast to satisfy type checker
+                            api_config = cast(GenerateContentConfigDict, dict(INTENT_DEFINER_GEN_CONFIG))
+                            response = self.client.models.generate_content(
+                                model=MRM_MODEL_NAME,
+                                contents=[intent_spec_prompt],
+                                config=api_config
+                            )
+                            print(f"DEBUG: Received response from Gemini API for node {node.node_id}")
+                            # Cache the response
+                            self.cache.put(intent_spec_prompt, config_dict, MRM_MODEL_NAME, response)
+                            break
+                            
+                        except Exception as api_error:
+                            print(f"WARN: API attempt {attempt + 1} failed: {type(api_error).__name__} - {str(api_error)[:200]}")
+                            if attempt == max_retries - 1:
+                                print(f"ERROR: All {max_retries} API attempts failed for node {node.node_id}")
+                                raise api_error
+                            print(f"Retrying in 10 seconds...")
+                            time.sleep(10)  # Wait longer before retry
+            else:
+                # No caching, make direct API call with retries
+                for attempt in range(max_retries):
+                    try:
+                        print(f"DEBUG: API attempt {attempt + 1}/{max_retries} (allowing up to {timeout_seconds}s per attempt)...")
+                        # Use typing.cast to satisfy type checker
+                        api_config = cast(GenerateContentConfigDict, dict(INTENT_DEFINER_GEN_CONFIG))
+                        response = self.client.models.generate_content(
+                            model=MRM_MODEL_NAME,
+                            contents=[intent_spec_prompt],
+                            config=api_config
+                        )
+                        print(f"DEBUG: Received response from Gemini API for node {node.node_id}")
+                        break
+                        
+                    except Exception as api_error:
+                        print(f"WARN: API attempt {attempt + 1} failed: {type(api_error).__name__} - {str(api_error)[:200]}")
+                        if attempt == max_retries - 1:
+                            print(f"ERROR: All {max_retries} API attempts failed for node {node.node_id}")
+                            raise api_error
+                        print(f"Retrying in 10 seconds...")
+                        time.sleep(10)  # Wait longer before retry
             
             if response is None:
                 raise RuntimeError("No response received from Gemini API after all retries.")
@@ -302,14 +344,36 @@ Parent node ID will be: "{original_intent.parent_node_id}"
             time.sleep(0.8)  # Rate limiting
             print(f"DEBUG: Generating clarification intent - this may take 2-3 minutes...")
             
-            # Add timeout and retry for clarification calls
-            api_config = cast(GenerateContentConfigDict, dict(INTENT_DEFINER_GEN_CONFIG))
-            response = self.client.models.generate_content(
-                model=MRM_MODEL_NAME,
-                contents=[prompt],
-                config=api_config
-            )
-            print(f"DEBUG: Clarification intent response received")
+            # Try cache first if enabled
+            if self.cache:
+                # Convert config to dictionary format for cache compatibility
+                config_dict = dict(INTENT_DEFINER_GEN_CONFIG)
+                cached_response = self.cache.get(prompt, config_dict, MRM_MODEL_NAME)
+                if cached_response:
+                    print(f"DEBUG: Using cached clarification response")
+                    response = cached_response
+                else:
+                    print(f"DEBUG: No cache hit for clarification, making API call")
+                    # Add timeout and retry for clarification calls
+                    api_config = cast(GenerateContentConfigDict, dict(INTENT_DEFINER_GEN_CONFIG))
+                    response = self.client.models.generate_content(
+                        model=MRM_MODEL_NAME,
+                        contents=[prompt],
+                        config=api_config
+                    )
+                    print(f"DEBUG: Clarification intent response received")
+                    # Cache the response
+                    self.cache.put(prompt, config_dict, MRM_MODEL_NAME, response)
+            else:
+                # No caching, make direct API call
+                # Add timeout and retry for clarification calls
+                api_config = cast(GenerateContentConfigDict, dict(INTENT_DEFINER_GEN_CONFIG))
+                response = self.client.models.generate_content(
+                    model=MRM_MODEL_NAME,
+                    contents=[prompt],
+                    config=api_config
+                )
+                print(f"DEBUG: Clarification intent response received")
             
             raw_json_spec_text = self._extract_response_text(response)
             if not raw_json_spec_text:

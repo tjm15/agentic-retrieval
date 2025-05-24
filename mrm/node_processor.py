@@ -6,7 +6,7 @@ from google import genai
 from typing import cast
 from google.genai.types import GenerateContentConfigDict
 
-from config import MRM_CORE_GEN_CONFIG, MRM_MODEL_NAME
+from config import MRM_CORE_GEN_CONFIG, MRM_MODEL_NAME, CACHE_ENABLED
 
 from core_types import ReasoningNode, Intent, IntentStatus, ProvenanceLog
 from retrieval.retriever import AgenticRetriever
@@ -14,6 +14,7 @@ from agents.base_agent import BaseSubsidiaryAgent
 from knowledge_base.policy_manager import PolicyManager
 from knowledge_base.report_template_manager import ReportTemplateManager
 from knowledge_base.material_consideration_ontology import MaterialConsiderationOntology
+from cache.gemini_cache import GeminiResponseCache
 
 class NodeProcessor:
     def __init__(self, api_key: str, retriever: AgenticRetriever, subsidiary_agents: Dict[str, BaseSubsidiaryAgent], policy_manager: PolicyManager):
@@ -23,7 +24,13 @@ class NodeProcessor:
         self.retriever = retriever
         self.subsidiary_agents = subsidiary_agents
         self.policy_manager = policy_manager
+        
+        # Initialize cache if enabled
+        self.cache = GeminiResponseCache() if CACHE_ENABLED else None
+        
         print(f"INFO: NodeProcessor initialized.")
+        if CACHE_ENABLED:
+            print(f"INFO: NodeProcessor caching enabled")
 
     def _prepare_mrm_synthesis_content(self, intent: Intent, mrm_task_prompt: str) -> List[Any]:
         parts: List[Any] = [mrm_task_prompt]
@@ -135,13 +142,36 @@ class NodeProcessor:
                 config = cast(GenerateContentConfigDict, dict(MRM_CORE_GEN_CONFIG))  # Use centralized config
                 if "JSON" in intent.output_format_request.upper() or intent.data_requirements.get("schema"):
                     config["response_mime_type"] = "application/json"
-                print(f"DEBUG: NodeProcessor sending MRM synthesis request for {intent.parent_node_id} - may take 2-5 minutes...")
-                response = self.client.models.generate_content(
-                    model=self.model_name,
-                    contents=gemini_mrm_content,
-                    config=config
-                )
-                print(f"DEBUG: NodeProcessor received MRM synthesis response for {intent.parent_node_id}")
+                
+                # Try cache first if enabled
+                if self.cache:
+                    # Convert gemini_mrm_content to a hashable prompt string for caching
+                    prompt_for_cache = "\n".join([str(part) for part in gemini_mrm_content])
+                    # Convert config to dictionary format for cache compatibility
+                    config_dict = dict(config)
+                    cached_response = self.cache.get(prompt_for_cache, config_dict, self.model_name)
+                    if cached_response:
+                        print(f"DEBUG: NodeProcessor using cached MRM synthesis response for {intent.parent_node_id}")
+                        response = cached_response
+                    else:
+                        print(f"DEBUG: NodeProcessor no cache hit, making MRM synthesis request for {intent.parent_node_id} - may take 2-5 minutes...")
+                        response = self.client.models.generate_content(
+                            model=self.model_name,
+                            contents=gemini_mrm_content,
+                            config=config
+                        )
+                        print(f"DEBUG: NodeProcessor received MRM synthesis response for {intent.parent_node_id}")
+                        # Cache the response
+                        self.cache.put(prompt_for_cache, config_dict, self.model_name, response)
+                else:
+                    # No caching, make direct API call
+                    print(f"DEBUG: NodeProcessor sending MRM synthesis request for {intent.parent_node_id} - may take 2-5 minutes...")
+                    response = self.client.models.generate_content(
+                        model=self.model_name,
+                        contents=gemini_mrm_content,
+                        config=config
+                    )
+                    print(f"DEBUG: NodeProcessor received MRM synthesis response for {intent.parent_node_id}")
                 text = getattr(response, "text", None)
                 if not text and hasattr(response, "candidates") and response.candidates:
                     first_candidate = response.candidates[0]

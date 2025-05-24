@@ -5,8 +5,10 @@
 import json
 import time
 import uuid
+import asyncio
+from concurrent.futures import ThreadPoolExecutor
 from google import genai
-from typing import Dict, List, Optional, Any
+from typing import Dict, List, Optional, Any, Set, Tuple
 
 # Core application components
 from core_types import ReasoningNode, Intent, IntentStatus, ProvenanceLog
@@ -22,7 +24,7 @@ from agents.visual_heritage_agent import VisualHeritageAgent # MODIFIED: Correct
 from agents.policy_analysis_agent import PolicyAnalysisAgent, DefaultPlanningAnalystAgent, LLMPlanningPolicyAnalyst
 from agents.base_agent import BaseSubsidiaryAgent 
 
-from config import GEMINI_API_KEY, MRM_MODEL_NAME, SUBSIDIARY_AGENT_MODEL_NAME, DB_CONFIG, REPORT_TEMPLATE_DIR, MC_ONTOLOGY_DIR, POLICY_KB_DIR
+from config import GEMINI_API_KEY, MRM_MODEL_NAME, SUBSIDIARY_AGENT_MODEL_NAME, DB_CONFIG, REPORT_TEMPLATE_DIR, MC_ONTOLOGY_DIR, POLICY_KB_DIR, PARALLEL_ASYNC_LLM_MODE, MAX_CONCURRENT_LLM_CALLS
 
 if not GEMINI_API_KEY:
     raise ValueError("CRITICAL: GEMINI_API_KEY not found. Please set it in your environment or .env file.")
@@ -73,6 +75,15 @@ class MRMOrchestrator:
 
         self.application_context_cache: Dict[str, Dict[str, Any]] = {}
         self.overall_provenance_logs: List[ProvenanceLog] = []
+        
+        # Configure parallel async LLM mode
+        self.parallel_async_llm_mode = PARALLEL_ASYNC_LLM_MODE
+        self.max_concurrent_llm_calls = MAX_CONCURRENT_LLM_CALLS
+        self._llm_semaphore = asyncio.Semaphore(self.max_concurrent_llm_calls) if self.parallel_async_llm_mode else None
+        
+        print(f"INFO: Parallel Async LLM Mode: {'ENABLED' if self.parallel_async_llm_mode else 'DISABLED'}")
+        if self.parallel_async_llm_mode:
+            print(f"INFO: Max Concurrent LLM Calls: {self.max_concurrent_llm_calls}")
 
     def _get_or_create_application_context_summary(self, application_refs: List[str], app_display_name: str) -> Dict[str, Any]:
         cache_key = f"app_summary_{'_'.join(sorted(application_refs))}"
@@ -223,14 +234,22 @@ class MRMOrchestrator:
                         for theme_info in identified_sub_themes:
                             theme_name = theme_info.get("theme_name", str(theme_info)) if isinstance(theme_info, dict) else str(theme_info)
                             ontology_match_id = theme_info.get("ontology_match_id") if isinstance(theme_info, dict) else None
-                            if not ontology_match_id and self.mc_ontology_manager: ontology_match_id = self.mc_ontology_manager.find_matching_consideration_id(theme_name)
+                            
+                            if not ontology_match_id and self.mc_ontology_manager:
+                                ontology_match_id = self.mc_ontology_manager.find_matching_consideration_id(theme_name)
 
-                            sub_node_id_suffix = ontology_match_id if ontology_match_id else theme_name.replace(" ", "_").replace("/", "_")[:30]
+                            sub_node_id_suffix = (ontology_match_id if ontology_match_id 
+                                                 else theme_name.replace(" ", "_").replace("/", "_")[:30])
                             sub_node_id = f"{node.node_id}/DYNAMIC_{sub_node_id_suffix}"
                             sub_node_description = f"Detailed Assessment: {theme_name} for {app_display_name}"
-                            if ontology_match_id: sub_node_description = f"Detailed Assessment for {ontology_match_id}: {theme_name} ({app_display_name})"
+                            
+                            if ontology_match_id:
+                                sub_node_description = f"Detailed Assessment for {ontology_match_id}: {theme_name} ({app_display_name})"
 
-                            dynamic_sub_node = ReasoningNode(node_id=sub_node_id, description=sub_node_description)
+                            dynamic_sub_node = ReasoningNode(
+                                node_id=sub_node_id, 
+                                description=sub_node_description
+                            )
                             dynamic_sub_node.application_refs = application_refs
                             dynamic_sub_node.node_type_tag = "MaterialConsideration_DynamicItem"
                             dynamic_sub_node.linked_ontology_entry_id = ontology_match_id
@@ -238,295 +257,456 @@ class MRMOrchestrator:
                             if ontology_match_id and self.mc_ontology_manager:
                                 mc_details = self.mc_ontology_manager.get_consideration_details(ontology_match_id)
                                 if mc_details:
-                                    dynamic_sub_node.generic_material_considerations.extend(mc_details.get("primary_tags", []))
-                                    dynamic_sub_node.specific_policy_focus_ids.extend(mc_details.get("relevant_policy_themes", []))
-                                    dynamic_sub_node.key_evidence_document_types.extend(mc_details.get("key_evidence_docs", []))
+                                    dynamic_sub_node.generic_material_considerations.extend(
+                                        mc_details.get("primary_tags", [])
+                                    )
+                                    dynamic_sub_node.specific_policy_focus_ids.extend(
+                                        mc_details.get("relevant_policy_themes", [])
+                                    )
+                                    dynamic_sub_node.key_evidence_document_types.extend(
+                                        mc_details.get("key_evidence_docs", [])
+                                    )
                                     dynamic_sub_node.agent_to_invoke_hint = mc_details.get("agent_to_invoke_hint")
                                     dynamic_sub_node.data_requirements_schema_hint = mc_details.get("data_schema_hint")
-                            else: dynamic_sub_node.generic_material_considerations.append(theme_name)
+                            else:
+                                dynamic_sub_node.generic_material_considerations.append(theme_name)
+                            
                             node.add_sub_node(dynamic_sub_node)
-                            node_provenance.add_action(f"Created dynamic sub-node: {dynamic_sub_node.node_id} for '{theme_name}'. Ontology: {ontology_match_id}")
-                    else: node_provenance.add_action(f"Dynamic parent '{node.node_id}' no structured sub-themes.", {"type": type(identified_sub_themes).__name__})
-                else: node_provenance.add_action(f"Dynamic parent '{node.node_id}' intent failed. Status: {dynamic_parent_intent.status.value if dynamic_parent_intent else 'N/A'}", {"error": dynamic_parent_intent.error_message if dynamic_parent_intent and hasattr(dynamic_parent_intent, 'error_message') else 'Intent spec failed earlier or error message not available.'})
-            else: node_provenance.add_action(f"Failed to define intent spec for dynamic parent {node.node_id}.")
-            
-            node.final_synthesized_text = dynamic_parent_intent.synthesized_text_output if dynamic_parent_intent else "Dynamic sub-node identification did not complete."
-            node.final_structured_data = dynamic_parent_intent.structured_json_output if dynamic_parent_intent else {"error": "Dynamic sub-node identification failed."}
-            node.status = dynamic_parent_intent.status if dynamic_parent_intent else IntentStatus.FAILED
-            node.confidence_score = dynamic_parent_intent.confidence_score if dynamic_parent_intent else 0.1
-
-        if node.sub_nodes:
-            for sub_node_key, sub_node_obj in node.sub_nodes.items():
-                self._process_node_and_children_recursively(
-                    sub_node_obj, application_refs, app_display_name, report_type, 
-                    app_context_summary, processed_node_outputs, clarification_attempt_counts
-                )
-        
-        should_process_main_intent_for_this_node = True
-        if node.is_dynamic_parent_node:
-            if not (node.sub_nodes and node.node_type_tag and "Parent" in node.node_type_tag):
-                should_process_main_intent_for_this_node = False
-                node_provenance.add_action(f"Node {node.node_id} dynamic parent; child-finding done or not a typical parent. No summary intent needed.")
-
-
-        current_intent = None 
-        if should_process_main_intent_for_this_node:
-            node_provenance.add_action(f"Defining main processing intent for node {node.node_id}.")
-            child_outputs_for_intent = {}
-            if node.sub_nodes: 
-                for sk, sv_node in node.sub_nodes.items():
-                    if sv_node.node_id in processed_node_outputs:
-                        child_output = processed_node_outputs[sv_node.node_id]
-                        child_outputs_for_intent[sv_node.node_id] = {
-                            "node_id": sv_node.node_id, "description": sv_node.description,
-                            "status": child_output.get("status"),
-                            "text_summary_preview": child_output.get("final_synthesized_text_preview"),
-                            "structured_data_keys": list(child_output.get("final_structured_data", {}).keys()) if child_output.get("final_structured_data") else [],
-                            "confidence": child_output.get("confidence_score")
-                        }
-            context_from_prior_steps = {**direct_dependency_outputs_for_intent, **child_outputs_for_intent}
-
-            current_intent_spec = self.intent_definer.define_intent_spec_via_llm(
-                node=node, application_refs=application_refs, application_display_name=app_display_name,
-                report_type=report_type, site_summary_context=app_context_summary.get("site_summary_placeholder"),
-                proposal_summary_context=app_context_summary.get("proposal_summary_placeholder"),
-                direct_dependency_outputs=context_from_prior_steps, 
-                node_provenance=node_provenance
-            )
-
-            if current_intent_spec is not None and isinstance(current_intent_spec, dict):
-                # --- Robustify intent spec dict: inject required fields if missing ---
-                injected_fields = []
-                
-                # Check for parent_node_id - ensure it's not None, empty string, or missing
-                if not current_intent_spec.get('parent_node_id') or current_intent_spec.get('parent_node_id') == '':
-                    current_intent_spec['parent_node_id'] = node.node_id
-                    injected_fields.append('parent_node_id')
-                
-                # Check for application_refs - ensure it's not None, empty list, or missing
-                if not current_intent_spec.get('application_refs') or current_intent_spec.get('application_refs') == []:
-                    current_intent_spec['application_refs'] = application_refs
-                    injected_fields.append('application_refs')
-                
-                # Check for task_type - ensure it's not None, empty string, or missing
-                if not current_intent_spec.get('task_type') or current_intent_spec.get('task_type') == '':
-                    # Use node.node_type_tag if available, else fallback to 'GENERAL'
-                    current_intent_spec['task_type'] = getattr(node, 'node_type_tag', None) or 'GENERAL'
-                    injected_fields.append('task_type')
-                
-                if injected_fields and node_provenance:
-                    node_provenance.add_action(
-                        f"Injected missing required fields into intent spec: {injected_fields}",
-                        {k: current_intent_spec[k] for k in injected_fields}
-                    )
-                # --- End robustification ---
-
-            if current_intent_spec:
-                current_intent = Intent(**current_intent_spec)
-                node.intents_issued.append(current_intent)
-                if node_provenance: node_provenance.intent_id = current_intent.intent_id
-                current_intent.provenance = node_provenance
-                current_intent.context_data_from_prior_steps = context_from_prior_steps
-                self.node_processor.process_intent(current_intent)
-
-                clarification_attempts = clarification_attempt_counts.get(node.node_id, 0)
-                # MODIFIED: Corrected multi-line condition
-                while (current_intent.status == IntentStatus.COMPLETED_WITH_CLARIFICATION_NEEDED and 
-                       clarification_attempts < self.MAX_CLARIFICATION_ATTEMPTS_PER_NODE):
-                    clarification_attempts += 1
-                    clarification_attempt_counts[node.node_id] = clarification_attempts
-                    current_intent_error_message = current_intent.error_message if hasattr(current_intent, 'error_message') else "Clarification needed."
-                    node_provenance.add_action(f"Clarification attempt {clarification_attempts}/{self.MAX_CLARIFICATION_ATTEMPTS_PER_NODE} for {node.node_id}.", {"reason": current_intent_error_message})
-
-
-                    clarif_provenance = ProvenanceLog(current_intent.intent_id, f"Clarif Intent for Node {node.node_id}, Attempt {clarification_attempts}")
-                    if node_provenance: clarif_provenance.add_action("Parent Node Log ID", {"id": str(node_provenance.log_id)})
-                    self.overall_provenance_logs.append(clarif_provenance)
-
-                    clarification_spec = self.intent_definer.define_clarification_intent_spec_via_llm(
-                        original_intent=current_intent, clarification_reason=current_intent_error_message,
-                        node_provenance=clarif_provenance
-                    )
-                    if clarification_spec:
-                        # --- Robustify clarification_spec: inject required fields if missing ---
-                        if clarification_spec is not None and isinstance(clarification_spec, dict):
-                            injected_fields = []
-                            
-                            # Check for parent_node_id - ensure it's not None, empty string, or missing
-                            if not clarification_spec.get('parent_node_id') or clarification_spec.get('parent_node_id') == '':
-                                clarification_spec['parent_node_id'] = node.node_id
-                                injected_fields.append('parent_node_id')
-                            
-                            # Check for application_refs - ensure it's not None, empty list, or missing
-                            if not clarification_spec.get('application_refs') or clarification_spec.get('application_refs') == []:
-                                clarification_spec['application_refs'] = application_refs
-                                injected_fields.append('application_refs')
-                            
-                            # Check for task_type - ensure it's not None, empty string, or missing
-                            if not clarification_spec.get('task_type') or clarification_spec.get('task_type') == '':
-                                clarification_spec['task_type'] = getattr(node, 'node_type_tag', None) or 'GENERAL'
-                                injected_fields.append('task_type')
-                            
-                            if injected_fields and clarif_provenance:
-                                clarif_provenance.add_action(
-                                    f"Injected missing required fields into clarification intent spec: {injected_fields}",
-                                    {k: clarification_spec[k] for k in injected_fields}
-                                )
-                        # --- End robustification ---
-
-                        clarification_intent = Intent(**clarification_spec)
-                        node.intents_issued.append(clarification_intent)
-                        if clarif_provenance: clarif_provenance.intent_id = clarification_intent.intent_id
-                        clarification_intent.provenance = clarif_provenance
-                        
-                        clarification_intent.llm_policy_context_summary = getattr(current_intent, 'llm_policy_context_summary', [])
-                        clarification_intent.full_documents_context = getattr(current_intent, 'full_documents_context', [])
-                        clarification_intent.chunk_context = getattr(current_intent, 'chunk_context', [])
-                        clarification_intent.context_data_from_prior_steps = getattr(current_intent, 'context_data_from_prior_steps', {})
-                        
-                        self.node_processor.process_intent(clarification_intent)
-                        current_intent = clarification_intent 
+                            node_provenance.add_action(
+                                f"Created dynamic sub-node: {dynamic_sub_node.node_id} for '{theme_name}'. Ontology: {ontology_match_id}"
+                            )
                     else:
-                        node_provenance.add_action("Failed to define clarification intent spec. Halting loop.")
-                        current_intent.status = IntentStatus.FAILED
-                        current_intent.error_message = (current_intent_error_message or "") + "; Clarification spec failed."
-                        break 
-                
-                node.final_synthesized_text = current_intent.synthesized_text_output if current_intent else None
-                node.final_structured_data = current_intent.structured_json_output if current_intent else None
-                node.status = current_intent.status if current_intent else IntentStatus.FAILED
-                node.confidence_score = current_intent.confidence_score if current_intent else 0.0
-                if node_provenance: node_provenance.add_action(f"Node {node.node_id} main intent done. Status: {node.status.value if node.status else 'N/A'}, Conf: {node.confidence_score}")
+                        node_provenance.add_action(
+                            f"Dynamic parent '{node.node_id}' no structured sub-themes.", 
+                            {"type": type(identified_sub_themes).__name__}
+                        )
+                else:
+                    error_msg = (dynamic_parent_intent.error_message 
+                               if dynamic_parent_intent and hasattr(dynamic_parent_intent, 'error_message') 
+                               else 'Intent spec failed earlier or error message not available.')
+                    node_provenance.add_action(
+                        f"Dynamic parent '{node.node_id}' intent failed. Status: {dynamic_parent_intent.status.value if dynamic_parent_intent else 'N/A'}", 
+                        {"error": error_msg}
+                    )
             else:
-                node.status = IntentStatus.FAILED
-                # ReasoningNode does not have error_message, so we can't set it here.
-                # Consider adding it to ReasoningNode or logging the error differently.
-                if node_provenance: node_provenance.add_action(f"ERROR: Failed to define intent spec for {node.node_id}. FAILED.")
-                node.confidence_score = 0.05
+                node_provenance.add_action(f"Failed to define intent spec for dynamic parent {node.node_id}.")
+
+    async def _async_llm_call_with_semaphore(self, llm_callable, *args, **kwargs):
+        """
+        Execute an LLM call with semaphore control for parallel async mode.
         
-        if node.sub_nodes and not should_process_main_intent_for_this_node: 
-             node.update_status_based_on_children_and_intents()
-             if node_provenance: node_provenance.add_action(f"Node {node.node_id} status updated based on children/intents. New Status: {node.status.value if node.status else 'N/A'}")
-
-        # MODIFIED: Use FAILED as fallback, as UNKNOWN is not in IntentStatus
-        node_status_value = node.status.value if node.status and hasattr(node.status, 'value') else IntentStatus.FAILED.value
-        # MODIFIED: ReasoningNode does not have error_message. Intent object has it.
-        error_for_output = None
-        if current_intent and current_intent.status == IntentStatus.FAILED:
-            error_for_output = current_intent.error_message
-        elif node.status == IntentStatus.FAILED and not current_intent : # If node failed before an intent was fully processed
-            error_for_output = "Node processing failed before intent completion."
-
-        processed_node_outputs[node.node_id] = {
-            "status": node_status_value,
-            "node_id": node.node_id,
-            "final_synthesized_text_preview": (node.final_synthesized_text[:250] + "...") if node.final_synthesized_text else None,
-            "final_structured_data": node.final_structured_data,
-            "confidence_score": node.confidence_score,
-            "error": error_for_output
-        }
-        if node_provenance: node_provenance.complete(node_status_value, {"final_confidence_orch": node.confidence_score, "output_keys": list(processed_node_outputs[node.node_id].keys())})
-
-
-    def orchestrate_report_generation(self, report_type_key: str, application_refs: List[str], application_display_name: str) -> Dict[str, Any]:
-        overall_orchestration_provenance = ProvenanceLog(None, f"MRM Orchestration Started for Report: {report_type_key}, App: {application_display_name}")
-        self.overall_provenance_logs.append(overall_orchestration_provenance)
-        start_time = time.time()
-        overall_orchestration_provenance.add_action("Fetching report template and application context.")
-
-        template = self.report_template_manager.get_template(report_type_key)
-        if not template:
-            err_msg = f"No report template for type: {report_type_key}"
-            overall_orchestration_provenance.complete("FAILED", {"error": err_msg})
-            print(f"ERROR: {err_msg}")
-            raise ValueError(err_msg)
-
-        app_context_summary = self._get_or_create_application_context_summary(application_refs, application_display_name)
-        overall_orchestration_provenance.add_action("App context summary prepared.", {"summary_preview": str(app_context_summary)[:200]+"..."})
-
-        root_reasoning_node = self._build_reasoning_tree_from_template(template, application_refs, application_display_name)
-        overall_orchestration_provenance.add_action("Reasoning tree built.", {"root_id": root_reasoning_node.node_id, "children": len(root_reasoning_node.sub_nodes or {})})
+        Args:
+            llm_callable: The callable that makes the LLM call
+            *args, **kwargs: Arguments to pass to the callable
+            
+        Returns:
+            The result of the LLM call
+        """
+        if not self.parallel_async_llm_mode or not self._llm_semaphore:
+            # Run synchronously if parallel async mode is disabled
+            return llm_callable(*args, **kwargs)
         
-        processed_node_outputs: Dict[str, Any] = {}
-        clarification_attempt_counts: Dict[str, int] = {}
+        # Use semaphore to limit concurrent LLM calls
+        async with self._llm_semaphore:
+            # Run the LLM call in a thread pool to avoid blocking
+            loop = asyncio.get_event_loop()
+            with ThreadPoolExecutor() as executor:
+                return await loop.run_in_executor(executor, llm_callable, *args, **kwargs)
 
-        if root_reasoning_node.sub_nodes: 
-            for child_node_key, child_node_obj in root_reasoning_node.sub_nodes.items():
-                self._process_node_and_children_recursively(
-                    child_node_obj, 
-                    application_refs, 
-                    application_display_name, 
-                    report_type_key, 
-                    app_context_summary, 
-                    processed_node_outputs, 
+    async def _process_node_async(self, node: ReasoningNode,
+                                application_refs: List[str],
+                                app_display_name: str,
+                                report_type: str,
+                                app_context_summary: Dict[str, Any],
+                                processed_node_outputs: Dict[str, Any],
+                                clarification_attempt_counts: Dict[str, int]):
+        """
+        Async version of node processing with LLM calls wrapped in asyncio.
+        """
+        if self.parallel_async_llm_mode:
+            # Use async LLM processing with semaphore control
+            await self._async_llm_call_with_semaphore(
+                self._process_node_and_children_recursively,
+                node,
+                application_refs,
+                app_display_name,
+                report_type,
+                app_context_summary,
+                processed_node_outputs,
+                clarification_attempt_counts
+            )
+        else:
+            # Run synchronously in thread pool
+            loop = asyncio.get_event_loop()
+            with ThreadPoolExecutor() as executor:
+                await loop.run_in_executor(
+                    executor,
+                    self._process_node_and_children_recursively,
+                    node,
+                    application_refs,
+                    app_display_name,
+                    report_type,
+                    app_context_summary,
+                    processed_node_outputs,
                     clarification_attempt_counts
                 )
         
-        root_reasoning_node.update_status_based_on_children_and_intents()
-        overall_orchestration_provenance.add_action("All nodes processed. Root status updated.", {"root_status": root_reasoning_node.status.value if root_reasoning_node.status else 'N/A'})
-
-        end_time = time.time()
-        duration = end_time - start_time
-        overall_orchestration_provenance.complete("COMPLETED_SUCCESS", {"duration_s": duration, "final_root_status": root_reasoning_node.status.value if root_reasoning_node.status else 'N/A'})
-        
-        # MODIFIED: Use __str__ for ProvenanceLog serialization as to_dict is not available
-        # overall_provenance_log_dump = [str(log) for log in self.overall_provenance_logs]
-
-        return {
-            "report_type": report_type_key,
-            "application_display_name": application_display_name,
-            "application_refs": application_refs,
-            "generation_duration_seconds": duration,
-            "root_reasoning_node_dump": self._dump_node_to_dict(root_reasoning_node),
-            "processed_node_outputs_summary": { 
-                node_id: {
-                    "status": data.get("status"), "confidence": data.get("confidence_score"), 
-                    "error": data.get("error"), 
-                    "text_preview": data.get("final_synthesized_text_preview")
-                } for node_id, data in processed_node_outputs.items()
-            },
-            # "overall_provenance_log_dump": overall_provenance_log_dump # Optional
-        }
-
-    def _dump_node_to_dict(self, node: ReasoningNode) -> Dict[str, Any]:
-        if not node:
-            return {}
-        
-        dumped_sub_nodes = {}
-        if node.sub_nodes: 
-            for key, sub_node in node.sub_nodes.items():
-                dumped_sub_nodes[key] = self._dump_node_to_dict(sub_node)
-
-        dumped_intents_summary = []
-        if node.intents_issued: 
-            for intent_obj in node.intents_issued:
-                if intent_obj: 
-                    # MODIFIED: Use __str__ for Intent serialization as to_dict is not available
-                    dumped_intents_summary.append(str(intent_obj)) 
-                else:
-                    dumped_intents_summary.append("NoneIntentInList")
-
-        provenance_summary = None
-        if node.node_level_provenance:
-            # MODIFIED: Use __str__ for ProvenanceLog serialization as to_dict is not available
-            provenance_summary = str(node.node_level_provenance)
-
-        # ReasoningNode does not have error_message attribute.
-        # The error related to a node's processing would typically be on the last Intent issued for it.
-        node_error_message = None 
-        if node.intents_issued and node.intents_issued[-1].status == IntentStatus.FAILED:
-            node_error_message = node.intents_issued[-1].error_message
-        elif node.status == IntentStatus.FAILED and not node.intents_issued: # If node failed early
-             node_error_message = "Node processing failed before any intent was fully processed."
-
-        return {
+        # Store the result in processed_outputs
+        processed_node_outputs[node.node_id] = {
+            "status": node.status.value,
             "node_id": node.node_id,
-            "description": node.description,
-            "status": node.status.value if node.status and hasattr(node.status, 'value') else str(node.status),
-            "node_type_tag": node.node_type_tag,
-            "generic_material_considerations": node.generic_material_considerations or [],
-            "specific_policy_focus_ids": node.specific_policy_focus_ids or [],
-            "key_evidence_document_types": node.key_evidence_document_types or [],
-            "linked_ontology_entry_id": node.linked_ontology_entry_id,
-            "is_dynamic_parent_node": node.is_dynamic_parent_node
+            "final_synthesized_text_preview": (
+                node.final_synthesized_text[:200] + "..." 
+                if node.final_synthesized_text and len(node.final_synthesized_text) > 200 
+                else node.final_synthesized_text
+            ),
+            "final_structured_data": node.final_structured_data,
+            "confidence_score": node.confidence_score
         }
+
+    async def _process_nodes_parallel(self, nodes: List[ReasoningNode],
+                                    application_refs: List[str],
+                                    app_display_name: str,
+                                    report_type: str,
+                                    app_context_summary: Dict[str, Any],
+                                    processed_node_outputs: Dict[str, Any],
+                                    clarification_attempt_counts: Dict[str, int]):
+        """
+        Process multiple nodes concurrently with optional parallel async LLM mode.
+        """
+        tasks = []
+        for node in nodes:
+            task = self._process_node_async(
+                node,
+                application_refs,
+                app_display_name,
+                report_type,
+                app_context_summary,
+                processed_node_outputs,
+                clarification_attempt_counts
+            )
+            tasks.append(task)
+        
+        # Wait for all tasks to complete
+        await asyncio.gather(*tasks, return_exceptions=True)
+
+    async def generate_async_report(self, application_refs: List[str], 
+                                  app_display_name: str,
+                                  report_type: str = "Default_MajorHybrid",
+                                  max_parallel_nodes: int = 5) -> Dict[str, Any]:
+        """
+        Main async entry point for generating reports with parallel processing.
+        Supports both parallel node processing and parallel async LLM mode.
+        
+        Args:
+            application_refs: List of application reference IDs
+            app_display_name: Display name for the application
+            report_type: Type of report template to use
+            max_parallel_nodes: Maximum number of nodes to process concurrently
+            
+        Returns:
+            Dictionary containing the final report and metadata
+        """
+        start_time = time.time()
+        self.overall_provenance_logs = []
+        
+        prov = ProvenanceLog(
+            None, 
+            f"MRM Async Report Generation: {app_display_name} ({report_type})"
+        )
+        self.overall_provenance_logs.append(prov)
+        prov.add_action(f"Starting async orchestration for {len(application_refs)} application refs")
+        prov.add_action(f"Parallel Async LLM Mode: {'ENABLED' if self.parallel_async_llm_mode else 'DISABLED'}")
+        if self.parallel_async_llm_mode:
+            prov.add_action(f"Max Concurrent LLM Calls: {self.max_concurrent_llm_calls}")
+        
+        try:
+            # Get application context
+            app_context_summary = self._get_or_create_application_context_summary(
+                application_refs, app_display_name
+            )
+            
+            # Build reasoning tree
+            template = self.report_template_manager.get_template(report_type)
+            if not template:
+                raise ValueError(f"Report template '{report_type}' not found")
+            
+            root_node = self._build_reasoning_tree_from_template(
+                template, application_refs, app_display_name
+            )
+            
+            # Expand dynamic parent nodes
+            all_nodes = self._get_all_nodes_in_graph(root_node)
+            dynamic_parents = [node for node in all_nodes if node.is_dynamic_parent_node]
+            
+            for parent_node in dynamic_parents:
+                print(f"INFO: Expanding dynamic parent node: {parent_node.node_id}")
+                if self.parallel_async_llm_mode:
+                    await self._async_llm_call_with_semaphore(
+                        self._dynamically_expand_mc_node,
+                        parent_node,
+                        application_refs,
+                        app_display_name,
+                        app_context_summary
+                    )
+                else:
+                    self._dynamically_expand_mc_node(
+                        parent_node, application_refs, app_display_name, app_context_summary
+                    )
+            
+            # Process nodes with parallel execution
+            processed_node_outputs = {}
+            clarification_attempt_counts = {}
+            max_iterations = 10
+            
+            for iteration in range(max_iterations):
+                all_nodes = self._get_all_nodes_in_graph(root_node)
+                ready_nodes = self._get_ready_nodes(all_nodes, processed_node_outputs)
+                
+                if not ready_nodes:
+                    break
+                
+                # Limit the number of nodes processed in parallel
+                batch_size = min(len(ready_nodes), max_parallel_nodes)
+                current_batch = ready_nodes[:batch_size]
+                
+                print(f"INFO: Processing batch {iteration + 1}: {len(current_batch)} nodes")
+                
+                await self._process_nodes_parallel(
+                    current_batch,
+                    application_refs,
+                    app_display_name,
+                    report_type,
+                    app_context_summary,
+                    processed_node_outputs,
+                    clarification_attempt_counts
+                )
+            
+            # Update final status
+            root_node.update_status_based_on_children_and_intents()
+            
+            elapsed = time.time() - start_time
+            prov.complete("ASYNC_ORCHESTRATION_COMPLETE", {
+                "total_elapsed_seconds": round(elapsed, 2),
+                "final_root_status": root_node.status.value,
+                "total_provenance_logs": len(self.overall_provenance_logs),
+                "max_parallel_nodes": max_parallel_nodes,
+                "parallel_async_llm_mode": self.parallel_async_llm_mode,
+                "max_concurrent_llm_calls": self.max_concurrent_llm_calls if self.parallel_async_llm_mode else None
+            })
+            
+            # Generate final report
+            final_report_text = self._generate_final_report_text(root_node)
+            
+            return {
+                "status": "success",
+                "reasoning_tree": root_node,
+                "final_report_text": final_report_text,
+                "report_metadata": {
+                    "total_nodes": len(self._get_all_nodes_in_graph(root_node)),
+                    "provenance_logs": len(self.overall_provenance_logs),
+                    "parallel_processing": True,
+                    "max_parallel_nodes": max_parallel_nodes,
+                    "parallel_async_llm_mode": self.parallel_async_llm_mode,
+                    "max_concurrent_llm_calls": self.max_concurrent_llm_calls if self.parallel_async_llm_mode else None,
+                    "total_elapsed_seconds": round(elapsed, 2)
+                }
+            }
+            
+        except Exception as e:
+            prov.complete("ERROR", {"error": str(e)})
+            return {
+                "status": "error",
+                "error": str(e),
+                "report_metadata": {
+                    "parallel_processing": True,
+                    "max_parallel_nodes": max_parallel_nodes,
+                    "parallel_async_llm_mode": self.parallel_async_llm_mode
+                }
+            }
+
+    def _get_all_nodes_in_graph(self, root_node: ReasoningNode) -> List[ReasoningNode]:
+        """Get all nodes in the reasoning graph."""
+        all_nodes = [root_node]
+        for sub_node in root_node.sub_nodes.values():
+            all_nodes.extend(self._get_all_nodes_in_graph(sub_node))
+        return all_nodes
+
+    def _get_ready_nodes(self, all_nodes: List[ReasoningNode], processed_outputs: Dict[str, Any]) -> List[ReasoningNode]:
+        """Get nodes that are ready for processing (dependencies met)."""
+        ready_nodes = []
+        
+        for node in all_nodes:
+            # Skip if already processed
+            if node.node_id in processed_outputs:
+                continue
+                
+            # Skip if currently in progress or failed
+            if node.status in [IntentStatus.IN_PROGRESS, IntentStatus.FAILED]:
+                continue
+                
+            # Check if dependencies are met
+            dependencies_met = True
+            if node.depends_on_nodes:
+                for dep_id in node.depends_on_nodes:
+                    if dep_id not in processed_outputs:
+                        dependencies_met = False
+                        break
+                    dep_status = processed_outputs[dep_id].get("status")
+                    if dep_status not in [IntentStatus.COMPLETED_SUCCESS.value, 
+                                        IntentStatus.COMPLETED_WITH_CLARIFICATION_NEEDED.value]:
+                        dependencies_met = False
+                        break
+            
+            if dependencies_met:
+                ready_nodes.append(node)
+        
+        return ready_nodes
+
+    def _generate_final_report_text(self, root_node: ReasoningNode) -> str:
+        """Generate the final report text from the processed reasoning tree."""
+        def format_node_recursive(node: ReasoningNode, indent_level: int = 0) -> str:
+            indent = "  " * indent_level
+            result = f"{indent}# {node.node_id}\n"
+            result += f"{indent}{node.description}\n"
+            
+            if node.status:
+                result += f"{indent}Status: {node.status.value}\n"
+            
+            if node.confidence_score is not None:
+                result += f"{indent}Confidence: {node.confidence_score:.2f}\n"
+            
+            if node.final_synthesized_text:
+                result += f"{indent}Content:\n{node.final_synthesized_text}\n"
+            
+            result += "\n"
+            
+            # Process sub-nodes
+            for sub_node in node.sub_nodes.values():
+                result += format_node_recursive(sub_node, indent_level + 1)
+            
+            return result
+        
+        report_text = "# Planning Assessment Report\n\n"
+        report_text += format_node_recursive(root_node)
+        
+        return report_text
+
+    def _dynamically_expand_mc_node(self, parent_node: ReasoningNode, 
+                                   application_refs: List[str], 
+                                   app_display_name: str, 
+                                   app_context_summary: Dict[str, Any]):
+        """
+        Dynamically expand a material consideration parent node by creating child nodes
+        based on application-specific material considerations identified via LLM scanning.
+        
+        Args:
+            parent_node: The dynamic parent node to expand
+            application_refs: List of application reference IDs
+            app_display_name: Display name for the application
+            app_context_summary: Application context summary
+        """
+        if not parent_node.is_dynamic_parent_node:
+            print(f"WARN: Node {parent_node.node_id} is not marked as dynamic parent")
+            return
+            
+        print(f"INFO: Dynamically expanding material consideration node: {parent_node.node_id}")
+        
+        # Create an intent to identify application-specific material considerations
+        dynamic_provenance = ProvenanceLog(None, f"Dynamic expansion for node: {parent_node.node_id}")
+        dynamic_parent_intent_spec = self.intent_definer.define_intent_spec_via_llm(
+            node=parent_node, 
+            application_refs=application_refs, 
+            application_display_name=app_display_name,
+            report_type="Default_MajorHybrid",  # TODO: Pass actual report type
+            site_summary_context=app_context_summary.get("site_summary_placeholder"),
+            proposal_summary_context=app_context_summary.get("proposal_summary_placeholder"),
+            direct_dependency_outputs={},
+            node_provenance=dynamic_provenance
+        )
+        
+        if not dynamic_parent_intent_spec:
+            print(f"WARN: Failed to generate intent spec for dynamic parent {parent_node.node_id}")
+            return
+            
+        # Add required parameters that are missing from LLM-generated spec
+        dynamic_parent_intent_spec['parent_node_id'] = parent_node.node_id
+        dynamic_parent_intent_spec['application_refs'] = parent_node.application_refs
+            
+        # Create and process the intent
+        dynamic_parent_intent = Intent(**dynamic_parent_intent_spec)
+        parent_node.intents_issued.append(dynamic_parent_intent)
+        
+        # Process the intent to identify material considerations
+        self.node_processor.process_intent(dynamic_parent_intent)
+        
+        if (dynamic_parent_intent.status == IntentStatus.COMPLETED_SUCCESS and 
+            dynamic_parent_intent.structured_json_output):
+            
+            # Extract identified themes/material considerations
+            identified_sub_themes = (
+                dynamic_parent_intent.structured_json_output.get("identified_material_considerations") or 
+                dynamic_parent_intent.structured_json_output.get("identified_themes_for_assessment")
+            )
+            
+            if isinstance(identified_sub_themes, list):
+                print(f"INFO: Dynamically identified {len(identified_sub_themes)} sub-themes for {parent_node.node_id}")
+                
+                # Create child nodes for each identified theme
+                for theme_info in identified_sub_themes:
+                    theme_name = (theme_info.get("theme_name", str(theme_info)) 
+                                if isinstance(theme_info, dict) else str(theme_info))
+                    ontology_match_id = (theme_info.get("ontology_match_id") 
+                                       if isinstance(theme_info, dict) else None)
+                    
+                    # Try to find ontology match if not provided
+                    if not ontology_match_id and self.mc_ontology_manager:
+                        ontology_match_id = self.mc_ontology_manager.find_matching_consideration_id(theme_name)
+
+                    # Create unique sub-node ID
+                    sub_node_id_suffix = (ontology_match_id if ontology_match_id 
+                                         else theme_name.replace(" ", "_").replace("/", "_")[:30])
+                    sub_node_id = f"{parent_node.node_id}/DYNAMIC_{sub_node_id_suffix}"
+                    sub_node_description = f"Detailed Assessment: {theme_name} for {app_display_name}"
+                    
+                    if ontology_match_id:
+                        sub_node_description = f"Detailed Assessment for {ontology_match_id}: {theme_name} ({app_display_name})"
+
+                    # Create the dynamic sub-node
+                    dynamic_sub_node = ReasoningNode(
+                        node_id=sub_node_id, 
+                        description=sub_node_description
+                    )
+                    dynamic_sub_node.application_refs = application_refs
+                    dynamic_sub_node.node_type_tag = "MaterialConsideration_DynamicItem"
+                    dynamic_sub_node.linked_ontology_entry_id = ontology_match_id
+                    
+                    # Populate with ontology details if available
+                    if ontology_match_id and self.mc_ontology_manager:
+                        mc_details = self.mc_ontology_manager.get_consideration_details(ontology_match_id)
+                        if mc_details:
+                            dynamic_sub_node.generic_material_considerations.extend(
+                                mc_details.get("primary_tags", [])
+                            )
+                            dynamic_sub_node.specific_policy_focus_ids.extend(
+                                mc_details.get("relevant_policy_themes", [])
+                            )
+                            dynamic_sub_node.key_evidence_document_types.extend(
+                                mc_details.get("key_evidence_docs", [])
+                            )
+                            dynamic_sub_node.agent_to_invoke_hint = mc_details.get("agent_to_invoke_hint")
+                            dynamic_sub_node.data_requirements_schema_hint = mc_details.get("data_schema_hint")
+                    else:
+                        # Fallback if no ontology match
+                        dynamic_sub_node.generic_material_considerations.append(theme_name)
+                    
+                    # Add the sub-node to the parent
+                    parent_node.add_sub_node(dynamic_sub_node)
+                    print(f"INFO: Created dynamic sub-node: {dynamic_sub_node.node_id} for '{theme_name}'. Ontology: {ontology_match_id}")
+            else:
+                print(f"WARN: Dynamic parent '{parent_node.node_id}' did not return structured sub-themes. Type: {type(identified_sub_themes).__name__}")
+        else:
+            error_msg = (dynamic_parent_intent.error_message 
+                       if hasattr(dynamic_parent_intent, 'error_message') 
+                       else 'Intent processing failed')
+            print(f"WARN: Dynamic parent '{parent_node.node_id}' intent failed. Status: {dynamic_parent_intent.status.value}. Error: {error_msg}")

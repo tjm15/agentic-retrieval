@@ -101,11 +101,49 @@ if __name__ == "__main__":
         # Use the renamed MRMOrchestrator class
         mrm_instance = MRMOrchestrator(db_man, report_template_man, mc_ontology_man, policy_man)
 
-        print(f"\n--- Starting Generalized Report Orchestration for type: {report_type_key_to_use} ---")
-        # MODIFIED: Corrected method signature call
-        final_report = mrm_instance.orchestrate_report_generation(report_type_key=report_type_key_to_use, application_refs=application_references_to_use, application_display_name="Earl\'s Court Development")
+        # Configuration for parallel processing
+        USE_PARALLEL_PROCESSING = os.getenv("USE_PARALLEL_PROCESSING", "true").lower() == "true"
+        MAX_PARALLEL_NODES = int(os.getenv("MAX_PARALLEL_NODES", "5"))
 
-        print("\n\n--- FINAL DRAFT REPORT (GEMINI - GENERALIZED ENGINE V9 - Policy DB & Agents) ---") # MODIFIED Version
+        print(f"\n--- Starting {'Parallel' if USE_PARALLEL_PROCESSING else 'Sequential'} Report Orchestration for type: {report_type_key_to_use} ---")
+        print(f"--- Max parallel nodes: {MAX_PARALLEL_NODES if USE_PARALLEL_PROCESSING else 'N/A (sequential)'} ---")
+
+        if USE_PARALLEL_PROCESSING:
+            # Use async orchestrator with parallel processing
+            import asyncio
+            async def run_async_orchestration():
+                return await mrm_instance.generate_async_report(
+                    application_refs=application_references_to_use,
+                    app_display_name="Earl's Court Development",
+                    report_type=report_type_key_to_use,
+                    max_parallel_nodes=MAX_PARALLEL_NODES
+                )
+            final_report = asyncio.run(run_async_orchestration())
+        else:
+            # Use synchronous orchestrator (original behavior)
+            final_report = mrm_instance.orchestrate_report_generation(
+                report_type_key=report_type_key_to_use, 
+                application_refs=application_references_to_use, 
+                application_display_name="Earl's Court Development"
+            )
+
+        processing_mode = "PARALLEL" if USE_PARALLEL_PROCESSING else "SEQUENTIAL"
+        parallel_info = f" (Max Parallel: {MAX_PARALLEL_NODES})" if USE_PARALLEL_PROCESSING else ""
+        print(f"\n\n--- FINAL DRAFT REPORT (GEMINI - GENERALIZED ENGINE V9 - {processing_mode} PROCESSING{parallel_info}) ---")
+        
+        # Handle different report formats (sync vs async)
+        if isinstance(final_report, dict) and "status" in final_report:
+            # Async format includes metadata
+            print(f"Processing Status: {final_report.get('status', 'unknown')}")
+            if final_report.get("report_metadata"):
+                metadata = final_report["report_metadata"]
+                print(f"Total Nodes: {metadata.get('total_nodes', 'unknown')}")
+                print(f"Parallel Processing: {metadata.get('parallel_processing', False)}")
+                if metadata.get('parallel_processing'):
+                    print(f"Max Parallel Nodes Used: {metadata.get('max_parallel_nodes', 'unknown')}")
+                print(f"Processing Time: {metadata.get('total_elapsed_seconds', 'unknown')} seconds")
+            print("\n--- REPORT CONTENT ---")
+        
         # Ensure default=str for UUIDs and other non-serializable types if any
         print(json.dumps(final_report, indent=2, default=str))
         

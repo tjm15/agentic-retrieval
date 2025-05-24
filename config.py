@@ -1,8 +1,7 @@
 # config.py
 import os
 from dotenv import load_dotenv
-from typing import cast
-from google.genai.types import GenerateContentConfigDict
+from typing import cast, Dict, Any
 
 load_dotenv()
 
@@ -29,6 +28,11 @@ MAX_TOKENS_PER_GEMINI_CALL_APPROX = 1000000 # For Gemini 1.5 Pro. Adjust if usin
 
 EMBEDDING_DIMENSION = 768
 
+# Cache Configuration
+CACHE_ENABLED = os.getenv("CACHE_ENABLED", "true").lower() == "true"
+CACHE_MAX_AGE_HOURS = int(os.getenv("CACHE_MAX_AGE_HOURS", "24"))
+CACHE_DIR = os.getenv("CACHE_DIR", "./cache/gemini_responses")
+
 REPORT_TEMPLATE_DIR = "./report_templates/"
 POLICY_KB_DIR = "./policy_kb/" # Source for initial policy ingestion
 MC_ONTOLOGY_DIR = "./mc_ontology_data/"
@@ -36,6 +40,11 @@ MC_ONTOLOGY_DIR = "./mc_ontology_data/"
 # LLM Generation Configuration
 DEFAULT_LLM_TEMPERATURE_DETERMINISTIC = 0.05
 DEFAULT_LLM_TEMPERATURE_CREATIVE = 0.4
+
+# Parallel Async LLM Configuration
+PARALLEL_ASYNC_LLM_MODE = os.getenv("PARALLEL_ASYNC_LLM_MODE", "true").lower() == "true"
+MAX_CONCURRENT_LLM_CALLS = int(os.getenv("MAX_CONCURRENT_LLM_CALLS", "3"))
+LLM_CALL_TIMEOUT_SECONDS = int(os.getenv("LLM_CALL_TIMEOUT_SECONDS", "300"))
 
 # Centralized Gemini LLM config builder
 
@@ -46,7 +55,7 @@ def build_gemini_generation_config(
     top_k=None,
     response_mime_type=None,
     **kwargs
-) -> GenerateContentConfigDict:
+) -> Dict[str, Any]:
     config = {}
     if temperature is not None:
         config["temperature"] = temperature
@@ -59,7 +68,7 @@ def build_gemini_generation_config(
     if response_mime_type is not None:
         config["response_mime_type"] = response_mime_type
     config.update(kwargs)
-    return cast(GenerateContentConfigDict, config)
+    return config
 
 # Standard configs for each use case
 MRM_CORE_GEN_CONFIG = build_gemini_generation_config(

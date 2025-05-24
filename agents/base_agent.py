@@ -2,17 +2,24 @@
 from typing import Dict, Any, Optional, List, cast
 from google import genai
 from google.genai.types import GenerateContentConfigDict
-from config import SUBSIDIARY_AGENT_GEN_CONFIG, VISUAL_HERITAGE_AGENT_GEN_CONFIG, SUBSIDIARY_AGENT_MODEL_NAME, GEMINI_API_KEY
+from config import SUBSIDIARY_AGENT_GEN_CONFIG, VISUAL_HERITAGE_AGENT_GEN_CONFIG, SUBSIDIARY_AGENT_MODEL_NAME, GEMINI_API_KEY, CACHE_ENABLED
 import time
 import json
 from core_types import Intent
+from cache.gemini_cache import GeminiResponseCache
 
 class BaseSubsidiaryAgent:
     def __init__(self, agent_name: str): 
         self.agent_name = agent_name
         self.model_name = SUBSIDIARY_AGENT_MODEL_NAME
         self.client = genai.Client(api_key=GEMINI_API_KEY)
+        
+        # Initialize cache if enabled
+        self.cache = GeminiResponseCache() if CACHE_ENABLED else None
+        
         print(f"INFO: Init BaseSubsidiaryAgent: {self.agent_name}")
+        if CACHE_ENABLED:
+            print(f"INFO: BaseSubsidiaryAgent '{self.agent_name}' caching enabled")
 
     def _prepare_gemini_content(self, intent: Intent, prompt_prefix: str) -> List[Any]:
         parts: List[Any] = [prompt_prefix]
@@ -70,13 +77,36 @@ class BaseSubsidiaryAgent:
                 current_gen_config_dict["response_mime_type"] = "application/json"
             
             time.sleep(0.7)
-            print(f"DEBUG: {self.__class__.__name__} sending request to Gemini API - may take 2-5 minutes...")
-            response = self.client.models.generate_content(
-                model=self.model_name,
-                contents=[gemini_parts],
-                config=current_gen_config_dict
-            )
-            print(f"DEBUG: {self.__class__.__name__} received response from Gemini API")
+            
+            # Try cache first if enabled
+            if self.cache:
+                # Convert gemini_parts to a hashable prompt string for caching
+                prompt_for_cache = str(gemini_parts)
+                # Convert config to dictionary format for cache compatibility
+                config_dict = dict(current_gen_config_dict)
+                cached_response = self.cache.get(prompt_for_cache, config_dict, self.model_name)
+                if cached_response:
+                    print(f"DEBUG: {self.__class__.__name__} using cached response")
+                    response = cached_response
+                else:
+                    print(f"DEBUG: {self.__class__.__name__} no cache hit, sending request to Gemini API - may take 2-5 minutes...")
+                    response = self.client.models.generate_content(
+                        model=self.model_name,
+                        contents=[gemini_parts],
+                        config=current_gen_config_dict
+                    )
+                    print(f"DEBUG: {self.__class__.__name__} received response from Gemini API")
+                    # Cache the response
+                    self.cache.put(prompt_for_cache, config_dict, self.model_name, response)
+            else:
+                # No caching, make direct API call
+                print(f"DEBUG: {self.__class__.__name__} sending request to Gemini API - may take 2-5 minutes...")
+                response = self.client.models.generate_content(
+                    model=self.model_name,
+                    contents=[gemini_parts],
+                    config=current_gen_config_dict
+                )
+                print(f"DEBUG: {self.__class__.__name__} received response from Gemini API")
 
             # Robust response parsing
             raw_text = getattr(response, "text", None)
@@ -120,12 +150,45 @@ class BaseSubsidiaryAgent:
         from google.genai.types import GenerateContentConfigDict
         from typing import cast
         try:
-            config_cast = cast(GenerateContentConfigDict, config)
-            response = self.client.models.generate_content(
-                model=self.model_name,
-                contents=[prompt],
-                config=config_cast
-            )
+            # Try cache first if enabled
+            if self.cache:
+                # Convert config to Dict[str, Any] for cache compatibility
+                config_dict = dict(config) if hasattr(config, 'items') else config
+                cached_response = self.cache.get(prompt, config_dict, self.model_name)
+                if cached_response:
+                    print(f"DEBUG: Agent {self.agent_name} using cached response")
+                    # Extract text from cached response
+                    text = getattr(cached_response, "text", None)
+                    if not text and hasattr(cached_response, "candidates") and cached_response.candidates:
+                        first_candidate = cached_response.candidates[0]
+                        content = getattr(first_candidate, "content", None)
+                        parts = getattr(content, "parts", None) if content else None
+                        if parts:
+                            text = "".join([getattr(p, 'text', '') for p in parts if getattr(p, 'text', None)])
+                    if text and isinstance(text, str):
+                        return text
+                    # If cached response is corrupted, fall through to API call
+                    print(f"WARN: Agent {self.agent_name} cached response corrupted, making API call")
+                
+                print(f"DEBUG: Agent {self.agent_name} no cache hit, making API call")
+                # Make API call and cache the response
+                config_cast = cast(GenerateContentConfigDict, config)
+                response = self.client.models.generate_content(
+                    model=self.model_name,
+                    contents=[prompt],
+                    config=config_cast
+                )
+                # Cache the response
+                self.cache.put(prompt, config_dict, self.model_name, response)
+            else:
+                # No caching, make direct API call
+                config_cast = cast(GenerateContentConfigDict, config)
+                response = self.client.models.generate_content(
+                    model=self.model_name,
+                    contents=[prompt],
+                    config=config_cast
+                )
+            
             # Robust response parsing
             text = getattr(response, "text", None)
             if not text and hasattr(response, "candidates") and response.candidates:
