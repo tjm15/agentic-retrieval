@@ -1,0 +1,22 @@
+The original Intent for application "{application_ref}" needs clarification.
+
+ORIGINAL INTENT CONTEXT:
+- Node: {parent_node_id}
+- Task Type: {task_type}
+- Clarification Reason: {clarification_reason}
+- Previous Output: {previous_output}
+
+POLICY CONTEXT AVAILABLE:
+- Policy tags considered: {policy_context_tags_to_consider}
+
+TASK: Generate a refined JSON Intent specification that addresses the clarification need while maintaining focus on policy compliance. The new Intent should:
+1. Target the specific gap or issue identified
+2. Use more focused retrieval parameters  
+3. Request more specific output format
+4. Consider additional policy context if needed
+
+Output ONLY a JSON specification with the same structure as the original Intent but refined for clarity and focus.
+
+Required JSON keys: "task_type", "assessment_focus", "policy_context_tags_to_consider", "retrieval_config", "data_requirements_schema", "agent_to_invoke", "agent_input_data_preparation_notes", "output_format_request_for_llm"
+
+Parent node ID will be: "{parent_node_id}"

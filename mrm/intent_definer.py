@@ -14,6 +14,10 @@ from knowledge_base.policy_manager import PolicyManager
 from config import MRM_MODEL_NAME, INTENT_DEFINER_GEN_CONFIG, CACHE_ENABLED, create_llm_client
 from cache.gemini_cache import GeminiResponseCache
 
+def load_prompt_from_file(file_path: str) -> str:
+    with open(file_path, 'r') as f:
+        return f.read()
+
 class IntentDefiner:
     def __init__(self, policy_manager: PolicyManager, api_key: str):
         self.policy_manager = policy_manager
@@ -22,6 +26,10 @@ class IntentDefiner:
         
         # Initialize cache if enabled
         self.cache = GeminiResponseCache() if CACHE_ENABLED else None
+        
+        # Load prompts from files
+        self.intent_spec_prompt_template = load_prompt_from_file("/home/tim-mayoh/repos/agentic-retrieval/prompts/intent_definer_prompt.txt")
+        self.clarification_prompt_template = load_prompt_from_file("/home/tim-mayoh/repos/agentic-retrieval/prompts/clarification_prompt.txt")
         
         print(f"INFO: Enhanced IntentDefiner initialized with LLM client: {self.llm_client.__class__.__name__}")
         if CACHE_ENABLED:
@@ -129,57 +137,23 @@ class IntentDefiner:
             policy_context_for_prompt.append(policy_summary)
         
         # Enhanced prompt with thematic policy context
-        intent_spec_prompt = f"""You are an expert Planning Assessment Orchestrator AI. You have access to comprehensive policy context discovered through semantic analysis.
-
-REPORT SECTION TO PROCESS:
-Node ID: {node.node_id}
-Description: "{node.description}"
-Node Type: {node.node_type_tag}
-
-THEMATIC POLICY CONTEXT (discovered via semantic search):
-{json.dumps(policy_context_for_prompt, indent=2)[:2000]}...
-
-NODE METADATA:
-- Generic Material Considerations: {node.generic_material_considerations}
-- Specific Policy Focus Areas: {node.specific_policy_focus_ids}
-- Key Evidence Document Types: {node.key_evidence_document_types}
-- Thematic Policy Descriptors: {node.thematic_policy_descriptors}
-- Suggested Agent: {node.agent_to_invoke_hint}
-
-APPLICATION CONTEXT:
-- Report Type: {report_type}
-- Application: "{application_display_name}"
-- References: {application_refs}
-- Site Context: {str(site_summary_context)[:200] if site_summary_context else 'N/A'}...
-- Proposal Context: {str(proposal_summary_context)[:200] if proposal_summary_context else 'N/A'}...
-
-DEPENDENCY OUTPUTS:
-{json.dumps(direct_dependency_outputs, indent=1, default=str)[:400] if direct_dependency_outputs else 'None'}...
-
-TASK: Generate a comprehensive Intent specification that leverages the discovered policy context. Create a JSON object with these exact keys:
-
-1. "task_type": The specific assessment task (e.g., "PolicyFrameworkSummary", "MaterialConsiderationAssessment", "SiteDescription")
-2. "assessment_focus": Detailed description of what specifically to assess, informed by the policy context
-3. "policy_context_tags_to_consider": Array of policy IDs/themes to prioritize (extracted from the discovered policies)
-4. "retrieval_config": {{
-     "hybrid_search_terms": [array of specific search terms for document retrieval],
-     "semantic_search_query_text": "focused semantic query for retrieving relevant application documents",
-     "document_type_filters": [array of document types to focus on]
-   }}
-5. "data_requirements_schema": JSON schema defining the structured data to extract
-6. "agent_to_invoke": CRITICAL - Must specify appropriate agent or null. Use "PolicyAnalysisAgent" for policy compliance/framework analysis, "VisualHeritageAssessment_GeminiFlash_V1" for heritage/design/visual assessment, "default_planning_analyst_agent" for general planning analysis, or null ONLY if the task is purely document retrieval without analysis
-7. "agent_input_data_preparation_notes": Instructions for preparing agent input (required if agent_to_invoke is not null)
-8. "output_format_request_for_llm": Specific format requirements for the LLM output
-
-CRITICAL REQUIREMENTS: 
-- Base your assessment_focus on the discovered policy requirements
-- Extract specific policy IDs from the policy context for policy_context_tags_to_consider
-- Make retrieval_config highly targeted based on the node type and evidence requirements
-- For material consideration nodes, create detailed data schemas reflecting policy requirements
-- AGENT SELECTION RULE: If task_type contains "ASSESS", "SYNTHESIZE", "ANALYZE", or "BALANCE", you MUST specify an appropriate agent unless it's purely a document summary task
-- Use "PolicyAnalysisAgent" for policy analysis, "VisualHeritageAssessment_GeminiFlash_V1" for heritage/visual assessment, "default_planning_analyst_agent" for general planning analysis
-
-Output ONLY the JSON specification:"""
+        intent_spec_prompt = self.intent_spec_prompt_template.format(
+            node_id=node.node_id,
+            description=node.description,
+            node_type_tag=node.node_type_tag,
+            policy_context_json=json.dumps(policy_context_for_prompt, indent=2)[:2000] + "...",
+            generic_material_considerations=node.generic_material_considerations,
+            specific_policy_focus_ids=node.specific_policy_focus_ids,
+            key_evidence_document_types=node.key_evidence_document_types,
+            thematic_policy_descriptors=node.thematic_policy_descriptors,
+            agent_to_invoke_hint=node.agent_to_invoke_hint,
+            report_type=report_type,
+            application_display_name=application_display_name,
+            application_refs=application_refs,
+            site_summary_context=str(site_summary_context)[:200] + "..." if site_summary_context else 'N/A',
+            proposal_summary_context=str(proposal_summary_context)[:200] + "..." if proposal_summary_context else 'N/A',
+            direct_dependency_outputs_json=json.dumps(direct_dependency_outputs, indent=1, default=str)[:400] + "..." if direct_dependency_outputs else 'None'
+        )
 
         node_provenance.add_action("Prompting LLM with enhanced policy context", {
             "prompt_length": len(intent_spec_prompt),
@@ -320,29 +294,14 @@ Output ONLY the JSON specification:"""
         })
         
         # Build clarification prompt with policy context
-        prompt = f"""The original Intent for application "{original_intent.application_refs[0] if original_intent.application_refs else 'N/A'}" needs clarification.
-
-ORIGINAL INTENT CONTEXT:
-- Node: {original_intent.parent_node_id}
-- Task Type: {original_intent.task_type}
-- Clarification Reason: {clarification_reason or original_intent.error_message}
-- Previous Output: {str(original_intent.synthesized_text_output)[:300] if original_intent.synthesized_text_output else 'No previous output'}
-
-POLICY CONTEXT AVAILABLE:
-- Policy tags considered: {original_intent.policy_context_tags_to_consider or 'None specified'}
-
-TASK: Generate a refined JSON Intent specification that addresses the clarification need while maintaining focus on policy compliance. The new Intent should:
-1. Target the specific gap or issue identified
-2. Use more focused retrieval parameters  
-3. Request more specific output format
-4. Consider additional policy context if needed
-
-Output ONLY a JSON specification with the same structure as the original Intent but refined for clarity and focus.
-
-Required JSON keys: "task_type", "assessment_focus", "policy_context_tags_to_consider", "retrieval_config", "data_requirements_schema", "agent_to_invoke", "agent_input_data_preparation_notes", "output_format_request_for_llm"
-
-Parent node ID will be: "{original_intent.parent_node_id}"
-"""
+        prompt = self.clarification_prompt_template.format(
+            application_ref=original_intent.application_refs[0] if original_intent.application_refs else 'N/A',
+            parent_node_id=original_intent.parent_node_id,
+            task_type=original_intent.task_type,
+            clarification_reason=clarification_reason or original_intent.error_message,
+            previous_output=str(original_intent.synthesized_text_output)[:300] if original_intent.synthesized_text_output else 'No previous output',
+            policy_context_tags_to_consider=original_intent.policy_context_tags_to_consider or 'None specified'
+        )
 
         response = None  # Ensure response is always defined
         try:
