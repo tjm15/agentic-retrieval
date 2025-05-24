@@ -6,27 +6,24 @@ import time
 import json
 import signal
 from contextlib import contextmanager
-from google import genai
-from typing import cast
-from google.genai.types import GenerateContentConfigOrDict, GenerateContentConfigDict  # <-- Add GenerateContentConfigDict
 from typing import Dict, List, Optional, Any
 
 # Assuming these are correctly imported relative to this file's location
 from core_types import ReasoningNode, Intent, ProvenanceLog
 from knowledge_base.policy_manager import PolicyManager
-from config import MRM_MODEL_NAME, INTENT_DEFINER_GEN_CONFIG, CACHE_ENABLED
+from config import MRM_MODEL_NAME, INTENT_DEFINER_GEN_CONFIG, CACHE_ENABLED, create_llm_client
 from cache.gemini_cache import GeminiResponseCache
 
 class IntentDefiner:
     def __init__(self, policy_manager: PolicyManager, api_key: str):
         self.policy_manager = policy_manager
-        # Initialize Gemini client with timeout configuration
-        self.client = genai.Client(api_key=api_key)
+        # Initialize LLM client with fallback support
+        self.llm_client = create_llm_client()
         
         # Initialize cache if enabled
         self.cache = GeminiResponseCache() if CACHE_ENABLED else None
         
-        print(f"INFO: Enhanced IntentDefiner initialized with semantic policy search capability.")
+        print(f"INFO: Enhanced IntentDefiner initialized with LLM client: {self.llm_client.__class__.__name__}")
         if CACHE_ENABLED:
             print(f"INFO: IntentDefiner caching enabled")
 
@@ -170,16 +167,17 @@ TASK: Generate a comprehensive Intent specification that leverages the discovere
      "document_type_filters": [array of document types to focus on]
    }}
 5. "data_requirements_schema": JSON schema defining the structured data to extract
-6. "agent_to_invoke": Name of subsidiary agent to use (if any) - use "PolicyAnalysisAgent" for policy-heavy nodes, "VisualHeritageAssessment_GeminiFlash_V1" for heritage/design, or null
-7. "agent_input_data_preparation_notes": Instructions for preparing agent input
+6. "agent_to_invoke": CRITICAL - Must specify appropriate agent or null. Use "PolicyAnalysisAgent" for policy compliance/framework analysis, "VisualHeritageAssessment_GeminiFlash_V1" for heritage/design/visual assessment, "default_planning_analyst_agent" for general planning analysis, or null ONLY if the task is purely document retrieval without analysis
+7. "agent_input_data_preparation_notes": Instructions for preparing agent input (required if agent_to_invoke is not null)
 8. "output_format_request_for_llm": Specific format requirements for the LLM output
 
-IMPORTANT: 
+CRITICAL REQUIREMENTS: 
 - Base your assessment_focus on the discovered policy requirements
 - Extract specific policy IDs from the policy context for policy_context_tags_to_consider
 - Make retrieval_config highly targeted based on the node type and evidence requirements
 - For material consideration nodes, create detailed data schemas reflecting policy requirements
-- Use appropriate agents: "PolicyAnalysisAgent" for policy analysis, "VisualHeritageAssessment_GeminiFlash_V1" for heritage/visual assessment
+- AGENT SELECTION RULE: If task_type contains "ASSESS", "SYNTHESIZE", "ANALYZE", or "BALANCE", you MUST specify an appropriate agent unless it's purely a document summary task
+- Use "PolicyAnalysisAgent" for policy analysis, "VisualHeritageAssessment_GeminiFlash_V1" for heritage/visual assessment, "default_planning_analyst_agent" for general planning analysis
 
 Output ONLY the JSON specification:"""
 
@@ -196,32 +194,41 @@ Output ONLY the JSON specification:"""
             print(f"DEBUG: This may take up to 5 minutes - Gemini is processing complex policy analysis...")
             # Add timeout and better error handling with retry mechanism
             max_retries = 2
-            timeout_seconds = 300  # 5 minute timeout per attempt - Gemini can be slow
+            timeout_seconds = 600  # 10 minute timeout per attempt - increased for complex material consideration analysis
             
             # Try cache first if enabled
+            response_text = ""
             if self.cache:
                 # Convert config to dictionary format for cache compatibility
                 config_dict = dict(INTENT_DEFINER_GEN_CONFIG)
                 cached_response = self.cache.get(intent_spec_prompt, config_dict, MRM_MODEL_NAME)
                 if cached_response:
                     print(f"DEBUG: Using cached response for node {node.node_id}")
-                    response = cached_response
+                    # Convert cached response to text format
+                    text = getattr(cached_response, "text", None)
+                    if not text and hasattr(cached_response, "candidates") and cached_response.candidates:
+                        first_candidate = cached_response.candidates[0]
+                        content = getattr(first_candidate, "content", None)
+                        parts = getattr(content, "parts", None) if content else None
+                        if parts:
+                            text = "".join([getattr(p, 'text', '') for p in parts if getattr(p, 'text', None)])
+                    response_text = text or ""
                 else:
                     print(f"DEBUG: No cache hit, making API call for node {node.node_id}")
                     # Make API call with retries
                     for attempt in range(max_retries):
                         try:
                             print(f"DEBUG: API attempt {attempt + 1}/{max_retries} (allowing up to {timeout_seconds}s per attempt)...")
-                            # Use typing.cast to satisfy type checker
-                            api_config = cast(GenerateContentConfigDict, dict(INTENT_DEFINER_GEN_CONFIG))
-                            response = self.client.models.generate_content(
-                                model=MRM_MODEL_NAME,
+                            llm_response = self.llm_client.generate_content(
                                 contents=[intent_spec_prompt],
-                                config=api_config
+                                config=dict(INTENT_DEFINER_GEN_CONFIG),
+                                model=MRM_MODEL_NAME
                             )
-                            print(f"DEBUG: Received response from Gemini API for node {node.node_id}")
-                            # Cache the response
-                            self.cache.put(intent_spec_prompt, config_dict, MRM_MODEL_NAME, response)
+                            response_text = llm_response.text
+                            print(f"DEBUG: Received response from {llm_response.provider} ({llm_response.model_used}) for node {node.node_id}")
+                            # Cache the response in original format if possible
+                            if hasattr(llm_response, 'raw_response') and llm_response.raw_response:
+                                self.cache.put(intent_spec_prompt, config_dict, MRM_MODEL_NAME, llm_response.raw_response)
                             break
                             
                         except Exception as api_error:
@@ -236,14 +243,13 @@ Output ONLY the JSON specification:"""
                 for attempt in range(max_retries):
                     try:
                         print(f"DEBUG: API attempt {attempt + 1}/{max_retries} (allowing up to {timeout_seconds}s per attempt)...")
-                        # Use typing.cast to satisfy type checker
-                        api_config = cast(GenerateContentConfigDict, dict(INTENT_DEFINER_GEN_CONFIG))
-                        response = self.client.models.generate_content(
-                            model=MRM_MODEL_NAME,
+                        llm_response = self.llm_client.generate_content(
                             contents=[intent_spec_prompt],
-                            config=api_config
+                            config=dict(INTENT_DEFINER_GEN_CONFIG),
+                            model=MRM_MODEL_NAME
                         )
-                        print(f"DEBUG: Received response from Gemini API for node {node.node_id}")
+                        response_text = llm_response.text
+                        print(f"DEBUG: Received response from {llm_response.provider} ({llm_response.model_used}) for node {node.node_id}")
                         break
                         
                     except Exception as api_error:
@@ -254,15 +260,14 @@ Output ONLY the JSON specification:"""
                         print(f"Retrying in 10 seconds...")
                         time.sleep(10)  # Wait longer before retry
             
-            if response is None:
-                raise RuntimeError("No response received from Gemini API after all retries.")
+            if not response_text:
+                raise RuntimeError("No response received from LLM API after all retries.")
             
-            # Robust response parsing
-            raw_json_spec_text = self._extract_response_text(response)
-            if not raw_json_spec_text:
-                raise ValueError("No valid text response from Gemini API.")
+            # Parse the JSON response directly
+            if not response_text:
+                raise ValueError("No valid text response from LLM API.")
             
-            intent_spec_dict = json.loads(raw_json_spec_text)
+            intent_spec_dict = json.loads(response_text)
             
             # Validate required keys
             required_keys = ["task_type", "assessment_focus", "retrieval_config"]
@@ -345,41 +350,48 @@ Parent node ID will be: "{original_intent.parent_node_id}"
             print(f"DEBUG: Generating clarification intent - this may take 2-3 minutes...")
             
             # Try cache first if enabled
+            response_text = ""
             if self.cache:
                 # Convert config to dictionary format for cache compatibility
                 config_dict = dict(INTENT_DEFINER_GEN_CONFIG)
                 cached_response = self.cache.get(prompt, config_dict, MRM_MODEL_NAME)
                 if cached_response:
                     print(f"DEBUG: Using cached clarification response")
-                    response = cached_response
+                    # Convert cached response to text format
+                    text = getattr(cached_response, "text", None)
+                    if not text and hasattr(cached_response, "candidates") and cached_response.candidates:
+                        first_candidate = cached_response.candidates[0]
+                        content = getattr(first_candidate, "content", None)
+                        parts = getattr(content, "parts", None) if content else None
+                        if parts:
+                            text = "".join([getattr(p, 'text', '') for p in parts if getattr(p, 'text', None)])
+                    response_text = text or ""
                 else:
                     print(f"DEBUG: No cache hit for clarification, making API call")
-                    # Add timeout and retry for clarification calls
-                    api_config = cast(GenerateContentConfigDict, dict(INTENT_DEFINER_GEN_CONFIG))
-                    response = self.client.models.generate_content(
-                        model=MRM_MODEL_NAME,
+                    llm_response = self.llm_client.generate_content(
                         contents=[prompt],
-                        config=api_config
+                        config=dict(INTENT_DEFINER_GEN_CONFIG),
+                        model=MRM_MODEL_NAME
                     )
-                    print(f"DEBUG: Clarification intent response received")
-                    # Cache the response
-                    self.cache.put(prompt, config_dict, MRM_MODEL_NAME, response)
+                    response_text = llm_response.text
+                    print(f"DEBUG: Clarification intent response received from {llm_response.provider}")
+                    # Cache the response in original format if possible
+                    if hasattr(llm_response, 'raw_response') and llm_response.raw_response:
+                        self.cache.put(prompt, config_dict, MRM_MODEL_NAME, llm_response.raw_response)
             else:
                 # No caching, make direct API call
-                # Add timeout and retry for clarification calls
-                api_config = cast(GenerateContentConfigDict, dict(INTENT_DEFINER_GEN_CONFIG))
-                response = self.client.models.generate_content(
-                    model=MRM_MODEL_NAME,
+                llm_response = self.llm_client.generate_content(
                     contents=[prompt],
-                    config=api_config
+                    config=dict(INTENT_DEFINER_GEN_CONFIG),
+                    model=MRM_MODEL_NAME
                 )
-                print(f"DEBUG: Clarification intent response received")
+                response_text = llm_response.text
+                print(f"DEBUG: Clarification intent response received from {llm_response.provider}")
             
-            raw_json_spec_text = self._extract_response_text(response)
-            if not raw_json_spec_text:
-                raise ValueError("No valid text response from Gemini API.")
+            if not response_text:
+                raise ValueError("No valid text response from LLM API.")
             
-            spec = json.loads(raw_json_spec_text)
+            spec = json.loads(response_text)
             
             # Inject required fields for clarification intent
             spec["application_refs"] = original_intent.application_refs

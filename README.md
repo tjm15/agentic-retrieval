@@ -7,6 +7,7 @@ A modular, open-source framework for agentic, LLM-driven planning application as
 - **Knowledge Base Management:** Pluggable managers for report templates, material consideration ontology, and policy knowledge base.
 - **Agentic Reasoning:** Specialized agents (e.g., `VisualHeritageAgent`) process context and generate structured outputs.
 - **Retrieval-Augmented Generation:** Hybrid and semantic retrieval from a Postgres/pgvector document store.
+- **Enhanced LLM Integration:** Robust LLM abstraction with intelligent provider fallback, monitoring, and caching.
 - **Provenance Logging:** Track actions, context, and results for every reasoning step.
 - **Extensible:** Add new agents, templates, or ontologies for other planning domains.
 
@@ -90,6 +91,35 @@ python main.py
 - **Agents**: Specialized LLM-driven modules (e.g., `VisualHeritageAgent`) process context and generate structured outputs.
 - **Knowledge Base Managers**: Handle report templates, material consideration ontology, and policy KB. Create default files if missing.
 - **Retrieval**: Hybrid and semantic search over document chunks using pgvector embeddings.
+- **Enhanced LLM Client**: Intelligent provider selection, monitoring, and fallback across multiple LLM providers.
+
+## Enhanced LLM Client
+
+The project includes an enhanced LLM abstraction layer with advanced features:
+
+- **Intelligent Fallback**: Automatically switch between providers for high availability
+- **Circuit Breaker Pattern**: Protect against cascading failures and retry overload
+- **Universal Caching**: Provider-agnostic caching for improved performance
+- **Comprehensive Monitoring**: Real-time metrics, provider health tracking, and cost estimation
+- **Smart Retry Logic**: Exponential backoff with error classification
+
+To enable the enhanced client:
+
+```bash
+export USE_ENHANCED_LLM_CLIENT=true
+```
+
+For monitoring and visualization:
+
+```bash
+# Start monitoring dashboard
+python llm/tools/monitor_llm.py
+
+# Generate visualization reports
+python llm/tools/dashboard_visualization.py
+```
+
+See `llm/QUICK_START.md` for a complete guide.
 
 ## Extending the System
 - **Add new agents** in `agents/` and register them in the orchestrator.

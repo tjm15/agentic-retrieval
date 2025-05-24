@@ -6,9 +6,14 @@ from typing import cast, Dict, Any
 load_dotenv()
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
+
 if not GEMINI_API_KEY:
     print("CRITICAL: GEMINI_API_KEY not found in environment variables. Please set it in a .env file or environment.")
     # For library use, you might not exit here, but main.py will check.
+
+if not OPENROUTER_API_KEY:
+    print("WARNING: OPENROUTER_API_KEY not found. Fallback LLM provider will not be available.")
 
 DB_CONFIG = {
     "dbname": os.getenv("DB_NAME", "tpa"),
@@ -43,8 +48,8 @@ DEFAULT_LLM_TEMPERATURE_CREATIVE = 0.4
 
 # Parallel Async LLM Configuration
 PARALLEL_ASYNC_LLM_MODE = os.getenv("PARALLEL_ASYNC_LLM_MODE", "true").lower() == "true"
-MAX_CONCURRENT_LLM_CALLS = int(os.getenv("MAX_CONCURRENT_LLM_CALLS", "3"))
-LLM_CALL_TIMEOUT_SECONDS = int(os.getenv("LLM_CALL_TIMEOUT_SECONDS", "300"))
+MAX_CONCURRENT_LLM_CALLS = int(os.getenv("MAX_CONCURRENT_LLM_CALLS", "15"))  # Increased from 3 to 15 for better throughput
+LLM_CALL_TIMEOUT_SECONDS = int(os.getenv("LLM_CALL_TIMEOUT_SECONDS", "600"))  # Increased to 10 minutes per LLM call
 
 # Centralized Gemini LLM config builder
 
@@ -89,3 +94,43 @@ APP_SCAN_GEN_CONFIG = build_gemini_generation_config(
     temperature=0.2,
     response_mime_type="application/json"
 )
+
+# LLM Client Factory
+def create_llm_client():
+    """Create and return the configured LLM client with fallback support"""
+    from llm.llm_client import FallbackLLMClient, GeminiClient, OpenRouterClient
+    
+    # Create primary and fallback clients
+    primary_client = None
+    fallback_clients = []
+    
+    if GEMINI_API_KEY:
+        primary_client = GeminiClient(GEMINI_API_KEY)
+    
+    if OPENROUTER_API_KEY:
+        fallback_clients.append(OpenRouterClient(OPENROUTER_API_KEY))
+    
+    if not primary_client and not fallback_clients:
+        raise ValueError("No LLM API keys configured. Please set GEMINI_API_KEY and/or OPENROUTER_API_KEY")
+    
+    if not primary_client and fallback_clients:
+        # If no primary client, use the first fallback as primary
+        primary_client = fallback_clients.pop(0)
+
+    assert primary_client is not None, "Primary client should not be None at this point"
+    return FallbackLLMClient(primary_client, fallback_clients)
+
+def create_enhanced_llm_client():
+    """Create and return the enhanced LLM client with improved monitoring and fallback"""
+    try:
+        from llm.enhanced_config import create_enhanced_llm_client as create_enhanced
+        from cache.gemini_cache import GeminiResponseCache
+        
+        cache_impl = GeminiResponseCache() if CACHE_ENABLED else None
+        return create_enhanced(cache_impl=cache_impl)
+    except ImportError as e:
+        print(f"WARN: Enhanced LLM client not available ({e}), falling back to standard client")
+        return create_llm_client()
+
+# Environment variable to choose LLM client implementation
+USE_ENHANCED_LLM_CLIENT = os.getenv("USE_ENHANCED_LLM_CLIENT", "false").lower() == "true"

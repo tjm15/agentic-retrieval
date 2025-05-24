@@ -6,6 +6,7 @@ Handles async/parallel processing logic
 
 import asyncio
 import time
+import traceback
 from concurrent.futures import ThreadPoolExecutor
 from typing import Dict, List, Any, Callable
 from core_types import ReasoningNode, IntentStatus
@@ -43,7 +44,11 @@ class ParallelProcessor:
             # Run the LLM call in a thread pool to avoid blocking
             loop = asyncio.get_event_loop()
             with ThreadPoolExecutor() as executor:
-                return await loop.run_in_executor(executor, llm_callable, *args, **kwargs)
+                # Create a wrapper function that captures kwargs
+                def wrapper():
+                    return llm_callable(*args, **kwargs)
+                
+                return await loop.run_in_executor(executor, wrapper)
     
     async def process_node_async(self, 
                                 node: ReasoningNode,
@@ -90,7 +95,14 @@ class ParallelProcessor:
                 tasks.append(task)
             
             # Wait for all tasks in this batch to complete
-            await asyncio.gather(*tasks, return_exceptions=True)
+            results = await asyncio.gather(*tasks, return_exceptions=True)
+            
+            # Check for exceptions and log them
+            for i, result in enumerate(results):
+                if isinstance(result, Exception):
+                    node_id = batch[i].node_id if i < len(batch) else "unknown"
+                    print(f"ERROR: Exception processing node {node_id}: {result}")
+                    traceback.print_exception(type(result), result, result.__traceback__)
     
     def get_ready_nodes(self, all_nodes: List[ReasoningNode], processed_outputs: Dict[str, Any]) -> List[ReasoningNode]:
         """
@@ -136,7 +148,7 @@ class ParallelProcessor:
                                    all_nodes_func: Callable,
                                    process_func: Callable,
                                    max_parallel_nodes: int,
-                                   max_iterations: int = 10,
+                                   max_iterations: int = 20,  # Increased from 10 to 20
                                    **process_kwargs) -> Dict[str, Any]:
         """
         Run the main orchestration loop with parallel processing.

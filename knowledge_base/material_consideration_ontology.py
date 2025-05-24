@@ -44,8 +44,66 @@ class MaterialConsiderationOntology:
                             if "id" in entry: self.ontology[entry["id"]] = entry
                 except Exception as e: print(f"ERROR loading MC ontology from {filepath}: {e}")
 
-    def get_consideration_details(self, mc_id: str) -> Optional[Dict[str, Any]]: return self.ontology.get(mc_id)
-    
+    def get_consideration_details(self, mc_id: str) -> Optional[Dict[str, Any]]:
+        return self.ontology.get(mc_id)
+
+    def get_default_considerations_for_report_type(self, report_type: str) -> List[str]:
+        """
+        Get a default set of material consideration IDs for a given report type.
+        This serves as a fallback when the LLM scan returns no specific themes.
+        
+        Args:
+            report_type: The report type (e.g., "Default_MajorHybrid")
+            
+        Returns:
+            List of material consideration IDs that are typically relevant for this report type
+        """
+        # Define default sets based on report type
+        if "MajorHybrid" in report_type or "Major" in report_type:
+            # Comprehensive set for major developments
+            default_set = [
+                "HousingDelivery",
+                "DesignQualityAndTownscape", 
+                "HeritageImpact",
+                "TransportAndAccessibility",
+                "SustainabilityAndEnvironment",
+                "EconomyAndEmployment",
+                "CommunityAndPublicRealm",
+                "NeighbourAmenity",
+                "FloodRisk"
+            ]
+        elif "Minor" in report_type or "Householder" in report_type:
+            # More focused set for smaller developments
+            default_set = [
+                "DesignQualityAndTownscape",
+                "NeighbourAmenity",
+                "HeritageImpact"
+            ]
+        elif "Commercial" in report_type or "Employment" in report_type:
+            # Commercial-focused set
+            default_set = [
+                "EconomyAndEmployment",
+                "DesignQualityAndTownscape",
+                "TransportAndAccessibility",
+                "SustainabilityAndEnvironment",
+                "NeighbourAmenity"
+            ]
+        else:
+            # Generic fallback - core planning considerations
+            default_set = [
+                "HousingDelivery",
+                "DesignQualityAndTownscape",
+                "HeritageImpact",
+                "TransportAndAccessibility",
+                "NeighbourAmenity"
+            ]
+            
+        # Filter to only include IDs that exist in our ontology
+        available_defaults = [mc_id for mc_id in default_set if mc_id in self.ontology]
+        
+        print(f"INFO: Providing {len(available_defaults)} default material considerations for report type '{report_type}'")
+        return available_defaults
+
     def find_matching_consideration_id(self, theme_from_llm_scan: str) -> Optional[str]:
         theme_l = theme_from_llm_scan.lower()
         # Prioritize matching against explicit primary_tags from ontology entries first

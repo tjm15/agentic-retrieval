@@ -1,6 +1,5 @@
 # agents/visual_heritage_agent.py
 from typing import Dict, Any, List, Optional
-from google import genai
 from config import VISUAL_HERITAGE_AGENT_GEN_CONFIG, GEMINI_PRO_VISION_MODEL_NAME
 import json 
 from PIL import Image # Assuming PIL is installed
@@ -84,31 +83,24 @@ class VisualHeritageAgent(BaseSubsidiaryAgent):
             
             generation_config_obj = current_gen_config_dict
 
-            # Convert mixed content list to proper Gemini API format
+            # Convert mixed content list to proper LLM API format
             gemini_content = []
             for part in final_gemini_parts:
                 if isinstance(part, str):
                     gemini_content.append(part)
                 elif isinstance(part, dict) and 'mime_type' in part and 'data' in part:
-                    # Image part - keep as is for Gemini API
+                    # Image part - keep as is for LLM API
                     gemini_content.append(part)
             
-            response = self.client.models.generate_content(
-                model=GEMINI_PRO_VISION_MODEL_NAME,
+            llm_response = self.llm_client.generate_content(
                 contents=gemini_content,
-                config=generation_config_obj  # type: ignore
+                config=generation_config_obj,
+                model=GEMINI_PRO_VISION_MODEL_NAME
             )
-
-            # Robust response parsing
-            raw_text = getattr(response, "text", None)
-            if not raw_text and hasattr(response, "candidates") and response.candidates:
-                first_candidate = response.candidates[0]
-                content = getattr(first_candidate, "content", None)
-                parts = getattr(content, "parts", None) if content else None
-                if parts:
-                    raw_text = "".join([getattr(p, 'text', '') for p in parts if hasattr(p, 'text') and isinstance(p.text, str)])
+            
+            raw_text = llm_response.text
             if not raw_text or not isinstance(raw_text, str):
-                raise ValueError("No valid text response from Gemini API.")
+                raise ValueError("No valid text response from LLM API.")
             
             intent.provenance.add_action(f"Agent '{self.agent_name}' LLM call successful.", {"output_length": len(raw_text)})
             
@@ -141,20 +133,14 @@ class VisualHeritageAgent(BaseSubsidiaryAgent):
     
     def _call_llm(self, prompt: str, config: dict) -> str:
         try:
-            response = self.client.models.generate_content(
-                model=self.model_name,
+            llm_response = self.llm_client.generate_content(
                 contents=[prompt],
-                config=config  # type: ignore
+                config=config,
+                model=self.model_name
             )
-            text = getattr(response, "text", None)
-            if not text and hasattr(response, "candidates") and response.candidates:
-                first_candidate = response.candidates[0]
-                content = getattr(first_candidate, "content", None)
-                parts = getattr(content, "parts", None) if content else None
-                if parts:
-                    text = "".join([getattr(p, 'text', '') for p in parts if getattr(p, 'text', None)])
+            text = llm_response.text
             if not text or not isinstance(text, str):
-                raise ValueError("No valid text response from Gemini API.")
+                raise ValueError("No valid text response from LLM API.")
             return text
         except Exception as e:
             print(f"ERROR in _call_llm: {e}")

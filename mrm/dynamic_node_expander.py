@@ -4,7 +4,10 @@ Dynamic Node Expander for MRM Orchestrator
 Handles dynamic material consideration expansion
 """
 
+import traceback
+
 from typing import Dict, List, Any
+
 from core_types import ReasoningNode, Intent, IntentStatus, ProvenanceLog
 from knowledge_base.material_consideration_ontology import MaterialConsiderationOntology
 from mrm.intent_definer import IntentDefiner
@@ -87,7 +90,8 @@ class DynamicNodeExpander:
                     parent_node, 
                     dynamic_parent_intent, 
                     application_refs, 
-                    app_display_name
+                    app_display_name,
+                    report_type
                 )
             else:
                 error_msg = (getattr(dynamic_parent_intent, 'error_message', None) or 'Intent processing failed')
@@ -96,7 +100,6 @@ class DynamicNodeExpander:
                 
         except Exception as e:
             print(f"ERROR: Exception during dynamic expansion of {parent_node.node_id}: {e}")
-            import traceback
             traceback.print_exc()
             return False
     
@@ -104,7 +107,8 @@ class DynamicNodeExpander:
                                  parent_node: ReasoningNode, 
                                  dynamic_parent_intent: Intent, 
                                  application_refs: List[str], 
-                                 app_display_name: str) -> bool:
+                                 app_display_name: str,
+                                 report_type: str = "MajorHybrid") -> bool:
         """Create dynamic sub-nodes based on identified material considerations."""
         # Extract identified themes/material considerations
         structured_output = dynamic_parent_intent.structured_json_output
@@ -122,8 +126,9 @@ class DynamicNodeExpander:
             return False
         
         if not identified_sub_themes:
-            print(f"INFO: No sub-themes identified for dynamic parent '{parent_node.node_id}'")
-            return True
+            print(f"WARN: No sub-themes identified for dynamic parent '{parent_node.node_id}'. Using fallback defaults.")
+            # Fallback: Use default material considerations for this report type
+            return self._create_fallback_sub_nodes(parent_node, application_refs, app_display_name, report_type)
         
         print(f"INFO: Dynamically identified {len(identified_sub_themes)} sub-themes for {parent_node.node_id}")
         
@@ -137,6 +142,65 @@ class DynamicNodeExpander:
             )
         
         return True
+    
+    def _create_fallback_sub_nodes(self, 
+                                  parent_node: ReasoningNode, 
+                                  application_refs: List[str], 
+                                  app_display_name: str,
+                                  report_type: str = "MajorHybrid") -> bool:
+        """Create fallback sub-nodes using default material considerations when LLM scan returns empty."""
+        print(f"INFO: Creating fallback sub-nodes for {parent_node.node_id}")
+        
+        # Extract report type from parent node context if available
+        report_type = getattr(parent_node, 'report_type', 'MajorHybrid')
+        
+        # Get default material considerations for this report type
+        try:
+            default_considerations = self.mc_ontology_manager.get_default_considerations_for_report_type(report_type)
+            
+            if not default_considerations:
+                print(f"WARN: No default considerations found for report type '{report_type}'. Using generic fallback.")
+                default_considerations = self.mc_ontology_manager.get_default_considerations_for_report_type('Generic')
+            
+            if not default_considerations:
+                print(f"ERROR: No fallback considerations available. Cannot create sub-nodes.")
+                return False
+                
+            print(f"INFO: Using {len(default_considerations)} default considerations as fallback")
+            
+            # Create sub-nodes for each default consideration
+            for consideration_id in default_considerations:
+                try:
+                    # Get consideration details from ontology
+                    consideration_details = self.mc_ontology_manager.get_consideration_details(consideration_id)
+                    if consideration_details:
+                        theme_name = consideration_details.get('title', consideration_id)
+                        
+                        # Create theme info in the same format as LLM output
+                        theme_info = {
+                            "theme_name": theme_name,
+                            "ontology_match_id": consideration_id
+                        }
+                        
+                        self._create_single_dynamic_sub_node(
+                            parent_node, 
+                            theme_info, 
+                            application_refs, 
+                            app_display_name
+                        )
+                    else:
+                        print(f"WARN: Could not get details for consideration {consideration_id}")
+                        
+                except Exception as e:
+                    print(f"WARN: Failed to create fallback sub-node for {consideration_id}: {e}")
+                    
+            print(f"INFO: Successfully created {len(parent_node.sub_nodes)} fallback sub-nodes")
+            return True
+            
+        except Exception as e:
+            print(f"ERROR: Failed to create fallback sub-nodes: {e}")
+            traceback.print_exc()
+            return False
     
     def _create_single_dynamic_sub_node(self, 
                                        parent_node: ReasoningNode, 
@@ -253,7 +317,6 @@ class DynamicNodeExpander:
                 )
             except Exception as e:
                 print(f"ERROR: Failed to expand dynamic node {parent_node.node_id}: {e}")
-                import traceback
                 traceback.print_exc()
         
         return dynamic_parents

@@ -2,11 +2,9 @@
 import json
 import time
 from typing import Dict, Optional, Any, List, Tuple 
-from google import genai
 from typing import cast
-from google.genai.types import GenerateContentConfigDict
 
-from config import MRM_CORE_GEN_CONFIG, MRM_MODEL_NAME, CACHE_ENABLED
+from config import MRM_CORE_GEN_CONFIG, MRM_MODEL_NAME, CACHE_ENABLED, create_llm_client
 
 from core_types import ReasoningNode, Intent, IntentStatus, ProvenanceLog
 from retrieval.retriever import AgenticRetriever
@@ -18,7 +16,8 @@ from cache.gemini_cache import GeminiResponseCache
 
 class NodeProcessor:
     def __init__(self, api_key: str, retriever: AgenticRetriever, subsidiary_agents: Dict[str, BaseSubsidiaryAgent], policy_manager: PolicyManager):
-        self.client = genai.Client(api_key=api_key)
+        # Use the new LLM client with fallback support
+        self.llm_client = create_llm_client()
         self.model_name = MRM_MODEL_NAME
         self.generation_config = MRM_CORE_GEN_CONFIG
         self.retriever = retriever
@@ -28,7 +27,7 @@ class NodeProcessor:
         # Initialize cache if enabled
         self.cache = GeminiResponseCache() if CACHE_ENABLED else None
         
-        print(f"INFO: NodeProcessor initialized.")
+        print(f"INFO: NodeProcessor initialized with LLM client: {self.llm_client.__class__.__name__}")
         if CACHE_ENABLED:
             print(f"INFO: NodeProcessor caching enabled")
 
@@ -138,8 +137,8 @@ class NodeProcessor:
             if agent_report_content: mrm_synthesis_prompt += f"\n\n---Agent Report ({intent.agent_to_invoke})---\n{json.dumps(agent_report_content, indent=1, default=str)}\n---End Report---"
             gemini_mrm_content = self._prepare_mrm_synthesis_content(intent, mrm_synthesis_prompt)
             try:
-                intent.provenance.add_action("MRM Synthesis (Gemini Pro) call", {"prompt_len": sum(len(str(p)) for p in gemini_mrm_content)})
-                config = cast(GenerateContentConfigDict, dict(MRM_CORE_GEN_CONFIG))  # Use centralized config
+                intent.provenance.add_action("MRM Synthesis (LLM) call", {"prompt_len": sum(len(str(p)) for p in gemini_mrm_content)})
+                config = dict(MRM_CORE_GEN_CONFIG)  # Use centralized config
                 if "JSON" in intent.output_format_request.upper() or intent.data_requirements.get("schema"):
                     config["response_mime_type"] = "application/json"
                 
@@ -152,56 +151,93 @@ class NodeProcessor:
                     cached_response = self.cache.get(prompt_for_cache, config_dict, self.model_name)
                     if cached_response:
                         print(f"DEBUG: NodeProcessor using cached MRM synthesis response for {intent.parent_node_id}")
-                        response = cached_response
+                        # Convert cached response to text format
+                        text = getattr(cached_response, "text", None)
+                        if not text and hasattr(cached_response, "candidates") and cached_response.candidates:
+                            first_candidate = cached_response.candidates[0]
+                            content = getattr(first_candidate, "content", None)
+                            parts = getattr(content, "parts", None) if content else None
+                            if parts:
+                                text = "".join([getattr(p, 'text', '') for p in parts if getattr(p, 'text', None)])
+                        response_text = text or ""
                     else:
                         print(f"DEBUG: NodeProcessor no cache hit, making MRM synthesis request for {intent.parent_node_id} - may take 2-5 minutes...")
-                        response = self.client.models.generate_content(
-                            model=self.model_name,
+                        llm_response = self.llm_client.generate_content(
                             contents=gemini_mrm_content,
-                            config=config
+                            config=config,
+                            model=self.model_name
                         )
-                        print(f"DEBUG: NodeProcessor received MRM synthesis response for {intent.parent_node_id}")
-                        # Cache the response
-                        self.cache.put(prompt_for_cache, config_dict, self.model_name, response)
+                        response_text = llm_response.text
+                        print(f"DEBUG: NodeProcessor received MRM synthesis response using {llm_response.provider} ({llm_response.model_used}) for {intent.parent_node_id}")
+                        # Cache the response in original format if possible
+                        if hasattr(llm_response, 'raw_response') and llm_response.raw_response:
+                            self.cache.put(prompt_for_cache, config_dict, self.model_name, llm_response.raw_response)
                 else:
                     # No caching, make direct API call
                     print(f"DEBUG: NodeProcessor sending MRM synthesis request for {intent.parent_node_id} - may take 2-5 minutes...")
-                    response = self.client.models.generate_content(
-                        model=self.model_name,
+                    llm_response = self.llm_client.generate_content(
                         contents=gemini_mrm_content,
-                        config=config
+                        config=config,
+                        model=self.model_name
                     )
-                    print(f"DEBUG: NodeProcessor received MRM synthesis response for {intent.parent_node_id}")
-                text = getattr(response, "text", None)
-                if not text and hasattr(response, "candidates") and response.candidates:
-                    first_candidate = response.candidates[0]
-                    content = getattr(first_candidate, "content", None)
-                    parts = getattr(content, "parts", None) if content else None
-                    if parts:
-                        text = "".join([getattr(p, 'text', '') for p in parts if getattr(p, 'text', None)])
-                if not text or not isinstance(text, str):
-                    raise ValueError("No valid text response from Gemini API.")
+                    response_text = llm_response.text
+                    print(f"DEBUG: NodeProcessor received MRM synthesis response using {llm_response.provider} ({llm_response.model_used}) for {intent.parent_node_id}")
+                
+                if not response_text or not isinstance(response_text, str):
+                    raise ValueError("No valid text response from LLM API.")
                 # Handle JSON response
-                if config.get("response_mime_type") == "application/json" and isinstance(text, str):
+                if config.get("response_mime_type") == "application/json" and isinstance(response_text, str):
                     try:
-                        intent.structured_json_output = json.loads(text)
+                        intent.structured_json_output = json.loads(response_text)
                         intent.synthesized_text_output = json.dumps(intent.structured_json_output, indent=2, default=str)
                     except json.JSONDecodeError:
                         intent.provenance.add_action("MRM JSON parse fail")
-                        intent.synthesized_text_output=text
-                        intent.structured_json_output={"err":"JSON fail","raw":text}
+                        intent.synthesized_text_output = response_text
+                        intent.structured_json_output = {"err":"JSON fail","raw":response_text}
                 else:
-                    intent.synthesized_text_output = text
-                    intent.structured_json_output = {"summary": (text or "")[:500]+"..."}
+                    intent.synthesized_text_output = response_text
+                    intent.structured_json_output = {"summary": (response_text or "")[:500]+"..."}
                 intent.provenance.add_action("MRM Synthesis OK")
             except Exception as e:
                 intent.status = IntentStatus.FAILED
                 intent.error_message = f"MRM Synth fail: {e}"
         
         elif intent.status != IntentStatus.FAILED: 
-            if agent_report_content: intent.structured_json_output = agent_report_content; intent.synthesized_text_output = json.dumps(agent_report_content, indent=2, default=str)
-            elif needs_app_doc_retrieval: intent.structured_json_output = {"retrieved_summary": {"chunks": len(intent.chunk_context or []), "docs": len(intent.full_documents_context or [])}}; intent.synthesized_text_output = f"Retrieved {len(intent.chunk_context or [])} chunks / {len(intent.full_documents_context or [])} docs."
-            else: intent.provenance.add_action("WARN: Intent no primary action.")
+            if agent_report_content: 
+                intent.structured_json_output = agent_report_content
+                intent.synthesized_text_output = json.dumps(agent_report_content, indent=2, default=str)
+            elif needs_app_doc_retrieval: 
+                intent.structured_json_output = {"retrieved_summary": {"chunks": len(intent.chunk_context or []), "docs": len(intent.full_documents_context or [])}}
+                intent.synthesized_text_output = f"Retrieved {len(intent.chunk_context or [])} chunks / {len(intent.full_documents_context or [])} docs."
+            else: 
+                # Fallback: If no primary action was taken, attempt basic synthesis
+                intent.provenance.add_action("WARN: Intent no primary action specified. Attempting fallback synthesis.")
+                
+                # Check if this should have had an agent but didn't
+                if any(keyword in intent.task_type.upper() for keyword in ["ASSESS", "SYNTHESIZE", "ANALYZE", "BALANCE"]) and not intent.agent_to_invoke:
+                    intent.provenance.add_action("WARN: Task type suggests analysis needed but no agent specified. Using default agent.")
+                    # Use default planning analyst as fallback
+                    if "default_planning_analyst_agent" in self.subsidiary_agents:
+                        try:
+                            agent = self.subsidiary_agents["default_planning_analyst_agent"]
+                            agent_prompt_prefix = f"Fallback analysis task: {intent.assessment_focus}"
+                            agent_report_content = agent.process(intent, intent.agent_input_data, agent_prompt_prefix)
+                            intent.structured_json_output = agent_report_content
+                            intent.synthesized_text_output = json.dumps(agent_report_content, indent=2, default=str)
+                            intent.provenance.add_action("Fallback agent processing successful")
+                        except Exception as e:
+                            intent.provenance.add_action(f"Fallback agent failed: {e}")
+                            # Still provide basic output to prevent total failure
+                            intent.structured_json_output = {"status": "incomplete", "reason": "Agent specification failed"}
+                            intent.synthesized_text_output = f"Unable to complete analysis: {intent.assessment_focus}. Reason: Agent specification failed."
+                    else:
+                        # No fallback agent available, provide minimal output
+                        intent.structured_json_output = {"status": "incomplete", "reason": "No suitable processing method"}
+                        intent.synthesized_text_output = f"Unable to process intent: {intent.assessment_focus}. No suitable processing method identified."
+                else:
+                    # For non-analysis tasks, provide basic completion
+                    intent.structured_json_output = {"status": "completed", "task_type": intent.task_type}
+                    intent.synthesized_text_output = f"Task completed: {intent.assessment_focus}"
 
         if intent.status != IntentStatus.FAILED:
             satisfied, reason = self._check_satisfaction(intent)

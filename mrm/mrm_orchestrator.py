@@ -2,6 +2,7 @@
 # Modular Reasoning Machine (MRM) Orchestrator - V10 (Refactored)
 # Main orchestration coordinator using modular components
 
+import traceback
 import time
 import asyncio
 from typing import Dict, List, Any
@@ -409,6 +410,7 @@ class MRMOrchestrator:
                                    app_context_summary: Dict[str, Any],
                                    clarification_attempt_counts: Dict[str, int]):
         """Wrapper for async node processing that maintains the same interface."""
+        print(f"DEBUG: Processing node {node.node_id} with async wrapper")
         self._process_node_sync(
             node, application_refs, app_display_name,
             report_type, app_context_summary, 

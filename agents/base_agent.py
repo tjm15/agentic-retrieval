@@ -1,8 +1,6 @@
 # agents/base_agent.py
-from typing import Dict, Any, Optional, List, cast
-from google import genai
-from google.genai.types import GenerateContentConfigDict
-from config import SUBSIDIARY_AGENT_GEN_CONFIG, VISUAL_HERITAGE_AGENT_GEN_CONFIG, SUBSIDIARY_AGENT_MODEL_NAME, GEMINI_API_KEY, CACHE_ENABLED
+from typing import Dict, Any, Optional, List
+from config import SUBSIDIARY_AGENT_GEN_CONFIG, VISUAL_HERITAGE_AGENT_GEN_CONFIG, SUBSIDIARY_AGENT_MODEL_NAME, GEMINI_API_KEY, CACHE_ENABLED, create_llm_client
 import time
 import json
 from core_types import Intent
@@ -12,12 +10,12 @@ class BaseSubsidiaryAgent:
     def __init__(self, agent_name: str): 
         self.agent_name = agent_name
         self.model_name = SUBSIDIARY_AGENT_MODEL_NAME
-        self.client = genai.Client(api_key=GEMINI_API_KEY)
+        self.llm_client = create_llm_client()
         
         # Initialize cache if enabled
         self.cache = GeminiResponseCache() if CACHE_ENABLED else None
         
-        print(f"INFO: Init BaseSubsidiaryAgent: {self.agent_name}")
+        print(f"INFO: Init BaseSubsidiaryAgent: {self.agent_name} with LLM client: {self.llm_client.__class__.__name__}")
         if CACHE_ENABLED:
             print(f"INFO: BaseSubsidiaryAgent '{self.agent_name}' caching enabled")
 
@@ -71,7 +69,7 @@ class BaseSubsidiaryAgent:
         gemini_parts = self._prepare_gemini_content(intent, prompt_prefix)
         
         try:
-            current_gen_config_dict = cast(GenerateContentConfigDict, dict(SUBSIDIARY_AGENT_GEN_CONFIG))
+            current_gen_config_dict = dict(SUBSIDIARY_AGENT_GEN_CONFIG)
             expected_mime_type = agent_input_data.get("expected_output_mime_type")
             if expected_mime_type == "application/json":
                 current_gen_config_dict["response_mime_type"] = "application/json"
@@ -79,6 +77,7 @@ class BaseSubsidiaryAgent:
             time.sleep(0.7)
             
             # Try cache first if enabled
+            response_text = ""
             if self.cache:
                 # Convert gemini_parts to a hashable prompt string for caching
                 prompt_for_cache = str(gemini_parts)
@@ -87,45 +86,47 @@ class BaseSubsidiaryAgent:
                 cached_response = self.cache.get(prompt_for_cache, config_dict, self.model_name)
                 if cached_response:
                     print(f"DEBUG: {self.__class__.__name__} using cached response")
-                    response = cached_response
+                    # Convert cached response to text format
+                    raw_text = getattr(cached_response, "text", None)
+                    if not raw_text and hasattr(cached_response, "candidates") and cached_response.candidates:
+                        first_candidate = cached_response.candidates[0]
+                        content = getattr(first_candidate, "content", None)
+                        parts = getattr(content, "parts", None) if content else None
+                        if parts:
+                            raw_text = "".join([getattr(p, 'text', '') for p in parts if getattr(p, 'text', None)])
+                    response_text = raw_text or ""
                 else:
-                    print(f"DEBUG: {self.__class__.__name__} no cache hit, sending request to Gemini API - may take 2-5 minutes...")
-                    response = self.client.models.generate_content(
-                        model=self.model_name,
+                    print(f"DEBUG: {self.__class__.__name__} no cache hit, sending request to LLM API - may take 2-5 minutes...")
+                    llm_response = self.llm_client.generate_content(
                         contents=[gemini_parts],
-                        config=current_gen_config_dict
+                        config=current_gen_config_dict,
+                        model=self.model_name
                     )
-                    print(f"DEBUG: {self.__class__.__name__} received response from Gemini API")
-                    # Cache the response
-                    self.cache.put(prompt_for_cache, config_dict, self.model_name, response)
+                    response_text = llm_response.text
+                    print(f"DEBUG: {self.__class__.__name__} received response from {llm_response.provider} ({llm_response.model_used})")
+                    # Cache the response in original format if possible
+                    if hasattr(llm_response, 'raw_response') and llm_response.raw_response:
+                        self.cache.put(prompt_for_cache, config_dict, self.model_name, llm_response.raw_response)
             else:
                 # No caching, make direct API call
-                print(f"DEBUG: {self.__class__.__name__} sending request to Gemini API - may take 2-5 minutes...")
-                response = self.client.models.generate_content(
-                    model=self.model_name,
+                print(f"DEBUG: {self.__class__.__name__} sending request to LLM API - may take 2-5 minutes...")
+                llm_response = self.llm_client.generate_content(
                     contents=[gemini_parts],
-                    config=current_gen_config_dict
+                    config=current_gen_config_dict,
+                    model=self.model_name
                 )
-                print(f"DEBUG: {self.__class__.__name__} received response from Gemini API")
+                response_text = llm_response.text
+                print(f"DEBUG: {self.__class__.__name__} received response from {llm_response.provider} ({llm_response.model_used})")
 
-            # Robust response parsing
-            raw_text = getattr(response, "text", None)
-            if not raw_text and hasattr(response, "candidates") and response.candidates:
-                first_candidate = response.candidates[0]
-                content = getattr(first_candidate, "content", None)
-                parts = getattr(content, "parts", None) if content else None
-                if parts:
-                    # Only join non-None, str parts
-                    raw_text = "".join([getattr(p, 'text', '') for p in parts if getattr(p, 'text', None)])
-            if not raw_text or not isinstance(raw_text, str):
-                raise ValueError("No valid text response from Gemini API.")
+            if not response_text or not isinstance(response_text, str):
+                raise ValueError("No valid text response from LLM API.")
 
-            intent.provenance.add_action(f"Agent '{self.agent_name}' LLM call successful.", {"output_length": len(raw_text)})
+            intent.provenance.add_action(f"Agent '{self.agent_name}' LLM call successful.", {"output_length": len(response_text)})
 
-            output_payload = {"generated_raw": raw_text}
+            output_payload = {"generated_raw": response_text}
             if current_gen_config_dict.get("response_mime_type") == "application/json":
                 try:
-                    output_payload["structured_payload"] = json.loads(raw_text)
+                    output_payload["structured_payload"] = json.loads(response_text)
                 except json.JSONDecodeError as json_err:
                     intent.provenance.add_action(f"Agent '{self.agent_name}' failed to parse its JSON output.", {"error": str(json_err)})
                     output_payload["structured_payload_error"] = f"Failed to parse agent JSON output: {json_err}"
@@ -147,10 +148,9 @@ class BaseSubsidiaryAgent:
             }
 
     def _call_llm(self, prompt: str, config: dict) -> str:
-        from google.genai.types import GenerateContentConfigDict
-        from typing import cast
         try:
             # Try cache first if enabled
+            response_text = ""
             if self.cache:
                 # Convert config to Dict[str, Any] for cache compatibility
                 config_dict = dict(config) if hasattr(config, 'items') else config
@@ -172,37 +172,29 @@ class BaseSubsidiaryAgent:
                 
                 print(f"DEBUG: Agent {self.agent_name} no cache hit, making API call")
                 # Make API call and cache the response
-                config_cast = cast(GenerateContentConfigDict, config)
-                response = self.client.models.generate_content(
-                    model=self.model_name,
+                llm_response = self.llm_client.generate_content(
                     contents=[prompt],
-                    config=config_cast
+                    config=config,
+                    model=self.model_name
                 )
-                # Cache the response
-                self.cache.put(prompt, config_dict, self.model_name, response)
+                response_text = llm_response.text
+                # Cache the response in original format if possible
+                if hasattr(llm_response, 'raw_response') and llm_response.raw_response:
+                    self.cache.put(prompt, config_dict, self.model_name, llm_response.raw_response)
             else:
                 # No caching, make direct API call
-                config_cast = cast(GenerateContentConfigDict, config)
-                response = self.client.models.generate_content(
-                    model=self.model_name,
+                llm_response = self.llm_client.generate_content(
                     contents=[prompt],
-                    config=config_cast
+                    config=config,
+                    model=self.model_name
                 )
+                response_text = llm_response.text
             
-            # Robust response parsing
-            text = getattr(response, "text", None)
-            if not text and hasattr(response, "candidates") and response.candidates:
-                first_candidate = response.candidates[0]
-                content = getattr(first_candidate, "content", None)
-                parts = getattr(content, "parts", None) if content else None
-                if parts:
-                    # Only join non-None, string parts
-                    text = "".join([getattr(p, 'text', '') for p in parts if getattr(p, 'text', None)])
-            if not text or not isinstance(text, str):
+            if not response_text or not isinstance(response_text, str):
                 # Log the raw response for debugging
-                print(f"ERROR: No valid text response from Gemini API. Raw response: {response}")
-                raise ValueError(f"No valid text response from Gemini API. Raw response: {response}")
-            return text
+                print(f"ERROR: No valid text response from LLM API. Response: {response_text}")
+                raise ValueError(f"No valid text response from LLM API.")
+            return response_text
         except Exception as e:
             print(f"ERROR in _call_llm: {e}\nPrompt: {prompt}\nConfig: {config}")
             raise
